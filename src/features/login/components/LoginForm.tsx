@@ -15,7 +15,7 @@ export const LoginForm = () => {
   const dispatch = useDispatch();
   const { loading } = useSelector(loadingSelector);
   const [showPassword, setShowPassword] = useState(false);
-  console.log("loading", loading);
+
   const loginFormMethods = useForm<LoginInputTypes>({
     resolver: useLoginResolver(),
     defaultValues: {
@@ -46,12 +46,15 @@ export const LoginForm = () => {
           showPassword={showPassword}
           setShowPassword={setShowPassword}
         />
-        <button className="bg-theme-color1 text-white py-2 rounded hover:bg-theme-color1/90 shadow">
+        <button
+          className="bg-theme-color1 text-white py-2 rounded hover:bg-theme-color1/90 shadow"
+          disabled={loading}
+        >
           Login
         </button>
       </form>
       <hr />
-      <GoogleButton />
+      <GoogleButton disabled={loading} />
     </FormProvider>
   );
 };
