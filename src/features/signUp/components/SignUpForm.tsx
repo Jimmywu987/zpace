@@ -11,6 +11,8 @@ import { useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { CameraSvgIcon } from "@/features/signUp/components/svg/CameraSvgIcon";
 import { GoogleButton } from "@/features/common/components/buttons/GoogleButton";
+import { useDispatch, useSelector } from "react-redux";
+import { loadingSelector } from "@/redux/loading";
 
 export const SignUpForm = () => {
   const {
@@ -19,7 +21,8 @@ export const SignUpForm = () => {
     formState: { errors },
   } = useForm();
   const router = useRouter();
-
+  const dispatch = useDispatch();
+  const { loading } = useSelector(loadingSelector);
   const [showPassword, setShowPassword] = useState(false);
   const { uploadToS3 } = useS3Upload();
 
@@ -86,12 +89,15 @@ export const SignUpForm = () => {
             {...register("profileImg")}
           />
         </div>
-        <button className="bg-theme-color1 text-white py-2 rounded hover:bg-theme-color1/90 shadow">
+        <button
+          className="bg-theme-color1 text-white py-2 rounded hover:bg-theme-color1/90 shadow"
+          disabled={loading}
+        >
           Sign Up
         </button>
       </form>
       <hr />
-      <GoogleButton />
+      <GoogleButton disabled={loading} />
     </FormProvider>
   );
 };
