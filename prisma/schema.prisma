@@ -1,0 +1,203 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id                                   String                       @id @default(cuid())
+  createdAt                            DateTime                     @default(now())
+  updatedAt                            DateTime                     @updatedAt
+  password                             String
+  email                                String                       @unique
+  username                             String
+  profileImg                           String
+  phoneNumber                          String
+  description                          String
+  isRoomOwner                          Boolean                      @default(false)
+  status                               UserStatusEnum               @default(ACTIVE)
+  rooms                                Room[]
+  customerBookingTimeslots             CustomerBookingTimeslot[]
+  ratingAndCommentsOnRooms             RatingAndCommentOnRoom[]
+  ratingAndCommentsOnCustomers         RatingAndCommentOnCustomer[] @relation("customer")
+  ratingAndCommentsOnCustomerFromHosts RatingAndCommentOnCustomer[] @relation("host")
+  likes                                Like[]
+  sentMessages                         Message[]
+  asCustomerChatTables                 ChatTable[]                  @relation("customer")
+  asHostChatTables                     ChatTable[]                  @relation("host")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Room {
+  id           String   @id @default(cuid())
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  hourlyPrice  Int
+  longitude    String
+  latitude     String
+  capacity     String
+  isActive     Boolean
+  description  String
+  wifi         Boolean
+  address      String
+  desk         Boolean
+  socketPlug   Boolean
+  airCondition Boolean
+  spaceName    String
+  district     String
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  ratingAndComments RatingAndCommentOnRoom[]
+
+  likes Like[]
+
+  roomImgs                 RoomImg[]
+  weeklyOpenTimeslots      WeeklyOpenTimeslot[]
+  oneTimeOffOpenTimeslots  OneTimeOffOpenTimeslot[]
+  customerBookingTimeslots CustomerBookingTimeslot[]
+}
+
+model District {
+  id           String @id @default(cuid())
+  districtName String
+}
+
+model RoomImg {
+  id     String @id @default(cuid())
+  url    String
+  roomId String
+  room   Room   @relation(fields: [roomId], references: [id], onDelete: Cascade)
+}
+
+model WeeklyOpenTimeslot {
+  id        String   @id @default(cuid())
+  monday    Boolean
+  tuesday   Boolean
+  wednesday Boolean
+  thursday  Boolean
+  friday    Boolean
+  saturday  Boolean
+  sunday    Boolean
+  startTime DateTime
+  endTime   DateTime
+  roomId    String
+  room      Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
+}
+
+model OneTimeOffOpenTimeslot {
+  id        String   @id @default(cuid())
+  date      DateTime
+  startTime DateTime
+  endTime   DateTime
+  roomId    String
+  room      Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
+}
+
+model CustomerBookingTimeslot {
+  id                  String             @id @default(cuid())
+  requestDate         DateTime
+  price               Float
+  headCount           Int
+  isRefund            Boolean
+  requestRefund       Boolean
+  isRatedFromCustomer Boolean
+  isRatedFromHost     Boolean
+  refundDescription   String
+  createdAt           DateTime           @default(now())
+  updatedAt           DateTime           @updatedAt
+  status              TimeslotStatusEnum
+  roomId              String
+  room                Room               @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  customerId          String
+  customer            User               @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  bookingTimeslots BookingTimeslot[]
+}
+
+model BookingTimeslot {
+  id        String   @id @default(cuid())
+  startTime DateTime
+  endTime   DateTime
+  date      DateTime
+
+  customerBookingTimeslotId String
+  customerBookingTimeslot   CustomerBookingTimeslot @relation(fields: [customerBookingTimeslotId], references: [id], onDelete: Cascade)
+}
+
+model Like {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  roomId    String
+  room      Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model RatingAndCommentOnRoom {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  comment   String
+  rating    Float
+  roomId    String
+  room      Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model RatingAndCommentOnCustomer {
+  id         String   @id @default(cuid())
+  createdAt  DateTime @default(now())
+  comment    String
+  rating     Float
+  customerId String
+  customer   User     @relation("customer", fields: [customerId], references: [id], onDelete: Cascade)
+  hostId     String
+  host       User     @relation("host", fields: [hostId], references: [id], onDelete: Cascade)
+}
+
+model Message {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  content   String
+  isRead    Boolean
+  isRequest Boolean
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  chatTableId String
+  chatTable   ChatTable @relation(fields: [chatTableId], references: [id], onDelete: Cascade)
+}
+
+model ChatTable {
+  id         String @id @default(cuid())
+  customerId String
+  customer   User   @relation("customer", fields: [customerId], references: [id], onDelete: Cascade)
+  hostId     String
+  host       User   @relation("host", fields: [hostId], references: [id], onDelete: Cascade)
+
+  messages Message[]
+}
+
+enum TimeslotStatusEnum {
+  ACCEPTED
+  REJECTED
+  PENDING
+  COMPLETED
+}
+
+enum UserStatusEnum {
+  ACTIVE
+  DELETED
+}
