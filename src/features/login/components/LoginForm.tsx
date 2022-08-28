@@ -4,9 +4,7 @@ import { useLoginResolver } from "@/features/login/schemas/useLoginResolver";
 import { FormTextInput } from "@/features/common/components/input/FormTextInput";
 import { useState } from "react";
 import { ShowPassword } from "@/features/common/components/ShowPassword";
-
 import { signIn } from "next-auth/react";
-
 import { GoogleButton } from "@/features/common/components/buttons/GoogleButton";
 import { useDispatch, useSelector } from "react-redux";
 import { loadingSelector, isLoading } from "@/redux/loading";
@@ -26,9 +24,11 @@ export const LoginForm = () => {
 
   const onSubmit = loginFormMethods.handleSubmit(async (data) => {
     dispatch(isLoading({ isLoading: true }));
+    console.log({data});
+
     await signIn("credentials", {
       ...data,
-      callbackUrl: "/",
+      // callbackUrl: "/",
     });
     dispatch(isLoading({ isLoading: false }));
   });
@@ -47,7 +47,8 @@ export const LoginForm = () => {
           setShowPassword={setShowPassword}
         />
         <button
-          className="bg-theme-color1 text-white py-2 rounded hover:bg-theme-color1/90 shadow"
+          className="bg-theme-color1 text-white py-2 rounded hover:bg-theme-color1/90 shadow-xl"
+          type="submit"
           disabled={loading}
         >
           Login

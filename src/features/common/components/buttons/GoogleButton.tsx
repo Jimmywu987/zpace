@@ -4,7 +4,7 @@ import { GoogleSvgIcon } from "@/features/common/components/buttons/svg/GoogleSv
 export const GoogleButton = ({ disabled }: { disabled: boolean }) => {
   return (
     <button
-      className="py-2 rounded shadow flex items-center w-full justify-center space-x-2 hover:bg-gray-50"
+      className="cursor-pointer py-2 rounded shadow flex items-center w-full justify-center space-x-2 hover:bg-gray-50 "
       onClick={() => {
         signIn("google", { callbackUrl: "/" });
       }}

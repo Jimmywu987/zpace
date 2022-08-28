@@ -14,11 +14,11 @@ export const useSignUpResolver = () => {
         .required("Email Address is required"),
       password: yup
         .string()
-        .min(8, "At least 6-digit password is required")
+        .min(8, "At least 8-digit password is required")
         .required("Password is required"),
       confirmPassword: yup
         .string()
-        .min(8, "At least 6-digit password is required")
+        // .min(8, "At least 8-digit password is required")
         .oneOf([yup.ref("password"), null], "Passwords don't match")
         .required("Confirm Password is required"),
       profileImg: yup.mixed(),
