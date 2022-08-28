@@ -6,15 +6,31 @@ import {
 import { loadingSelector } from "@/redux/loading";
 import type { NextPage } from "next";
 import { useSession } from "next-auth/react";
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Range } from "react-range";
+import { DistrictListBox } from "@/features/common/components/DistrictListBox";
+
 const HomePage: NextPage = (props) => {
   const [advanceSearch, showAdvanceSearch] = useState(false);
-  const [range, setRange] = useState([20, 30]);
+  const [content, setContent] = useState("");
+  const [numPpl, setNumPpl] = useState("");
+
+  const [pickedDate, setPickedDate] = useState<string>(
+    `${new Date().getFullYear()}-${
+      new Date().getMonth() + 1
+    }-${new Date().getDate()}`
+  );
+
+  const [option, setOption] = useState("");
+
+  const [range, setRange] = useState([20, 500]);
   const session = useSession();
   const dispatch = useDispatch();
   const { loading } = useSelector(loadingSelector);
+  const onSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+  };
   return (
     <div className="flex justify-center items-center">
       <Card>
@@ -34,21 +50,37 @@ const HomePage: NextPage = (props) => {
                 <span className="text-lg">Search by current location</span>
               </button>
               <div>Or</div>
-              {/* experimenting the range */}
+              <DistrictListBox setSelected={setOption} selected={option} />
+
+              <form
+                onSubmit={(event) => onSubmit(event)}
+                className="w-full border rounded p-3 "
+                noValidate
+                autoComplete="off"
+              >
+                <input
+                  className="w-full focus:outline-none text-gray-700"
+                  placeholder="Location/Address"
+                  type="text"
+                  value={content}
+                  onChange={(event) => setContent(event.target.value)}
+                />
+              </form>
+              <div className="text-gray-700">
+                {`$${range[0]} HKD to $${range[1]} HKD`} / hour
+              </div>
               <Range
-                step={1}
-                min={0}
-                max={100}
+                step={20}
+                min={10}
+                max={2000}
                 values={range}
                 onChange={(values) => setRange(values)}
                 renderTrack={({ props, children }) => (
                   <div
                     {...props}
+                    className="h-0.5 bg-theme-color1/80 w-full rounded"
                     style={{
                       ...props.style,
-                      height: "6px",
-                      width: "100%",
-                      backgroundColor: "#ccc",
                     }}
                   >
                     {children}
@@ -57,12 +89,19 @@ const HomePage: NextPage = (props) => {
                 renderThumb={({ props }) => (
                   <div
                     {...props}
-                    className="h-2 w-2 bg-gray-800 "
+                    className="h-2.5 w-2.5 bg-theme-color1 rounded-full"
                     style={{
                       ...props.style,
                     }}
                   />
                 )}
+              />
+              <input
+                className="w-full focus:outline-none p-3 border  rounded text-gray-700"
+                placeholder="Number of visitors"
+                type="text"
+                value={numPpl}
+                onChange={(event) => setNumPpl(event.target.value)}
               />
             </div>
           )}
