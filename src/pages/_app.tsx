@@ -6,12 +6,12 @@ import { AppContextType } from "next/dist/shared/lib/utils";
 import { SessionProvider } from "next-auth/react";
 import { store } from "@/redux/configureStore";
 import { Toaster } from 'react-hot-toast';
-
 const MyApp = ({ Component, session, pageProps, data }: AppProps & any) => {
   return (
     <SessionProvider session={session}>
       <Provider store={store}>
         <Layout initData={data}>
+          
           <Toaster />
           <Component {...pageProps} initData={data} />
         </Layout>

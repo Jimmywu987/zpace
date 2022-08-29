@@ -24,11 +24,9 @@ export const LoginForm = () => {
 
   const onSubmit = loginFormMethods.handleSubmit(async (data) => {
     dispatch(isLoading({ isLoading: true }));
-    console.log({data});
-
     await signIn("credentials", {
       ...data,
-      // callbackUrl: "/",
+      callbackUrl: "/",
     });
     dispatch(isLoading({ isLoading: false }));
   });

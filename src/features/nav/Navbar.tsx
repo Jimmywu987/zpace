@@ -3,6 +3,7 @@ import { NavLink } from "@/features/nav/components/NavLink";
 import { NavDivider } from "@/features/nav/components/NavDivider";
 import { signOut, useSession } from "next-auth/react";
 import { User } from "@/types/User";
+import MetaTags from "@/../components/Metatags";
 
 export const Navbar = () => {
   const session = useSession();
@@ -19,6 +20,10 @@ export const Navbar = () => {
         <NavLink text="Home" url="/" />
         {isAuthenticated ? (
           <>
+            <MetaTags
+              title={`${user.username} | ZPACE`}
+              description="ZPACE - flexible space sharing platform"
+            />
             <NavDivider />
             <Link href={`/profile/${user.id}`} passHref>
               <a className="flex items-center space-x-2 hover:bg-link-bgHover rounded p-1 text-lg text-link-normal ">
@@ -42,6 +47,7 @@ export const Navbar = () => {
           </>
         ) : (
           <>
+            <MetaTags />
             <NavDivider />
             <NavLink text="Login" url="/login" />
             <NavDivider />

@@ -15,8 +15,7 @@ const {
 } = config;
 
 const options: NextAuthOptions = {
-  secret:
-    "MIFDLasdfnasdflndfsajdfsalklnfjsdaljfasasdfdsaflnklhjafdsjldsafjhadsfhjfsadjlhkdsfhlhlkjsadfhljksadfhjklfsdahjkldsfhlkahljksadfhjklfadsl",
+  secret: JWT_SECRET,
   providers: [
     CredentialsProvider({
       name: "credentials",
