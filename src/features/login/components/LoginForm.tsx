@@ -24,7 +24,6 @@ export const LoginForm = () => {
 
   const onSubmit = loginFormMethods.handleSubmit(async (data) => {
     dispatch(isLoading({ isLoading: true }));
-
     await signIn("credentials", {
       ...data,
       callbackUrl: "/",
@@ -54,7 +53,7 @@ export const LoginForm = () => {
         </button>
       </form>
       <hr />
-      <GoogleButton disabled={loading} />
+      <GoogleButton loading={loading} />
     </FormProvider>
   );
 };

@@ -1,4 +1,4 @@
-import { createUser, createUserGoogleAuth } from "@/apis/api";
+import { createUser } from "@/apis/api";
 import { FormTextInput } from "@/features/common/components/input/FormTextInput";
 import { ShowPassword } from "@/features/common/components/ShowPassword";
 import { useSignUpResolver } from "@/features/signUp/schemas/useSignUpResolver";
@@ -24,6 +24,7 @@ export const SignUpForm = () => {
   const router = useRouter();
   const dispatch = useDispatch();
   const { loading } = useSelector(loadingSelector);
+
   const [showPassword, setShowPassword] = useState(false);
   const { uploadToS3 } = useS3Upload();
 
@@ -50,7 +51,7 @@ export const SignUpForm = () => {
       profileImg: imgUrl,
     });
     if (res && res.status === 201) {
-      toast.success('Sign up successfully');
+      toast.success("Sign up successfully");
       router.push("/login");
       return;
     }
@@ -100,7 +101,7 @@ export const SignUpForm = () => {
         </button>
       </form>
       <hr />
-      <GoogleButton disabled={loading} />
+      <GoogleButton loading={loading} />
     </FormProvider>
   );
 };
