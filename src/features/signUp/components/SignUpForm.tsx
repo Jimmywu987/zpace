@@ -12,7 +12,7 @@ import { FormProvider, useForm } from "react-hook-form";
 import { CameraSvgIcon } from "@/features/signUp/components/svg/CameraSvgIcon";
 import { GoogleButton } from "@/features/common/components/buttons/GoogleButton";
 import { useDispatch, useSelector } from "react-redux";
-import { loadingSelector } from "@/redux/loading";
+import { isLoading, loadingSelector } from "@/redux/loading";
 import toast from "react-hot-toast";
 
 export const SignUpForm = () => {
@@ -41,6 +41,8 @@ export const SignUpForm = () => {
   const updatedProfileImg = profileImg && profileImg.length === 1;
 
   const onSubmit = signUpFormMethods.handleSubmit(async (data) => {
+    dispatch(isLoading({ isLoading: true }));
+
     let imgUrl = "/default-profile-img.png";
     if (updatedProfileImg) {
       const { url } = await uploadToS3(profileImg[0]);
@@ -51,6 +53,8 @@ export const SignUpForm = () => {
       profileImg: imgUrl,
     });
     if (res && res.status === 201) {
+      dispatch(isLoading({ isLoading: false }));
+
       toast.success("Sign up successfully");
       router.push("/login");
       return;

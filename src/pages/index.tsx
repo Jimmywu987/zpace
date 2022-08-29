@@ -3,7 +3,7 @@ import {
   LoadingSpinnerSvgIcon,
   LocationOnSvgIcon,
 } from "@/features/common/components/svg/common";
-import { loadingSelector } from "@/redux/loading";
+import { isLoading, loadingSelector } from "@/redux/loading";
 import type { NextPage } from "next";
 import { useSession } from "next-auth/react";
 import { FormEvent, useState } from "react";
@@ -13,13 +13,15 @@ import { DistrictListBox } from "@/features/common/components/DistrictListBox";
 import Slider from "@mui/material/Slider";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { SelectCalendar } from "@/features/common/components/SelectCalendar";
+import { useRouter } from "next/router";
 
 const HomePage: NextPage = (props) => {
   const session = useSession();
+  const router = useRouter();
+
   const [advanceSearch, showAdvanceSearch] = useState(false);
   const [content, setContent] = useState("");
   const [numPpl, setNumPpl] = useState("");
-
   const [pickedDate, setPickedDate] = useState<string>(
     `${new Date().getFullYear()}-${
       new Date().getMonth() + 1
@@ -34,7 +36,11 @@ const HomePage: NextPage = (props) => {
   const { loading } = useSelector(loadingSelector);
   const onSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    dispatch(isLoading({ isLoading: true }));
+    router.push("/search");
+    dispatch(isLoading({ isLoading: false }));
   };
+
   return (
     <div className="flex justify-center items-center">
       <Card>
