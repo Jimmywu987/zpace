@@ -23,6 +23,7 @@ export const ListBox = ({
           label="Search by District"
           id="district-selection"
           value={selected}
+          className="focus:outline-none hover:outline-none"
         >
           {options.map((option: ListBoxType, indx) => {
             return (
