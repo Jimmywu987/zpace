@@ -53,7 +53,7 @@ export const LoginForm = () => {
         </button>
       </form>
       <hr />
-      <GoogleButton disabled={loading} />
+      <GoogleButton loading={loading} />
     </FormProvider>
   );
 };

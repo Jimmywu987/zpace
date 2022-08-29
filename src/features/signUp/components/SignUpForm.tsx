@@ -1,4 +1,4 @@
-import { createUser, createUserGoogleAuth } from "@/apis/api";
+import { createUser } from "@/apis/api";
 import { FormTextInput } from "@/features/common/components/input/FormTextInput";
 import { ShowPassword } from "@/features/common/components/ShowPassword";
 import { useSignUpResolver } from "@/features/signUp/schemas/useSignUpResolver";
@@ -25,7 +25,6 @@ export const SignUpForm = () => {
   const dispatch = useDispatch();
   const { loading } = useSelector(loadingSelector);
 
-  console.log(loading);
   const [showPassword, setShowPassword] = useState(false);
   const { uploadToS3 } = useS3Upload();
 

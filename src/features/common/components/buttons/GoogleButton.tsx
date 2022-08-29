@@ -2,7 +2,6 @@ import { signIn } from "next-auth/react";
 
 import { GoogleSvgIcon } from "@/features/common/components/buttons/svg/GoogleSvgIcon";
 export const GoogleButton = ({ loading }: { loading: boolean }) => {
-  // console.log(loading)
   return (
     <button
       className="cursor-pointer py-2 rounded shadow flex items-center w-full justify-center space-x-2 hover:bg-gray-50 "
