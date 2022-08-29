@@ -1,4 +1,4 @@
-import { createUser, createUserGoogleAuth } from "@/apis/api";
+import { createUser } from "@/apis/api";
 import { FormTextInput } from "@/features/common/components/input/FormTextInput";
 import { ShowPassword } from "@/features/common/components/ShowPassword";
 import { useSignUpResolver } from "@/features/signUp/schemas/useSignUpResolver";
