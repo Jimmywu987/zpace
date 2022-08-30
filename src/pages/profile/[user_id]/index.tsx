@@ -1,110 +1,84 @@
 import { useSession } from "next-auth/react";
 import { User } from "@/types/User";
-import { prisma } from "@/services/prisma";
 import Metatags from "../../../../components/Metatags";
+import timeSince from "@/helpers/timeSince";
+import { getUserWithUserId } from "@/helpers/getUserWithUserId";
 
-interface Profile {
-  user: {
-    id: string;
-    username: string;
-    email: string;
-    profileImg: string;
-    phoneNumber: string;
-    description: string;
-    createdAt: Date;
-  }[];
-}
-
-export default function UserProfilePage({ user }: Profile) {
-  const session = useSession();
-  const currentUser = session.data?.user as User;
-  const isAuthenticated = session.status === "authenticated";
-
-  if (currentUser) {
-    const isUser = currentUser.id === user.id;
-  }
-
-  if (!user) return { notFound: true };
-  return (
-    <>
-      <Metatags title={`${user.username} | ZPACE`} />
-      <main className="m-auto">
-        <div className="card m-auto shadow bg-gray-300 w-3/5 p-20 flex flex-col items-center justify-center">
-          <img
-            className="w-20 h-20 rounded-full object-cover"
-            src={user.profileImg}
-            alt="profileImg"
-          />
-          <p className="m-10 text-2xl font-bold ">{user.username}</p>
-          <p className=" text-red-500 ">Joined {user.createdAt} ago</p>
-        </div>
-      </main>
-    </>
-  );
-}
+// interface Profile {
+//   user: {
+//     id: string;
+//     username: string;
+//     email: string;
+//     profileImg: string;
+//     phoneNumber: string;
+//     description: string;
+//     createdAt: Date;
+//   }[];
+// }
 
 export async function getServerSideProps({ query }) {
   const { user_id } = query;
-  const user = await prisma.user.findFirst({
-    where: {
-      id: user_id,
-    },
-    select: {
-      id: true,
-      username: true,
-      email: true,
-      profileImg: true,
-      phoneNumber: true,
-      description: true,
-      createdAt: true,
-    },
-  });
-
-  // console.log(user)
-
-  if (!user) {
+  const userDoc = await getUserWithUserId(user_id);
+  if (!userDoc) {
     return {
       notFound: true,
     };
   }
   return {
     props: {
-      user: {
-        id: user.id,
-        username: user.username,
-        email: user.email,
-        profileImg: user.profileImg,
-        phoneNumber: user.phoneNumber,
-        description: user.description,
-        createdAt: timeSince(user.createdAt),
-      },
+      user:{
+        id: userDoc.id,
+        username: userDoc.username,
+        email: userDoc.email,
+        profileImg: userDoc.profileImg,
+        phoneNumber: userDoc.phoneNumber,
+        description: userDoc.description,
+        createdAt: timeSince(userDoc.createdAt)
+      }
     },
   };
 }
 
-function timeSince(date: Date) {
-  var seconds = Math.floor((new Date() - date) / 1000);
 
-  var interval = seconds / 31536000;
+export default function UserProfilePage(userDoc) {
 
-  if (interval > 1) {
-    return Math.floor(interval) + " years";
-  }
-  interval = seconds / 2592000;
-  if (interval > 1) {
-    return Math.floor(interval) + " months";
-  }
-  interval = seconds / 86400;
-  if (interval > 1) {
-    return Math.floor(interval) + " days";
-  }
-  interval = seconds / 3600;
-  if (interval > 1) {
-    return Math.floor(interval) + " hours";
-  }
-  interval = seconds / 60;
-  if (interval > 1) {
-    return Math.floor(interval) + " minutes";
-  }
-  return Math.floor(seconds) + " seconds";
+  const user = userDoc.user;
+
+
+  return (
+    <>
+      <Metatags title={`${user.username} | ZPACE`} />
+      <div className="m-auto flex mt-10">
+        {/* Card */}
+        <div className="card m-auto shadow bg-gray-300 w-2/5 h-full p-20 flex flex-col items-center justify-center">
+          <img
+            className="w-20 h-20 rounded-full object-cover"
+            src={user.profileImg}
+            alt="profileImg"
+          />
+          <a className="mt-5 text-sm text-violet-500">Update photo</a>
+          <div className="badge flex flex-col">
+            <span className="mt-5 text-lg ">
+              Reviews
+            </span>
+            <span className="mt-5 text-lg  ">Identity identified</span>
+          </div>
+        </div>
+
+        <div className="w-3/5 p-20 font-extrabold h-full">
+          <h1>Hi, I'm {user.username}</h1>
+          <p className=" text-violet-500 ">Joined {user.createdAt} ago</p>
+        </div>
+      </div>
+    </>
+  );
 }
+
+// export async function getServerSideProps({ query }) {
+//   // const session = useSession();
+//   // const currentUser = session.data?.user as User;
+//   // const isAuthenticated = session.status === "authenticated";
+
+//   const { user_id } = query;
+
+// }
