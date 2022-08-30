@@ -10,7 +10,7 @@ export const Navbar = () => {
   const isAuthenticated = session.status === "authenticated";
   const user = session.data?.user as User;
   return (
-    <nav className="flex py-0 px-3 justify-between items-center">
+    <nav className="bg-white shadow-xl flex py-0 px-3 justify-between items-center">
       <div className="flex items-center">
         <Link href="/" passHref>
           <a className="">
@@ -26,7 +26,7 @@ export const Navbar = () => {
             />
             <NavDivider />
             <Link href={`/profile/${user.id}`} passHref>
-              <a className="flex items-center space-x-2 hover:bg-link-bgHover rounded p-1 text-lg text-link-normal ">
+              <a className="flex items-center space-x-2 transition hover:bg-link-bgHover hover:scale-110 hover:text-red-500 rounded p-1 text-lg text-link-normal ">
                 <img
                   src={user.profileImg}
                   alt={`${user.username} profile image`}
@@ -37,7 +37,7 @@ export const Navbar = () => {
             </Link>
             <NavDivider />
             <button
-              className="text-lg text-link-normal hover:bg-link-bgHover py-2 px-2.5 rounded"
+              className="text-lg text-link-normal hover:scale-110 hover:text-red-500 py-2 px-2.5 rounded"
               onClick={() => {
                 signOut();
               }}
