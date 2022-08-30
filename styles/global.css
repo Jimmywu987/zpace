@@ -4,9 +4,82 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
 
+:root {
+  --color-bg: #eef0f1;
+  --color-text: #08090a;
+  --color-blue: #3b49df;
+  --color-red: #df3b3b;
+  --color-green: #3bdf72;
+  --color-gray: #b5bdc4;
+  --color-primary: #7e3ade;
+  --color-secondary: #cb6ce5;
+}
 body {
 
     font-family: 'Poppins', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    background-color: #ecebf5;
   }
+
+
+.btn,
+button {
+  /* background-color: var(--color-gray); */
+  border: none;
+  color: var(--color-text);
+  /* padding: 0.5rem 1rem; */
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+  text-decoration: none;
+  font-family: "Noto Sans", sans-serif;
+  font-weight: bold;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  /* margin: 0.5rem 1rem 0.5rem 0; */
+}
+
+button:hover {
+  filter: brightness(90%);
+}
+
+button:disabled,
+button[disabled] {
+  filter: brightness(80%);
+  cursor: not-allowed;
+}
+
+button.btn-blue {
+  background-color: var(--color-blue);
+  color: white;
+}
+
+button.btn-red {
+  background-color: var(--color-red);
+  color: white;
+}
+
+button.btn-green {
+  background-color: var(--color-green);
+  color: white;
+}
+
+button.btn-purple {
+  background-color: var(--color-purple);
+  color: white;
+}
+
+button.btn-google {
+  background-color: white;
+  color: var(--color-text);
+}
+
+.card {
+  padding: 2rem;
+  margin: 1rem 1rem;
+  background-color: white;
+  border-radius: 8px;
+}
