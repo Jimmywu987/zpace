@@ -3,7 +3,7 @@ import { NavLink } from "@/features/nav/components/NavLink";
 import { NavDivider } from "@/features/nav/components/NavDivider";
 import { signOut, useSession } from "next-auth/react";
 import { User } from "@/types/User";
-import MetaTags from "@/../components/Metatags";
+import MetaTags from "@/features/head/components/Metatags";
 
 export const Navbar = () => {
   const session = useSession();

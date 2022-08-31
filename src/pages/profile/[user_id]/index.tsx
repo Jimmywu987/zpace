@@ -1,14 +1,14 @@
 import {  useSession } from "next-auth/react";
 import { User } from "@/types/User";
-import Metatags from "../../../../components/Metatags";
+import Metatags from "@/features/head/components/Metatags";
 import timeSince from "@/helpers/timeSince";
-import { getUserWithUserId } from "@/helpers/getUserWithUserId";
+import { getUserWithUserId } from "@/services/prisma"
 import StarBorderRoundedIcon from "@mui/icons-material/StarBorderRounded";
 import DoneRoundedIcon from "@mui/icons-material/DoneRounded";
 import VerifiedUserOutlinedIcon from "@mui/icons-material/VerifiedUserOutlined";
 import PersonPinCircleRoundedIcon from "@mui/icons-material/PersonPinCircleRounded";
 import GradeIcon from "@mui/icons-material/Grade";
-import Reviews from "@/../components/Reviews";
+import Reviews from "@/features/common/components/Reviews";
 import { useState } from "react";
 
 

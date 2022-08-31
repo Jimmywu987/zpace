@@ -1,10 +1,8 @@
-import MetaTags from "@/../components/Metatags";
+import MetaTags from "@/features/head/components/Metatags";
 import Link from "next/link";
-import failGif from './../../public/assets/404.gif'
+import failGif from '@/../public/assets/404.gif'
 
 export default function Custom404() {
-
-  console.log(failGif)
   return (
     <main>
       <MetaTags title="Oops! User not found | ZPACE" />
