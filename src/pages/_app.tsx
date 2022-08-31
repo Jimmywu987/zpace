@@ -11,7 +11,6 @@ const MyApp = ({ Component, session, pageProps, data }: AppProps & any) => {
     <SessionProvider session={session}>
       <Provider store={store}>
         <Layout initData={data}>
-          
           <Toaster />
           <Component {...pageProps} initData={data} />
         </Layout>

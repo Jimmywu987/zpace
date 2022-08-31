@@ -3,12 +3,14 @@ import { NavLink } from "@/features/nav/components/NavLink";
 import { NavDivider } from "@/features/nav/components/NavDivider";
 import { signOut, useSession } from "next-auth/react";
 import { User } from "@/types/User";
-import MetaTags from "@/../components/Metatags";
+import MetaTags from "@/features/head/components/Metatags";
 
 export const Navbar = () => {
   const session = useSession();
   const isAuthenticated = session.status === "authenticated";
   const user = session.data?.user as User;
+  console.log(user);
+
   return (
     <nav className="bg-white shadow-xl flex py-0 px-3 justify-between items-center">
       <div className="flex items-center">
