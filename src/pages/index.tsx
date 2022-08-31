@@ -14,7 +14,7 @@ import Slider from "@mui/material/Slider";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { SelectCalendar } from "@/features/common/components/SelectCalendar";
 import { useRouter } from "next/router";
-
+import { useEffect } from "react";
 const HomePage: NextPage = (props) => {
   const session = useSession();
   const router = useRouter();
