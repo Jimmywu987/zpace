@@ -16,7 +16,7 @@
 }
 body {
 
-    font-family: 'Poppins', sans-serif;
+    /* font-family: 'Poppins', sans-serif; */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     background-color: #ecebf5;
@@ -81,5 +81,5 @@ button.btn-google {
   padding: 2rem;
   margin: 1rem 1rem;
   background-color: white;
-  border-radius: 8px;
+  border-radius: 10px;
 }

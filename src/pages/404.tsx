@@ -1,21 +1,42 @@
 import MetaTags from "@/../components/Metatags";
 import Link from "next/link";
+import failGif from './../../public/assets/404.gif'
 
 export default function Custom404() {
+
+  console.log(failGif)
   return (
     <main>
       <MetaTags title="Oops! User not found | ZPACE" />
-      <h1 style={{ textAlign: "center" }}>
-        404 - That page does not seem to exist...
-      </h1>
-      <iframe
-        src="https://giphy.com/embed/l2JehQ2GitHGdVG9y"
-        width="480"
-        height="362"
-        frameBorder="0"
-        allowFullScreen
-        style={{ margin: "0 auto", display: "block" }}
-      ></iframe>
+      <div className="flex my-10 mx-5 items-center gap-12">
+        <span className="leading-loose">
+          <h1 className="my-10 font-extrabold text-9xl text-violet-500 drop-shadow-lg">
+            Oops!
+          </h1>
+          <p>That page does not seem to exist...</p>
+          <p>Error code: 404</p>
+          <p>Here are some helpful links instead: </p>
+          <ul>
+            <li>
+              <Link href="/">
+                <p className="text-violet-500 underline">Home</p>
+              </Link>
+            </li>
+            <li>
+              <Link href="/">
+                <p className="text-violet-500 underline">Search</p>
+              </Link>
+            </li>
+            <li>
+              <Link href="/">
+                <p className="text-violet-500 underline">Profile</p>
+              </Link>
+            </li>
+          </ul>
+        </span>
+
+        <img src={failGif.src} alt="oops" />
+      </div>
       <div className="flex justify-center m-2">
         <Link href="/">
           <button className="btn-blue p-3 cusor-pointer ">Back to home</button>

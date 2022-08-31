@@ -9,6 +9,8 @@ export const Navbar = () => {
   const session = useSession();
   const isAuthenticated = session.status === "authenticated";
   const user = session.data?.user as User;
+  console.log(user);
+
   return (
     <nav className="bg-white shadow-xl flex py-0 px-3 justify-between items-center">
       <div className="flex items-center">
