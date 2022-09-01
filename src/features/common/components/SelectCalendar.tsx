@@ -17,15 +17,13 @@ export const SelectCalendar = ({
   return (
     <div className="flex">
       <button
-        className={`bg-theme-color1 text-white py-2 rounded hover:bg-theme-color1/90 shadow-xl flex-1 ${
-          showCalendar && ""
-        }`}
+        className="bg-theme-color1 text-white py-2 rounded hover:bg-theme-color1/90 shadow-xl flex-1"
         onClick={() => setShowCalendar((show) => !show)}
       >
         SELECT DAY
       </button>
       <input
-        className={`flex-1 border rounded p-1 ${showCalendar && "hidden"}`}
+        className={`flex-1 border rounded p-1 ${!showCalendar && "hidden"}`}
         min={currentDate}
         type="date"
         onChange={(event) => setPickedDate(event.target.value)}

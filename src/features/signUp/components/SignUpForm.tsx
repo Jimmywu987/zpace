@@ -16,11 +16,7 @@ import { isLoading, loadingSelector } from "@/redux/loading";
 import toast from "react-hot-toast";
 
 export const SignUpForm = () => {
-  const {
-    register,
-    watch,
-    formState: { errors },
-  } = useForm();
+  const { register, watch } = useForm();
   const router = useRouter();
   const dispatch = useDispatch();
   const { loading } = useSelector(loadingSelector);

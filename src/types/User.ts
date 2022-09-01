@@ -1,7 +1,7 @@
 import { UserStatusEnum } from "@prisma/client";
 
 export type User = {
-  createdAt: string;
+  createdAt: string | Date;
   description: string;
   email: string;
   id: string;

@@ -2,9 +2,8 @@ import { PrismaClient } from "@prisma/client";
 
 export const prisma = new PrismaClient();
 
-
 export async function getUserWithUserId(user_id: string) {
-  const user = prisma.user.findFirst({
+  const user = await prisma.user.findFirst({
     where: {
       id: user_id,
     },
