@@ -3,6 +3,7 @@ import DoneRoundedIcon from "@mui/icons-material/DoneRounded";
 import VerifiedUserOutlinedIcon from "@mui/icons-material/VerifiedUserOutlined";
 import { ProfileUser } from "@/types/ProfileUser";
 import { User } from "@/types/User";
+import Link from "next/link";
 
 export default function ProfileCard({
   currentUser,
@@ -13,7 +14,6 @@ export default function ProfileCard({
 }) {
   return (
     <>
-      {/* Card */}
       <div className="card m-auto shadow bg-gray-300 w-2/5 h-full p-20 grid grid-cols-1 divide-y">
         <div id="image-box" className="flex flex-col items-center mb-5">
           <img
@@ -22,9 +22,11 @@ export default function ProfileCard({
             alt="profileImg"
           />
           {currentUser?.id === profile.id && (
-            <span className="mt-5 text-sm  underline hover:text-violet-400 cursor-pointer">
-              Update photo
-            </span>
+            <Link href={`${profile.id}/edit-photo`}>
+              <span className="mt-5 text-sm  underline hover:text-violet-400 cursor-pointer">
+                Update photo
+              </span>
+            </Link>
           )}
         </div>
 

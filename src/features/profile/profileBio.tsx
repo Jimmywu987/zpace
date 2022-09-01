@@ -11,8 +11,6 @@ export default function ProfileBio({
 }) {
   return (
     <>
-      {/* Bio */}
-      <div>
         <p className="font-bold text-3xl my-5">Hi, I'm {profile.username}</p>
         <p className="mb-3 text-violet-500 text-sm">Joined {profile.createdAt} ago</p>
         {currentUser?.id === profile.id && (
@@ -30,7 +28,6 @@ export default function ProfileBio({
         <p className="text-md my-5 gap-2">
           <PersonPinCircleRoundedIcon /> Locates in Wan Chai, Hong Kong
         </p>
-      </div>
     </>
   );
 }

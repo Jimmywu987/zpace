@@ -12,48 +12,28 @@ import { ProfileUser } from "@/types/ProfileUser";
 import { ReviewsType } from "@/types/ReviewsType";
 
 
-export async function getServerSideProps({ query }) {
-  const { user_id } = query;
-  const userDoc = await getUserWithUserId(user_id);
+export async function getServerSideProps({ query }: { query: string }) {
+  const {user_id} = query;
+  const userDoc = await getUserWithUserId(user_id, true);
   if (!userDoc) {
     return {
       notFound: true,
     };
   }
-
   return {
-    props: {
-      user: {
-        id: userDoc.id,
-        username: userDoc.username,
-        email: userDoc.email,
-        profileImg: userDoc.profileImg,
-        phoneNumber: userDoc.phoneNumber,
-        description: userDoc.description,
-        createdAt: timeSince(userDoc.createdAt),
-      },
-    },
+    props: userDoc,
   };
 }
 
-export default function UserProfilePage(userDoc: {
-  user: {
-    id: string;
-    username: string;
-    email: string;
-    profileImg: string;
-    phoneNumber: string;
-    description: string;
-    createdAt: Date;
-  };
-}) {
+export default function ProfilePage(userDoc: ProfileUser
+) {
 
   const session = useSession();
   const isAuthenticated = session.status === "authenticated";
   const currentUser = session.data?.user as User;
   // Demo review data
   const reviewsData = reviewsJSON.reviews as ReviewsType;
-  const profile = userDoc.user as ProfileUser;
+  const profile = userDoc as ProfileUser;
 
   return (
     <>
