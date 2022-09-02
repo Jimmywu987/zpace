@@ -4,12 +4,10 @@ import Metatags from "@/features/head/components/Metatags";
 import { getUserWithUserId } from "@/services/prisma"
 import GradeIcon from "@mui/icons-material/Grade";
 import Reviews from "@/features/profile/components/Reviews";
-// import reviewsJSON from "@/data/reviews";
 import blogsJSON from "@/data/blogs";
 import ProfileCard from "@/features/profile/components/ProfileCard";
 import ProfileBio from "@/features/profile/components/ProfileBio";
 import { ProfileUser } from "@/types/ProfileUser";
-// import { ReviewsType } from "@/types/ReviewsType";
 import { GetServerSideProps } from "next";
 import { useState } from "react";
 
