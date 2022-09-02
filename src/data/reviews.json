@@ -1,0 +1,17 @@
+{
+  "reviews": [
+    {
+      "host": "Rita",
+      "createdAt": "2022-08-16",
+      "comment": "The guests are very sweet and polite. I highly recommend them to everyone.",
+      "hostJoinDate": "2019-08-24"
+    },
+    {
+      "host": "James",
+      "createdAt": "2022-05-16",
+      "comment": "They are very friendly, tidy and clean",
+      "hostJoinDate": "2017-08-24"
+    }
+  ]
+}
+
