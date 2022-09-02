@@ -1,4 +1,4 @@
-import {  useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { User } from "@/types/User";
 import Metatags from "@/features/head/components/Metatags";
 import { getUserWithUserId } from "@/services/prisma"
@@ -9,6 +9,7 @@ import ProfileCard from "@/features/profile/profileCard";
 import ProfileBio from "@/features/profile/profileBio";
 import { ProfileUser } from "@/types/ProfileUser";
 import { ReviewsType } from "@/types/ReviewsType";
+import { GetServerSideProps } from "next";
 
 
 export async function getServerSideProps({ query }: { query: string }) {

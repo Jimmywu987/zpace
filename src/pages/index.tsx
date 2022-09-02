@@ -6,7 +6,7 @@ import {
 import { isLoading, loadingSelector } from "@/redux/loading";
 import type { NextPage } from "next";
 import { useSession } from "next-auth/react";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import SearchIcon from "@mui/icons-material/Search";
 import { DistrictListBox } from "@/features/common/components/DistrictListBox";
@@ -14,10 +14,14 @@ import Slider from "@mui/material/Slider";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { SelectCalendar } from "@/features/common/components/SelectCalendar";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
-const HomePage: NextPage = (props) => {
+import { toSet } from "@/redux/setting";
+import { toStorePlace } from "@/redux/toPlace";
+import { toStoreIP } from "@/redux/location";
+
+const HomePage: NextPage = () => {
   const session = useSession();
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const [advanceSearch, showAdvanceSearch] = useState(false);
   const [content, setContent] = useState("");
@@ -32,13 +36,78 @@ const HomePage: NextPage = (props) => {
 
   const [range, setRange] = useState<number[]>([20, 500]);
 
-  const dispatch = useDispatch();
   const { loading } = useSelector(loadingSelector);
+
   const onSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     dispatch(isLoading({ isLoading: true }));
     router.push("/search");
     dispatch(isLoading({ isLoading: false }));
+  };
+  const onClickCurrentLocation = () => {
+    dispatch(isLoading({ isLoading: true }));
+    dispatch(
+      toSet({
+        setting: { ppl: Number(numPpl), priceRg: range, date: pickedDate },
+      })
+    );
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        let lat = position.coords.latitude;
+        let lng = position.coords.longitude;
+        const addressJSON = await fetch(
+          `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`
+        );
+        const address = await addressJSON.json();
+        dispatch(toStorePlace({ place: address.results }));
+        dispatch(
+          toStoreIP({
+            iP: {
+              lat,
+              lng,
+              zoom: 15,
+            },
+          })
+        );
+        dispatch(isLoading({ isLoading: false }));
+
+        router.push("/search");
+      },
+      () => null
+    );
+  };
+  const onChangeSubmit = async () => {
+    dispatch(isLoading({ isLoading: true }));
+
+    dispatch(
+      toSet({
+        setting: { ppl: Number(numPpl), priceRg: range, date: pickedDate },
+      })
+    );
+    const latAndLngJSON = await fetch(
+      `https://maps.googleapis.com/maps/api/geocode/json?address=${content}+Hong+Kong&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`
+    );
+    const latAndLng = await latAndLngJSON.json();
+    if (latAndLng.results[0]) {
+      let lat = latAndLng.results[0].geometry.location.lat || null;
+      let lng = latAndLng.results[0].geometry.location.lng || null;
+      const addressJSON = await fetch(
+        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`
+      );
+      const address = await addressJSON.json();
+      dispatch(toStorePlace({ place: address.results }));
+      dispatch(
+        toStoreIP({
+          iP: {
+            lat,
+            lng,
+            zoom: 15,
+          },
+        })
+      );
+      dispatch(isLoading({ isLoading: false }));
+      router.push("/search");
+    }
   };
 
   return (
@@ -55,13 +124,26 @@ const HomePage: NextPage = (props) => {
             </div>
           ) : (
             <div className="flex flex-col items-center space-y-3">
-              <button className="flex items-center justify-center space-x-3 border rounded p-2 hover:bg-gray-50 w-full">
+              <button
+                className="border flex items-center justify-center space-x-3 rounded p-3 hover:bg-gray-50 w-full"
+                disabled={loading}
+                onClick={onClickCurrentLocation}
+              >
                 <LocationOnSvgIcon className="w-6 h-6 text-theme-color2" />
                 <span className="text-lg">Search by current location</span>
               </button>
               <div>Or</div>
               <DistrictListBox setSelected={setOption} selected={option} />
               <hr className="w-full" />
+              <button
+                className="bg-theme-color1 text-white py-2 rounded hover:bg-theme-color1/90 shadow-xl w-full"
+                disabled={loading}
+                onClick={onChangeSubmit}
+              >
+                SEARCH ROOM
+              </button>
+              <hr className="w-full" />
+
               <button
                 className="flex items-center space-x-2 cursor-pointer"
                 onClick={() => showAdvanceSearch((show: boolean) => !show)}
@@ -76,19 +158,18 @@ const HomePage: NextPage = (props) => {
               </button>
               <div
                 className={`flex flex-col w-full space-y-3 ${
-                  advanceSearch && "hidden"
+                  !advanceSearch && "hidden"
                 }`}
               >
-                <SelectCalendar setPickedDate={setPickedDate} />
                 <form
                   onSubmit={(event) => onSubmit(event)}
-                  className="w-full border rounded p-3 "
+                  className="w-full border rounded"
                   noValidate
                   autoComplete="off"
                 >
                   <input
-                    className="w-full focus:outline-none text-gray-700"
-                    placeholder="Location/Address"
+                    className="w-full focus:outline-none p-3 border  rounded text-gray-700"
+                    placeholder="Location / Address"
                     type="text"
                     value={content}
                     onChange={(event) => setContent(event.target.value)}
@@ -115,12 +196,7 @@ const HomePage: NextPage = (props) => {
                   value={numPpl}
                   onChange={(event) => setNumPpl(event.target.value)}
                 />
-                <button
-                  className="bg-theme-color1 text-white py-2 rounded hover:bg-theme-color1/90 shadow-xl w-full"
-                  disabled={false}
-                >
-                  SEARCH ROOM
-                </button>
+                <SelectCalendar setPickedDate={setPickedDate} />
               </div>
             </div>
           )}

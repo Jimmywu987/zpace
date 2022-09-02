@@ -11,9 +11,7 @@ const MetaTags: FC<MetaTagesProps> = (props) => {
   return (
     <Head>
       <title>
-        {props.title
-          ? props.title
-          : "ZPACE - Flexible space sharing platform"}
+        {props.title ? props.title : "ZPACE - Flexible space sharing platform"}
       </title>
       <meta name="twitter:card" content="summary" />
       <meta name="twitter:site" content="@zpace" />
