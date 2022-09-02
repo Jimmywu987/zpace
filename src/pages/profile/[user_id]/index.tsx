@@ -1,20 +1,25 @@
-import {  useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { User } from "@/types/User";
 import Metatags from "@/features/head/components/Metatags";
 import timeSince from "@/helpers/timeSince";
-import { getUserWithUserId } from "@/services/prisma"
+import { getUserWithUserId } from "@/services/prisma";
 import StarBorderRoundedIcon from "@mui/icons-material/StarBorderRounded";
 import DoneRoundedIcon from "@mui/icons-material/DoneRounded";
 import VerifiedUserOutlinedIcon from "@mui/icons-material/VerifiedUserOutlined";
 import PersonPinCircleRoundedIcon from "@mui/icons-material/PersonPinCircleRounded";
 import GradeIcon from "@mui/icons-material/Grade";
 import Reviews from "@/features/common/components/Reviews";
-import { useState } from "react";
+import { GetServerSideProps } from "next";
 
-
-export async function getServerSideProps({ query }) {
+export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   const { user_id } = query;
+  if (!user_id || Array.isArray(user_id)) {
+    return {
+      notFound: true,
+    };
+  }
   const userDoc = await getUserWithUserId(user_id);
+
   if (!userDoc) {
     return {
       notFound: true,
@@ -34,20 +39,9 @@ export async function getServerSideProps({ query }) {
       },
     },
   };
-}
+};
 
-export default function UserProfilePage(userDoc: {
-  user: {
-    id: string;
-    username: string;
-    email: string;
-    profileImg: string;
-    phoneNumber: string;
-    description: string;
-    createdAt: Date;
-  }[];
-}) {
-
+export default function UserProfilePage(userDoc: { user: Partial<User> }) {
   const session = useSession();
   const isAuthenticated = session.status === "authenticated";
   const currentUser = session.data?.user as User;
@@ -81,11 +75,11 @@ export default function UserProfilePage(userDoc: {
               src={profile.profileImg}
               alt="profileImg"
             />
-            {currentUser?.id === profile.id &&
-            <span className="mt-5 text-sm  underline hover:text-violet-400 cursor-pointer">
-              Update photo
-            </span> 
-            }
+            {currentUser?.id === profile.id && (
+              <span className="mt-5 text-sm  underline hover:text-violet-400 cursor-pointer">
+                Update photo
+              </span>
+            )}
           </div>
 
           <div className="badge flex flex-col text-center mb-5">
@@ -129,15 +123,17 @@ export default function UserProfilePage(userDoc: {
         {/* Bio */}
         <div className="mx-10 mb-5 w-full">
           <div>
-            <p className="font-bold text-3xl my-5">Hi, I'm {profile.username}</p>
+            <p className="font-bold text-3xl my-5">
+              Hi, I'm {profile.username}
+            </p>
             <p className="mb-3 text-violet-500 text-sm">
-              Joined {profile.createdAt} ago
+              {`Joined ${profile.createdAt} ago`}
             </p>
-            {currentUser?.id === profile.id  &&
-            <p className="mt-5 text-sm underline hover:text-violet-400 cursor-pointer">
-              Edit profile
-            </p>
-            }
+            {currentUser?.id === profile.id && (
+              <p className="mt-5 text-sm underline hover:text-violet-400 cursor-pointer">
+                Edit profile
+              </p>
+            )}
 
             <p className="font-bold text-2xl my-5">About</p>
 

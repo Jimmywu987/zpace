@@ -1,6 +1,6 @@
 import MetaTags from "@/features/head/components/Metatags";
 import Link from "next/link";
-import failGif from '@/../public/assets/404.gif'
+import failGif from "@/../public/assets/404.gif";
 
 export default function Custom404() {
   return (
@@ -17,17 +17,23 @@ export default function Custom404() {
           <ul>
             <li>
               <Link href="/">
-                <p className="text-violet-500 underline">Home</p>
+                <a>
+                  <p className="text-violet-500 underline">Home</p>
+                </a>
               </Link>
             </li>
             <li>
               <Link href="/">
-                <p className="text-violet-500 underline">Search</p>
+                <a>
+                  <p className="text-violet-500 underline">Search</p>{" "}
+                </a>
               </Link>
             </li>
             <li>
               <Link href="/">
-                <p className="text-violet-500 underline">Profile</p>
+                <a>
+                  <p className="text-violet-500 underline">Profile</p>
+                </a>
               </Link>
             </li>
           </ul>
@@ -37,7 +43,11 @@ export default function Custom404() {
       </div>
       <div className="flex justify-center m-2">
         <Link href="/">
-          <button className="btn-blue p-3 cusor-pointer ">Back to home</button>
+          <a>
+            <button className="btn-blue p-3 cusor-pointer ">
+              Back to home
+            </button>
+          </a>
         </Link>
       </div>
     </main>
