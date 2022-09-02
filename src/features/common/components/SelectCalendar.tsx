@@ -1,18 +1,20 @@
-import { SetStateAction, useState, Dispatch } from "react";
+import { d2 } from "@/helpers/d2";
+import { useState } from "react";
+import { useFormContext } from "react-hook-form";
 
 export const SelectCalendar = ({
-  setPickedDate,
+  name,
+  onChange,
 }: {
-  setPickedDate: Dispatch<SetStateAction<string>>;
+  name: string;
+  onChange?: () => void;
 }) => {
-  const d2 = (x: number) => {
-    return x < 10 ? "0" + x : "" + x;
-  };
   const [showCalendar, setShowCalendar] = useState(false);
 
   const currentDate = `${new Date().getFullYear()}-${d2(
     new Date().getMonth() + 1
   )}-${d2(new Date().getDate())}`;
+  const { setValue } = useFormContext();
 
   return (
     <div className="flex">
@@ -26,7 +28,9 @@ export const SelectCalendar = ({
         className={`flex-1 border rounded p-1 ${!showCalendar && "hidden"}`}
         min={currentDate}
         type="date"
-        onChange={(event) => setPickedDate(event.target.value)}
+        onChange={
+          onChange ? onChange : (event) => setValue(name, event.target.value)
+        }
       />
     </div>
   );

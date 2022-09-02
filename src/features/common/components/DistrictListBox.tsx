@@ -1,5 +1,5 @@
 import { ListBox } from "@/features/common/components/listBox/ListBox";
-import { Dispatch, SetStateAction } from "react";
+
 const DISTRICT = [
   {
     name: "",
@@ -30,20 +30,10 @@ const DISTRICT = [
   { name: "Southern", value: "Southern District" },
   { name: "Wan Chai", value: "Wan Chai District" },
 ];
-export const DistrictListBox = ({
-  setSelected,
-  selected,
-}: {
-  setSelected: Dispatch<SetStateAction<string>>;
-  selected: string;
-}) => {
+export const DistrictListBox = () => {
   return (
     <div className="w-full">
-      <ListBox
-        options={DISTRICT}
-        setSelected={setSelected}
-        selected={selected}
-      />
+      <ListBox name="content" options={DISTRICT} label="Search By District" />
     </div>
   );
 };
