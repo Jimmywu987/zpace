@@ -12,13 +12,9 @@ import toast from "react-hot-toast";
 import { updateProfileImg } from "@/apis/api";
 
 
-interface queryProps {
-  query: {
-   user_id:string
-  };
-}
 
-export async function getServerSideProps({ query }: queryProps) {
+
+export async function getServerSideProps({ query }: QueryProps) {
   const { user_id } = query;
 
   const userDoc = await getUserWithUserId(user_id, true);
@@ -151,3 +147,10 @@ export default function EditUserPhoto(profile: ProfileUser) {
     </main>
   );
 }
+
+
+type QueryProps = {
+  query: {
+    user_id: string;
+  };
+};

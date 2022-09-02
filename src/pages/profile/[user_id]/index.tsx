@@ -3,17 +3,19 @@ import { User } from "@/types/User";
 import Metatags from "@/features/head/components/Metatags";
 import { getUserWithUserId } from "@/services/prisma"
 import GradeIcon from "@mui/icons-material/Grade";
-import Reviews from "@/features/common/components/Reviews";
-import reviewsJSON from "@/data/reviews";
-import ProfileCard from "@/features/profile/profileCard";
-import ProfileBio from "@/features/profile/profileBio";
+import Reviews from "@/features/profile/components/Reviews";
+// import reviewsJSON from "@/data/reviews";
+import blogsJSON from "@/data/blogs";
+import ProfileCard from "@/features/profile/components/ProfileCard";
+import ProfileBio from "@/features/profile/components/ProfileBio";
 import { ProfileUser } from "@/types/ProfileUser";
-import { ReviewsType } from "@/types/ReviewsType";
+// import { ReviewsType } from "@/types/ReviewsType";
 import { GetServerSideProps } from "next";
+import { useState } from "react";
 
 
-export async function getServerSideProps({ query }: { query: string }) {
-  const {user_id} = query;
+export async function getServerSideProps({ query }: QueryProps) {
+  const { user_id } = query;
   const userDoc = await getUserWithUserId(user_id, true);
   if (!userDoc) {
     return {
@@ -31,9 +33,12 @@ export default function ProfilePage(userDoc: ProfileUser
   const session = useSession();
   const isAuthenticated = session.status === "authenticated";
   const currentUser = session.data?.user as User;
-  // Demo review data
-  const reviewsData = reviewsJSON.reviews as ReviewsType;
   const profile = userDoc as ProfileUser;
+
+
+  // Demo review data
+  // const reviewsData = reviewsJSON.reviews as ReviewsType;
+  const blogsData = blogsJSON.posts.slice(0,10) as BlogsType;
 
   return (
     <>
@@ -45,16 +50,18 @@ export default function ProfilePage(userDoc: ProfileUser
 
           <hr className="border-violet-200 my-5" />
           <p className="my-5 text-md font-bold flex items-center gap-2">
-            <GradeIcon />2 reviews
+            <GradeIcon />
+            {blogsData.length} reviews
           </p>
           <span>
-            {reviewsData.map((review, key) => (
+            {blogsData.map((blog, key) => (
               <Reviews
                 key={key}
-                host={review.host}
-                createdAt={review.createdAt}
-                comment={review.comment}
-                hostJoinDate={review.hostJoinDate}
+                host={blog.author}
+                createdAt={blog.date}
+                comment={blog.excerpt}
+                hostJoinDate={blog.date}
+                image={blog.author}
               />
             ))}
           </span>
@@ -63,3 +70,21 @@ export default function ProfilePage(userDoc: ProfileUser
     </>
   );
 }
+
+type BlogsType = {
+  id: string,
+  author: string,
+  title: string,
+  excerpt: string,
+  date: string,
+  image: string,
+  readingTimeMinutes: string,
+  tags: string[],
+}[]
+
+
+type QueryProps = {
+  query: {
+    user_id: string;
+  };
+};
