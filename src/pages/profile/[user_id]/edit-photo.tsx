@@ -7,10 +7,20 @@ import Link from "next/link";
 import { useS3Upload } from "next-s3-upload";
 import { useState } from "react";
 import Loader from "@/features/common/components/Loader";
-import { getUserWithUserId, updateProfileImg } from "@/services/prisma";
+import { getUserWithUserId } from "@/services/prisma";
+import toast from "react-hot-toast";
+import { updateProfileImg } from "@/apis/api";
 
-export async function getServerSideProps({ query }: { query: string }) {
+
+interface queryProps {
+  query: {
+   user_id:string
+  };
+}
+
+export async function getServerSideProps({ query }: queryProps) {
   const { user_id } = query;
+
   const userDoc = await getUserWithUserId(user_id, true);
   if (!userDoc) {
     return {
@@ -21,8 +31,6 @@ export async function getServerSideProps({ query }: { query: string }) {
   return {
     props: userDoc,
   };
-
-  const res = await updateProfileImg(user?.id, fileURL);
 }
 
 export default function EditUserPhoto(profile: ProfileUser) {
@@ -37,24 +45,21 @@ export default function EditUserPhoto(profile: ProfileUser) {
     // Get file
     const file: any = Array.from(e.target.files)[0];
 
-    // const extension: String = file.type.split("/")[1];
-    setUploading(true);
     let fileURL = "/default-profile-img.png";
+    setUploading(true);
     if (file) {
       await uploadToS3(file).then((data) => {
-        const fileURL = data.url;
+        fileURL = data.url;
+
+      });
+      const res = await updateProfileImg(user.id, {imageUrl: fileURL})
+
+      if (res && res.status === 200) {
         setDownloadURL(fileURL);
         setUploading(false);
-      });
+        toast.success("Uploaded profile image successfully")
+      }     
     }
-    // Makes reference to the storage bucket location
-    // const res = await updateProfileImg(user?.id, fileURL);
-
-    // if (res) {
-    //   console.log(res)
-    //   // toast.success("Updated profile image successfully");
-
-    // }
   }
   return (
     <main className="container">
@@ -92,7 +97,7 @@ export default function EditUserPhoto(profile: ProfileUser) {
               id="image-container"
               className="relative flex justify-center items-center max-w-[15rem] m-auto "
             >
-              <span className="absolute top-1 right-1 z-20 h-auto">
+              <span className="absolute top-1 right-1 z-50 h-auto">
                 <button className="transition-all ease-in-out text-white bg-gray-500 hover:bg-gray-300">
                   <DeleteIcon className="text-md" />
                 </button>
@@ -101,13 +106,13 @@ export default function EditUserPhoto(profile: ProfileUser) {
               <span className="absolute z-30 opacity-30 h-full w-full">
                 <img
                   className="h-full w-full"
-                  src={downloadURL ? downloadURL : user?.profileImg}
+                  src={downloadURL ? downloadURL : profile?.profileImg}
                   alt="currentProPic"
                 />
               </span>
               <img
                 className="z-10 h-full w-full rounded-full"
-                src={downloadURL ? downloadURL : user?.profileImg}
+                src={downloadURL ? downloadURL : profile?.profileImg}
                 alt="currentProPic"
               />
               <span className="absolute z-40">
