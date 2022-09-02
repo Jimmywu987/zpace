@@ -33,3 +33,16 @@ export async function getUserWithUserId(
 
   return user;
 }
+
+export async function updateProfileImg(id: string, url: string) {
+  await prisma.user.update({
+    where: {
+      id: id,
+    },
+    data: {
+      profileImg: url,
+    },
+    
+  });
+  return true;
+}

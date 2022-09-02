@@ -1,7 +1,6 @@
 import {  useSession } from "next-auth/react";
 import { User } from "@/types/User";
 import Metatags from "@/features/head/components/Metatags";
-import timeSince from "@/helpers/timeSince";
 import { getUserWithUserId } from "@/services/prisma"
 import GradeIcon from "@mui/icons-material/Grade";
 import Reviews from "@/features/common/components/Reviews";
