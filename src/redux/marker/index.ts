@@ -7,8 +7,8 @@ import { RootState } from "../reducers";
  */
 export type MarkerPayload = {
   selected: {
-    lat: number;
-    lng: number;
+    lat: number | null;
+    lng: number | null;
   };
 };
 

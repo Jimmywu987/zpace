@@ -8,4 +8,5 @@ export const FeatureKey = {
   MARKER: "MARKER",
   TO_STORE: "TO_STORE",
   TO_PLACE: "TO_PLACE",
+  ROOMS: "ROOMS",
 } as const;

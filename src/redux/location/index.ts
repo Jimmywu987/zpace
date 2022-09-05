@@ -18,8 +18,8 @@ export type LocationPayload = {
  */
 export type LocationState = {
   iP: {
-    lat: number | null;
-    lng: number | null;
+    lat: number;
+    lng: number;
     zoom: number;
   };
 };
