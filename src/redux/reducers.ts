@@ -5,6 +5,7 @@ import { settingReducer } from "./setting";
 import { markerReducer } from "./marker";
 import { toStoreRoomReducer } from "./toStoreRoom";
 import { toPlaceReducer } from "./toPlace";
+import { roomsReducer } from "./rooms";
 
 /**
  * Combine reducers
@@ -17,6 +18,7 @@ export const rootReducer = combineReducers({
   marker: markerReducer,
   toStoreRoom: toStoreRoomReducer,
   toPlace: toPlaceReducer,
+  rooms: roomsReducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

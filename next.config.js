@@ -6,13 +6,14 @@ const nextConfig = {
   env: {
     BACKEND_URL: isDevelopment ? process.env.BACKEND_URL_DEVELOPMENT : process.env.BACKEND_URL_PRODUCTION,
     DATABASE_URL: process.env.DATABASE_URL,
-    REACT_APP_GOOGLE_MAPS_API_KEY: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
     S3_UPLOAD_KEY: process.env.S3_UPLOAD_KEY,
     S3_UPLOAD_SECRET: process.env.S3_UPLOAD_SECRET,
     S3_UPLOAD_BUCKET: process.env.S3_UPLOAD_BUCKET,
-    S3_UPLOAD_REGION: process.env.S3_UPLOAD_REGION
+    S3_UPLOAD_REGION: process.env.S3_UPLOAD_REGION,
+    REACT_APP_GOOGLE_MAPS_API_KEY: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
   },
   publicRuntimeConfig: {
+
 
   },
   serverRuntimeConfig: {

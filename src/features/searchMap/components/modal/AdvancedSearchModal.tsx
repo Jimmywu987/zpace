@@ -27,11 +27,25 @@ export const AdvancedSearchModal = ({
     },
   });
   return (
-    <Modal open={open} onClose={handleClose}>
-      <FormProvider {...searchMapFormMethods}>
-        <AdvancedSearchInput />
-        {/* @TODO  button section on submit */}
-      </FormProvider>
+    <Modal
+      open={open}
+      onClose={handleClose}
+      className="flex justify-center items-center"
+    >
+      <div className="bg-white p-4 w-96 rounded space-y-4">
+        <FormProvider {...searchMapFormMethods}>
+          <div className="text-2xl font-medium text-theme-color1">Filter</div>
+          <AdvancedSearchInput />
+          <div className="flex justify-end space-x-3">
+            <button className="text-gray-800 px-3 py-1 hover:bg-gray-50 font-medium text-lg">
+              Close
+            </button>
+            <button className="bg-theme-color1 text-white px-3 py-1 hover:bg-theme-color1/80 font-medium text-lg">
+              Search Again
+            </button>
+          </div>
+        </FormProvider>
+      </div>
     </Modal>
   );
 };

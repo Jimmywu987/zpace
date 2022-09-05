@@ -25,7 +25,7 @@ export const SelectCalendar = ({
         SELECT DAY
       </button>
       <input
-        className={`flex-1 border rounded p-1 ${!showCalendar && "hidden"}`}
+        className={`flex-1 border rounded px-1 ${!showCalendar && "hidden"}`}
         min={currentDate}
         type="date"
         onChange={
