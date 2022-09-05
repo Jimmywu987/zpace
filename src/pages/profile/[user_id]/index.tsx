@@ -4,7 +4,7 @@ import Metatags from "@/features/head/components/Metatags";
 import { getUserWithUserId } from "@/services/prisma"
 import GradeIcon from "@mui/icons-material/Grade";
 import Reviews from "@/features/profile/components/Reviews";
-import blogsJSON from "@/data/blogs";
+import blogsJSON from "@/data/blogs.json";
 import ProfileCard from "@/features/profile/components/ProfileCard";
 import ProfileBio from "@/features/profile/components/ProfileBio";
 import { ProfileUser } from "@/types/ProfileUser";
@@ -36,7 +36,7 @@ export default function ProfilePage(userDoc: ProfileUser
 
   // Demo review data
   // const reviewsData = reviewsJSON.reviews as ReviewsType;
-  const blogsData = blogsJSON.posts.slice(0,10) as BlogsType;
+  const blogsData = blogsJSON.posts.slice(0,10);
 
   return (
     <>
@@ -68,17 +68,6 @@ export default function ProfilePage(userDoc: ProfileUser
     </>
   );
 }
-
-type BlogsType = {
-  id: string,
-  author: string,
-  title: string,
-  excerpt: string,
-  date: string,
-  image: string,
-  readingTimeMinutes: string,
-  tags: string[],
-}[]
 
 
 type QueryProps = {

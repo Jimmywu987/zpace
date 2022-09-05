@@ -111,7 +111,7 @@ const HomePage: NextPage = () => {
   };
 
   return (
-    <div className="flex justify-center items-center">
+    <div className="flex justify-center items-center mt-[3rem]">
       <Card>
         <div className="flex flex-col space-y-3 w-full">
           <h5 className="text-theme-color1 text-center text-lg font-semibold">

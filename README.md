@@ -1,34 +1,56 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-## Getting Started
+# Description
+## ZPACE - small workspace sharing platform
+ZPACE aims to solve the problem of the need for individual workspaces and unused idle facilities. 
+ZPACE provides a platform for hosts to share the operational cost of smallsized, unused facilities while services a community of modern and flexible professionals in need of swiftness, low-cost and comfort environment to be productive wherever they
+work from.
+The targeted users of ZPACE would be the flex community including freelance workers, students and design-art creator
 
-First, run the development server:
+<!-- ![Thumbnail](https://raw.githubusercontent.com/KnrkTam/Zpace-1.0-old_version-/main/public/zpace.png) -->
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+# Major Features
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- Criteria searching for workspaces with geolocation
+- Booking rooms with a timeslot picker
+- Real time chat room for owner-visitor communication
+- Rating and Reviews
+- Visualised rental statistics for room hosts
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+## Tech Stacks
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+- [React](https://reactjs.org/) (in TypeScript)
+- [NextJs](https://nextjs.org/)
+- [NextAuth.js](https://next-auth.js.org/)
+- [Redux](https://redux.js.org/)
+- [TailwindCSS](https://tailwindcss.com)
+- [Material-UI](https://mui.com/)
+- [OAuth](https://developers.google.com/identity/protocols/oauth2)
+- [Node.js](https://nodejs.org/en/) (in TypeScript)
+- [Prisma](https://www.prisma.io/) (Node.js & TypeScript ORM)
+- [PostgreSQL](https://www.postgresql.org/)
+- [Paypal sandbox](https://developer.paypal.com/developer/accounts/)
+- [Next-S3-Upload](https://www.npmjs.com/package/next-s3-upload)
+- [Socket.io](https://socket.io/)
+- [AWS](https://aws.amazon.com/) (EC2, S3, CloudFront, IAM, Route53)
 
-## Learn More
 
-To learn more about Next.js, take a look at the following resources:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Client to Server flow
+![Thumbnail](https://github.com/KnrkTam/Zpace-1.0-old_version-/blob/main/public/client_to_server_flow.png)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+1. To manage the transformation of domain name and IP, Route 53 service is used.
+2. CloudFront can accelerate the speed of websites to clients over the Internet while also reducing the load in different locations.
+3. S3 Bucket is used to host the website and monitor who is accessing data.
+4. Ubuntu instance is run on computers in EC2.
+5. Nginx is to proxy service which takes a client request, passes it on NodeJS application.
+6. Node.JS and express are used to build the server.
+## Contributors
 
-## Deploy on Vercel
+[//]: contributor-faces
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+<a href="https://github.com/KnrkTam"><img src="https://avatars.githubusercontent.com/u/99338991?s=96&v=4" title="Kenrick Tam" width="80" height="80"></a>
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+<a href="https://github.com/jimmywu987"><img src="https://avatars.githubusercontent.com/u/65562227?v=4" title="Jimmy Wu" width="80" height="80"></a>
+
+[//]: contributor-faces

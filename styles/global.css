@@ -36,7 +36,7 @@ button {
   justify-content: center;
   text-decoration: none;
   font-family: "Noto Sans", sans-serif;
-  font-weight: bold;
+  /* font-weight: bold; */
   border-radius: 0.25rem;
   cursor: pointer;
   /* margin: 0.5rem 1rem 0.5rem 0; */
@@ -44,6 +44,7 @@ button {
 
 button:hover {
   filter: brightness(90%);
+  /* background-color: var(--color-gray); */
 }
 
 button:disabled,
@@ -103,4 +104,15 @@ button.btn-google {
   100% {
     transform: rotate(360deg);
   }
+}
+
+
+.image-cropper {
+    overflow: hidden;
+    clip-path: circle();
+}
+
+
+.mouse-cursor-gradient-tracking{
+  
 }
