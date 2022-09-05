@@ -1,28 +1,38 @@
-import { Dispatch, Fragment, SetStateAction, useState } from "react";
-import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
+import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import { useFormContext } from "react-hook-form";
 
 export type ListBoxType = {
   name: string;
   value: string;
 };
 export const ListBox = ({
+  label,
+  name,
+  onChange,
   options,
-  setSelected,
-  selected,
 }: {
+  label: string;
+  onChange?: () => void;
+  name: string;
   options: ListBoxType[];
-  setSelected: Dispatch<SetStateAction<string>>;
-  selected: string;
 }) => {
+  const { setValue, watch } = useFormContext();
   return (
     <div className="w-full">
       <FormControl variant="outlined" className="w-full">
-        <InputLabel htmlFor="district-selection">Search by District</InputLabel>
+        <InputLabel htmlFor="district-selection">{label}</InputLabel>
         <Select
-          onChange={(event) => setSelected(event.target.value)}
+          onChange={
+            onChange
+              ? onChange
+              : (event) => {
+                  const { value } = event.target;
+                  setValue(name, value);
+                }
+          }
           label="Search by District"
           id="district-selection"
-          value={selected}
+          value={watch(name) ?? ""}
           className="focus:outline-none hover:outline-none"
         >
           {options.map((option: ListBoxType, indx) => {
