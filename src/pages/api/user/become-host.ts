@@ -17,7 +17,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         id: user.id,
       },
       data: {
-        isRoomOwner: false,
+        isRoomOwner: true,
       },
     });
     return res.status(201).json({ message: "Success" });
