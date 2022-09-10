@@ -1,5 +1,7 @@
 import { SearchMapForm } from "@/features/searchMap/components/SearchMapForm";
 import type { NextPage } from "next";
+import { getSession } from "next-auth/react";
+import { useEffect } from "react";
 
 const HomePage: NextPage = () => {
   return (

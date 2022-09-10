@@ -8,6 +8,7 @@ import { signIn } from "next-auth/react";
 import { GoogleButton } from "@/features/common/components/buttons/GoogleButton";
 import { useDispatch, useSelector } from "react-redux";
 import { loadingSelector, isLoading } from "@/redux/loading";
+import { SubmitButton } from "@/features/common/components/buttons/SubmitButton";
 
 export const LoginForm = () => {
   const dispatch = useDispatch();
@@ -44,13 +45,9 @@ export const LoginForm = () => {
           showPassword={showPassword}
           setShowPassword={setShowPassword}
         />
-        <button
-          className="bg-theme-color1 text-white py-2 rounded hover:bg-theme-color1/90 shadow-xl"
-          type="submit"
-          disabled={loading}
-        >
+        <SubmitButton type="submit" disabled={loading}>
           Login
-        </button>
+        </SubmitButton>
       </form>
       <hr />
       <GoogleButton loading={loading} />

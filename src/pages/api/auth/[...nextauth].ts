@@ -1,5 +1,6 @@
 import NextAuth, { NextAuthOptions, User } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
+import type { NextApiRequest, NextApiResponse } from "next";
 
 import { getServerConfig } from "@/lib/getServerConfig";
 import { prisma } from "@/services/prisma";
@@ -14,7 +15,9 @@ const {
   env: { REACT_APP_GOOGLE_ID, REACT_APP_GOOGLE_SECRET, JWT_SECRET },
 } = config;
 
-const options: NextAuthOptions = {
+export const createOptions: (req: NextApiRequest) => NextAuthOptions = (
+  req
+) => ({
   secret: JWT_SECRET,
   providers: [
     CredentialsProvider({
@@ -93,6 +96,10 @@ const options: NextAuthOptions = {
   ],
   callbacks: {
     async jwt({ token, user, account }) {
+      if (req.url === "/api/user/become-host") {
+        token.isRoomOwner = true;
+      }
+
       if (account && user) {
         return {
           ...token,
@@ -106,5 +113,10 @@ const options: NextAuthOptions = {
       return session;
     },
   },
+});
+
+const NextAuthOption = async (req: NextApiRequest, res: NextApiResponse) => {
+  return NextAuth(req, res, createOptions(req));
 };
-export default NextAuth(options);
+
+export default NextAuthOption;

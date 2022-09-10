@@ -5,5 +5,9 @@ export async function createUser(params: any) {
 }
 
 export async function updateProfileImg(id: string, params: any) {
-  return await req("post", `/api/profile/${id}/`,params);
+  return await req("post", `/api/profile/${id}/`, params);
+}
+
+export async function becomeHost() {
+  return await req("post", `/api/user/become-host`);
 }
