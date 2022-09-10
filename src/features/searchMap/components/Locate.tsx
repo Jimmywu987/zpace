@@ -15,15 +15,13 @@ export const Locate = () => {
   const dispatch = useDispatch();
 
   return (
-    <div>
-      {loading && <LoadingSpinnerSvgIcon className="w-10 h-10" />}
-      {!loading && (
+    <div className="bg-white flex justify-center items-center w-full">
+      {loading ? (
+        <LoadingSpinnerSvgIcon className="w-10 h-10" />
+      ) : (
         <Button
-          variant="contained"
-          color="inherit"
           onClick={() => {
             dispatch(isLoading({ isLoading: true }));
-
             navigator.geolocation.getCurrentPosition(
               async (position) => {
                 const addressJSON = await fetch(
@@ -47,7 +45,12 @@ export const Locate = () => {
             );
           }}
           className=""
-          startIcon={<LocationOnIcon style={{ fontSize: 20 }} />}
+          startIcon={
+            <LocationOnIcon
+              style={{ fontSize: 20 }}
+              className="text-theme-color1"
+            />
+          }
         >
           Current Location
         </Button>
