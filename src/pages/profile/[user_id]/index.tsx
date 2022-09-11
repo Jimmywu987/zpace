@@ -1,19 +1,18 @@
 import { useSession } from "next-auth/react";
 import { User } from "@/types/User";
 import Metatags from "@/features/head/components/Metatags";
-import { getUserWithUserId } from "@/services/prisma"
+import { getUserWithUserId } from "@/services/prisma";
 import GradeIcon from "@mui/icons-material/Grade";
 import Reviews from "@/features/common/components/Reviews";
-import reviewsJSON from "@/data/reviews";
+import reviewsJSON from "@/data/reviews.json";
 import ProfileCard from "@/features/profile/profileCard";
 import ProfileBio from "@/features/profile/profileBio";
 import { ProfileUser } from "@/types/ProfileUser";
 import { ReviewsType } from "@/types/ReviewsType";
 import { GetServerSideProps } from "next";
 
-
 export async function getServerSideProps({ query }: { query: string }) {
-  const {user_id} = query;
+  const { user_id } = query;
   const userDoc = await getUserWithUserId(user_id, true);
   if (!userDoc) {
     return {
@@ -25,9 +24,7 @@ export async function getServerSideProps({ query }: { query: string }) {
   };
 }
 
-export default function ProfilePage(userDoc: ProfileUser
-) {
-
+export default function ProfilePage(userDoc: ProfileUser) {
   const session = useSession();
   const isAuthenticated = session.status === "authenticated";
   const currentUser = session.data?.user as User;

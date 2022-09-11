@@ -48,8 +48,8 @@ model Room {
   capacity     String
   isActive     Boolean
   description  String
-  wifi         Boolean
   address      String
+  wifi         Boolean
   desk         Boolean
   socketPlug   Boolean
   airCondition Boolean

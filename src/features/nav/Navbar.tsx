@@ -3,7 +3,7 @@ import { NavButton } from "@/features/nav/components/button/NavButton";
 import { ManageRooms } from "@/features/nav/components/ManageRooms";
 import { NavDivider } from "@/features/nav/components/NavDivider";
 import { NavLink } from "@/features/nav/components/NavLink";
-import { updateUser, userSelector } from "@/redux/user";
+import { clearUserInfo, updateUser, userSelector } from "@/redux/user";
 import { User } from "@/types/User";
 import { signOut, useSession, getSession } from "next-auth/react";
 import Link from "next/link";
@@ -19,30 +19,35 @@ export const Navbar = () => {
   useEffect(() => {
     const storeUserToRedux = async () => {
       const session = await getSession();
-      const {
-        description,
-        email,
-        isRoomOwner,
-        phoneNumber,
-        profileImg,
-        username,
-      } = session?.user as Partial<User>;
-      dispatch(
-        updateUser({
-          isRoomOwner,
+      if (session) {
+        const {
           description,
           email,
+          isRoomOwner,
           phoneNumber,
           profileImg,
           username,
-        })
-      );
+        } = session?.user as Partial<User>;
+        dispatch(
+          updateUser({
+            isRoomOwner,
+            description,
+            email,
+            phoneNumber,
+            profileImg,
+            username,
+          })
+        );
+      } else {
+        dispatch(clearUserInfo());
+      }
     };
+
     storeUserToRedux();
-  }, []);
+  }, [isAuthenticated]);
   return (
     <nav className="bg-white shadow-xl flex py-0 px-3 justify-between items-center">
-      <div className="flex items-center flex-1">
+      <div className="flex items-center flex-1 px-1">
         <Link href="/" passHref>
           <a className="">
             <img src="/logo.png" className="h-20" alt="logo" />
@@ -50,7 +55,7 @@ export const Navbar = () => {
         </Link>
         <NavLink text="Home" url="/" />
         {isAuthenticated ? (
-          <div className="flex items-center flex-1 justify-between">
+          <div className="flex items-center flex-1 justify-between ">
             <div className="flex items-center ">
               <MetaTags
                 title={`${user.username} | ZPACE`}
@@ -68,13 +73,7 @@ export const Navbar = () => {
                 </a>
               </Link>
               <NavDivider />
-              <NavButton
-                onClick={() => {
-                  signOut();
-                }}
-              >
-                Logout
-              </NavButton>
+              <NavButton onClick={() => signOut()}>Logout</NavButton>
             </div>
             <div className="flex items-center">
               <ManageRooms />
