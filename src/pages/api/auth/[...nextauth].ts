@@ -1,4 +1,5 @@
-import NextAuth, { NextAuthOptions, User } from "next-auth";
+import NextAuth, { NextAuthOptions } from "next-auth";
+import { User } from "@prisma/client";
 import GoogleProvider from "next-auth/providers/google";
 import type { NextApiRequest, NextApiResponse } from "next";
 
@@ -95,11 +96,36 @@ export const createOptions: (req: NextApiRequest) => NextAuthOptions = (
     }),
   ],
   callbacks: {
-    async jwt({ token, user, account }) {
-      if (req.url === "/api/user/become-host") {
-        token.isRoomOwner = true;
+    async jwt({ token, account, user }) {
+      if (token && req.url === "/api/user/update-session") {
+        const user = req.body as Partial<User>;
+        const {
+          username,
+          email,
+          isRoomOwner,
+          description,
+          phoneNumber,
+          profileImg,
+        } = user;
+        if (username) {
+          token.username = username;
+        }
+        if (email) {
+          token.email = email;
+        }
+        if (isRoomOwner) {
+          token.isRoomOwner = isRoomOwner;
+        }
+        if (description) {
+          token.description = description;
+        }
+        if (phoneNumber) {
+          token.phoneNumber = phoneNumber;
+        }
+        if (profileImg) {
+          token.profileImg = profileImg;
+        }
       }
-
       if (account && user) {
         return {
           ...token,

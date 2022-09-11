@@ -1,17 +1,15 @@
 import Dialog from "@mui/material/Dialog";
 import { useState } from "react";
-
-import CloseIcon from "@mui/icons-material/Close";
-import { NavButton } from "@/features/nav/components/button/NavButton";
 import { SubmitButton } from "@/features/common/components/buttons/SubmitButton";
-import { becomeHost } from "@/apis/api";
+import { NavButton } from "@/features/nav/components/button/NavButton";
+import CloseIcon from "@mui/icons-material/Close";
+import { updateUserInfo, updateUserSession } from "@/apis/api";
 import { getSession } from "next-auth/react";
-import { useRouter } from "next/router";
-export const BecomeHostBox = ({
-  onClickConfirm,
-}: {
-  onClickConfirm: () => void;
-}) => {
+import { useDispatch } from "react-redux";
+import { updateUser } from "@/redux/user";
+import { User } from "@prisma/client";
+export const BecomeHostBox = () => {
+  const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
   const [checked, setChecked] = useState(false);
 
@@ -24,7 +22,21 @@ export const BecomeHostBox = ({
   const checkBoxOnChange = () => {
     setChecked((check) => !check);
   };
-
+  const onClickConfirm = async () => {
+    const res = await updateUserInfo({
+      isRoomOwner: true,
+    });
+    if (res && res.status === 201) {
+      await updateUserSession({
+        isRoomOwner: true,
+      });
+      const session = await getSession();
+      const { isRoomOwner } = session?.user as Partial<User>;
+      dispatch(updateUser({ isRoomOwner }));
+      handleClose();
+      return;
+    }
+  };
   return (
     <div>
       <NavButton onClick={openModal}>Become a host</NavButton>
@@ -49,13 +61,7 @@ export const BecomeHostBox = ({
             />
             <label>I agree to Zpace's Terms and Conditions.</label>
           </div>
-          <SubmitButton
-            onClick={async () => {
-              await onClickConfirm();
-              handleClose();
-            }}
-            disabled={!checked}
-          >
+          <SubmitButton onClick={onClickConfirm} disabled={!checked}>
             Confirm
           </SubmitButton>
         </div>
