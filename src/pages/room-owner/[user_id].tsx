@@ -1,28 +1,43 @@
 import { LoadRoomInfo } from "@/features/roomOwner/components/LoadRoomInfo";
-import { getSession, useSession } from "next-auth/react";
+import { getSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
 import { GetServerSideProps } from "next";
-import { User } from "@prisma/client";
+import {
+  RoomImg,
+  User,
+  WeeklyOpenTimeslot,
+  OneTimeOffOpenTimeslot,
+  RatingAndCommentOnRoom,
+  Room,
+} from "@prisma/client";
 import { getCreateRoomInfo } from "@/services/rooms";
 import { AppProps } from "next/app";
-const RoomOwnerPage = (props: AppProps) => {
+
+export type RoomOwnerPageProps = AppProps & {
+  roomsInfo: (Room & {
+    roomImgs: RoomImg[];
+    weeklyOpenTimeslots: WeeklyOpenTimeslot[];
+    oneTimeOffOpenTimeslots: OneTimeOffOpenTimeslot[];
+    ratingAndComments: RatingAndCommentOnRoom[];
+  })[];
+};
+const RoomOwnerPage = (props: RoomOwnerPageProps) => {
   const router = useRouter();
-  console.log("router", router);
-  console.log("props", props);
 
   return (
-    <div>
-      <div className="">
-        <h3 className="">Room Management System</h3>
+    <div className="flex flex-col space-y-4 mt-6">
+      <div className="flex flex-col space-y-4">
+        <h3 className="text-xl">Room Management System</h3>
+        <div>
+          <Link href="/room-owner/manage-room/create-room">
+            <a className="px-3 py-2 text-xl bg-theme-color1 text-white rounded">
+              Rent Out a Space
+            </a>
+          </Link>
+        </div>
       </div>
-      <LoadRoomInfo />
-      <div className="">
-        <Link href="/room-owner/manage-room/create-room">
-          <a className="">Rent Out a Space</a>
-        </Link>
-      </div>
+      <LoadRoomInfo props={props} />
     </div>
   );
 };
