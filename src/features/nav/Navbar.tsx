@@ -1,18 +1,53 @@
-import Link from "next/link";
-import { NavLink } from "@/features/nav/components/NavLink";
-import { NavDivider } from "@/features/nav/components/NavDivider";
-import { signOut, useSession } from "next-auth/react";
-import { User } from "@/types/User";
 import MetaTags from "@/features/head/components/Metatags";
+import { NavButton } from "@/features/nav/components/button/NavButton";
+import { ManageRooms } from "@/features/nav/components/ManageRooms";
+import { NavDivider } from "@/features/nav/components/NavDivider";
+import { NavLink } from "@/features/nav/components/NavLink";
+import { clearUserInfo, updateUser, userSelector } from "@/redux/user";
+import { User } from "@/types/User";
+import { signOut, useSession, getSession } from "next-auth/react";
+import Link from "next/link";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 export const Navbar = () => {
+  const dispatch = useDispatch();
+  const reduxUser = useSelector(userSelector);
   const session = useSession();
   const isAuthenticated = session.status === "authenticated";
   const user = session.data?.user as User;
+  useEffect(() => {
+    const storeUserToRedux = async () => {
+      const session = await getSession();
+      if (session) {
+        const {
+          description,
+          email,
+          isRoomOwner,
+          phoneNumber,
+          profileImg,
+          username,
+        } = session?.user as Partial<User>;
+        dispatch(
+          updateUser({
+            isRoomOwner,
+            description,
+            email,
+            phoneNumber,
+            profileImg,
+            username,
+          })
+        );
+      } else {
+        dispatch(clearUserInfo());
+      }
+    };
 
+    storeUserToRedux();
+  }, [isAuthenticated]);
   return (
     <nav className="bg-white shadow-xl flex py-0 px-3 justify-between items-center">
-      <div className="flex items-center">
+      <div className="flex items-center flex-1 px-1">
         <Link href="/" passHref>
           <a className="">
             <img src="/logo.png" className="h-20" alt="logo" />
@@ -20,32 +55,30 @@ export const Navbar = () => {
         </Link>
         <NavLink text="Home" url="/" />
         {isAuthenticated ? (
-          <>
-            <MetaTags
-              title={`${user.username} | ZPACE`}
-              description="ZPACE - flexible space sharing platform"
-            />
-            <NavDivider />
-            <Link href={`/profile/${user.id}`} passHref>
-              <a className="flex items-center space-x-2 transition hover:bg-link-bgHover hover:scale-110 hover:text-red-500 rounded p-1 text-lg text-link-normal ">
-                <img
-                  src={user.profileImg}
-                  alt={`${user.username} profile image`}
-                  className="w-10 h-10 rounded-full object-cover"
-                />
-                <span>{user.username}</span>
-              </a>
-            </Link>
-            <NavDivider />
-            <button
-              className="text-lg text-link-normal hover:scale-110 hover:text-red-500 py-2 px-2.5 rounded"
-              onClick={() => {
-                signOut();
-              }}
-            >
-              Logout
-            </button>
-          </>
+          <div className="flex items-center flex-1 justify-between ">
+            <div className="flex items-center ">
+              <MetaTags
+                title={`${user.username} | ZPACE`}
+                description="ZPACE - flexible space sharing platform"
+              />
+              <NavDivider />
+              <Link href={`/profile/${user.id}`} passHref>
+                <a className="flex items-center space-x-2 transition hover:bg-link-bgHover hover:scale-110 hover:text-red-500 rounded p-1 text-lg text-link-normal ">
+                  <img
+                    src={reduxUser.profileImg}
+                    alt={`${reduxUser.username} profile image`}
+                    className="w-10 h-10 rounded-full object-cover"
+                  />
+                  <span>{reduxUser.username}</span>
+                </a>
+              </Link>
+              <NavDivider />
+              <NavButton onClick={() => signOut()}>Logout</NavButton>
+            </div>
+            <div className="flex items-center">
+              <ManageRooms />
+            </div>
+          </div>
         ) : (
           <>
             <MetaTags />

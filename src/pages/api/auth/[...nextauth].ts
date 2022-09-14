@@ -1,5 +1,7 @@
-import NextAuth, { NextAuthOptions, User } from "next-auth";
+import NextAuth, { NextAuthOptions } from "next-auth";
+import { User } from "@prisma/client";
 import GoogleProvider from "next-auth/providers/google";
+import type { NextApiRequest, NextApiResponse } from "next";
 
 import { getServerConfig } from "@/lib/getServerConfig";
 import { prisma } from "@/services/prisma";
@@ -14,7 +16,9 @@ const {
   env: { REACT_APP_GOOGLE_ID, REACT_APP_GOOGLE_SECRET, JWT_SECRET },
 } = config;
 
-const options: NextAuthOptions = {
+export const createOptions: (req: NextApiRequest) => NextAuthOptions = (
+  req
+) => ({
   secret: JWT_SECRET,
   providers: [
     CredentialsProvider({
@@ -92,7 +96,36 @@ const options: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async jwt({ token, user, account }) {
+    async jwt({ token, account, user }) {
+      if (token && req.url === "/api/user/update-session") {
+        const user = req.body as Partial<User>;
+        const {
+          username,
+          email,
+          isRoomOwner,
+          description,
+          phoneNumber,
+          profileImg,
+        } = user;
+        if (username) {
+          token.username = username;
+        }
+        if (email) {
+          token.email = email;
+        }
+        if (isRoomOwner) {
+          token.isRoomOwner = isRoomOwner;
+        }
+        if (description) {
+          token.description = description;
+        }
+        if (phoneNumber) {
+          token.phoneNumber = phoneNumber;
+        }
+        if (profileImg) {
+          token.profileImg = profileImg;
+        }
+      }
       if (account && user) {
         return {
           ...token,
@@ -106,5 +139,10 @@ const options: NextAuthOptions = {
       return session;
     },
   },
+});
+
+const NextAuthOption = async (req: NextApiRequest, res: NextApiResponse) => {
+  return NextAuth(req, res, createOptions(req));
 };
-export default NextAuth(options);
+
+export default NextAuthOption;
