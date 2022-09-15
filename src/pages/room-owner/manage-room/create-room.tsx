@@ -1,8 +1,13 @@
+import { CreateRoomForm } from "@/features/roomOwner/components/form/CreateRoomForm";
 import { GetServerSideProps } from "next";
 import { getSession } from "next-auth/react";
 
 const CreateRoomPage = () => {
-  return <div></div>;
+  return (
+    <div className="mt-6">
+      <CreateRoomForm />
+    </div>
+  );
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {

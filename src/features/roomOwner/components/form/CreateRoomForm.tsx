@@ -23,9 +23,11 @@ export const CreateRoomForm = () => {
   const createRoomFormMethods = useForm<CreateRoomInputTypes>({
     resolver: useCreateRoomResolver(),
     defaultValues: {
-      step: 1,
+      step: 0,
       spaceName: "",
       address: "",
+      district: "",
+      capacity: 0,
     },
   });
 
@@ -39,8 +41,8 @@ export const CreateRoomForm = () => {
     <FormProvider {...createRoomFormMethods}>
       <div className="">
         <CreateRoomFormStepper />
-        {step === 1 && <CreateRoomFormStepOne />}
-        {step === 2 && <CreateRoomFormStepTwo />}
+        {step === 0 && <CreateRoomFormStepOne />}
+        {step === 1 && <CreateRoomFormStepTwo />}
       </div>
     </FormProvider>
   );

@@ -7,6 +7,8 @@ export const useCreateRoomResolver = () => {
       step: yup.number().required(),
       spaceName: yup.string().required("Space name is required"),
       address: yup.string().required("Address is required"),
+      district: yup.string().required("District is required"),
+      capacity: yup.number().positive().required(),
     })
   );
 };

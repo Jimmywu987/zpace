@@ -30,10 +30,16 @@ const DISTRICT = [
   { name: "Southern", value: "Southern District" },
   { name: "Wan Chai", value: "Wan Chai District" },
 ];
-export const DistrictListBox = () => {
+export const DistrictListBox = ({
+  name,
+  label,
+}: {
+  name: string;
+  label: string;
+}) => {
   return (
     <div className="w-full">
-      <ListBox name="content" options={DISTRICT} label="Search By District" />
+      <ListBox name={name} options={DISTRICT} label={label} />
     </div>
   );
 };
