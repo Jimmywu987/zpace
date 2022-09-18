@@ -8,18 +8,17 @@ export default function SearchResultPage() {
     /* Optional options */
     threshold: 0,
   });
-  console.log("inView", inView);
-  console.log("entry", entry);
+
   return (
-    <div className="flex justify-between">
-      <div className="flex flex-col">
-        <div>No. of Space available: 0</div>
+    <div className="flex justify-between w-full">
+      <div className="flex flex-col w-[25%]">
+        <div className="text-center">No. of Space available: 0</div>
         <div className="">
           {/* @TODO  room rendering*/}
           <div ref={ref}></div>
         </div>
       </div>
-      <div className="flex flex-col w-[70%]">
+      <div className="flex flex-col w-[75%]">
         <Map />
       </div>
       <AdvancedSearchModal

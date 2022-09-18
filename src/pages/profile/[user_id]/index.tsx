@@ -1,7 +1,7 @@
 import { useSession } from "next-auth/react";
 import { User } from "@/types/User";
 import Metatags from "@/features/head/components/Metatags";
-import { getUserWithUserId } from "@/services/prisma"
+import { getUserWithUserId } from "@/services/prisma";
 import GradeIcon from "@mui/icons-material/Grade";
 import Reviews from "@/features/profile/components/Reviews";
 import blogsJSON from "@/data/blogs.json";
@@ -25,13 +25,16 @@ export async function getServerSideProps({ query }: QueryProps) {
   };
 }
 
-export default function ProfilePage(userDoc: ProfileUser
-) {
-
+export default function ProfilePage(userDoc: ProfileUser) {
   const session = useSession();
   const isAuthenticated = session.status === "authenticated";
   const currentUser = session.data?.user as User;
   const profile = userDoc as ProfileUser;
+
+
+  // Demo review data
+  // const reviewsData = reviewsJSON.reviews as ReviewsType;
+  const blogsData = blogsJSON.posts.slice(0,10);
 
 
   // Demo review data

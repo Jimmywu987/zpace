@@ -80,15 +80,12 @@ export const Map = () => {
   };
   const containerStyle = {
     width: "100%",
-    height: "80vh",
+    height: "89vh",
   };
 
   return (
-    <div className="google_map_box">
-      <div className="search">
-        <Search />
-      </div>
-      <div className="locate">
+    <div className="relative">
+      <div className="absolute bottom-1 left-2 z-50">
         <Locate />
       </div>
       <LoadScript googleMapsApiKey={REACT_APP_GOOGLE_MAPS_API_KEY ?? ""}>

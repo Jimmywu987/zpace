@@ -14,6 +14,7 @@ import { GoogleButton } from "@/features/common/components/buttons/GoogleButton"
 import { useDispatch, useSelector } from "react-redux";
 import { isLoading, loadingSelector } from "@/redux/loading";
 import toast from "react-hot-toast";
+import { SubmitButton } from "@/features/common/components/buttons/SubmitButton";
 
 export const SignUpForm = () => {
   const { register, watch } = useForm();
@@ -93,12 +94,9 @@ export const SignUpForm = () => {
             {...register("profileImg")}
           />
         </div>
-        <button
-          className="bg-theme-color1 text-white py-2 rounded hover:bg-theme-color1/90 shadow"
-          disabled={loading}
-        >
+        <SubmitButton type="submit" disabled={loading}>
           Sign Up
-        </button>
+        </SubmitButton>
       </form>
       <hr />
       <GoogleButton loading={loading} />
