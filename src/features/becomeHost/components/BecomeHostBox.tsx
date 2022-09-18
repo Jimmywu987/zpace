@@ -16,10 +16,14 @@ const BecomeHostBox = () => {
 
   function closeModal() {
     setModalOpen(false);
+    toast.error("I am not a host now!");
+
   }
 
  function beHost() {
-    toast.success('I am a host now!')
+    setModalOpen(false);
+    toast.success("I am a host now!");
+
   }
 
   return (
@@ -49,7 +53,7 @@ const BecomeHostBox = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={closeModal}>Disagree</Button>
-          <Button onClick={closeModal} autoFocus={true}>
+          <Button onClick={beHost} autoFocus={true}>
             Agree
           </Button>
         </DialogActions>

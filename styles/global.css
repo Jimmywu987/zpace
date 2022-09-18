@@ -106,13 +106,8 @@ button.btn-google {
   }
 }
 
-
 .image-cropper {
     overflow: hidden;
     clip-path: circle();
 }
 
-
-.mouse-cursor-gradient-tracking{
-  
-}
