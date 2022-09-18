@@ -4,7 +4,7 @@ import { SearchMapInputTypes } from "@/features/searchMap/types/searchMapInputTy
 import { loadingSelector } from "@/redux/loading";
 import Modal from "@mui/material/Modal";
 import { FormProvider, useForm } from "react-hook-form";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 export const AdvancedSearchModal = ({
   open,
   handleClose,
@@ -12,7 +12,6 @@ export const AdvancedSearchModal = ({
   open: boolean;
   handleClose: () => void;
 }) => {
-  const dispatch = useDispatch();
   const { loading } = useSelector(loadingSelector);
   const currentDate = `${new Date().getFullYear()}-${
     new Date().getMonth() + 1

@@ -4,7 +4,7 @@ import { getSession } from "next-auth/react";
 
 const CreateRoomPage = () => {
   return (
-    <div className="mt-6">
+    <div className="my-6">
       <CreateRoomForm />
     </div>
   );

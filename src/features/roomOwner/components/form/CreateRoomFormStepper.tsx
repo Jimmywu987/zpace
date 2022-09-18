@@ -19,11 +19,11 @@ export const CreateRoomFormStepper = () => {
             key={label}
             sx={{
               "& .MuiStepLabel-root .Mui-completed": {
-                color: "secondary.dark", // circle color (COMPLETED)
+                color: "#5455a9", // circle color (COMPLETED)
               },
               "& .MuiStepLabel-label.Mui-completed.MuiStepLabel-alternativeLabel":
                 {
-                  color: "grey.800", // Just text label (COMPLETED)
+                  color: "#5455a9", // Just text label (COMPLETED)
                 },
               "& .MuiStepLabel-root .Mui-active": {
                 color: "#5455a9", // circle color (ACTIVE)

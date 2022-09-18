@@ -1,25 +1,13 @@
 import { CreateRoomInputTypes } from "@/features/roomOwner/types/createRoomInputTypes";
 
-import { useS3Upload } from "next-s3-upload";
-import { useRouter } from "next/router";
-
 import { FormProvider, useForm } from "react-hook-form";
 
-import { useCreateRoomResolver } from "@/features/roomOwner/schemas/useCreateRoomResolver";
-import { isLoading, loadingSelector } from "@/redux/loading";
-import { useDispatch, useSelector } from "react-redux";
-import { CreateRoomFormStepper } from "@/features/roomOwner/components/form/CreateRoomFormStepper";
 import { CreateRoomFormStepOne } from "@/features/roomOwner/components/form/CreateRoomFormStepOne";
+import { CreateRoomFormStepper } from "@/features/roomOwner/components/form/CreateRoomFormStepper";
 import { CreateRoomFormStepTwo } from "@/features/roomOwner/components/form/CreateRoomFormStepTwo";
+import { useCreateRoomResolver } from "@/features/roomOwner/schemas/useCreateRoomResolver";
 
 export const CreateRoomForm = () => {
-  const { register, watch } = useForm();
-  const router = useRouter();
-  const dispatch = useDispatch();
-  const { loading } = useSelector(loadingSelector);
-
-  const { uploadToS3 } = useS3Upload();
-
   const createRoomFormMethods = useForm<CreateRoomInputTypes>({
     resolver: useCreateRoomResolver(),
     defaultValues: {
@@ -28,21 +16,26 @@ export const CreateRoomForm = () => {
       address: "",
       district: "",
       capacity: 0,
+      hourlyPrice: 0,
+      wifi: false,
+      desk: false,
+      socketPlug: false,
+      airCondition: false,
+      selectedFile: [],
+      weeklyTimeAvailability: [],
+      oneTimeAvailability: [],
     },
   });
 
-  const onSubmit = createRoomFormMethods.handleSubmit(async (data) => {
-    dispatch(isLoading({ isLoading: true }));
-
-    dispatch(isLoading({ isLoading: false }));
-  });
   const step = createRoomFormMethods.watch("step");
   return (
     <FormProvider {...createRoomFormMethods}>
       <div className="">
         <CreateRoomFormStepper />
-        {step === 0 && <CreateRoomFormStepOne />}
-        {step === 1 && <CreateRoomFormStepTwo />}
+        <div className="max-w-[860px] mx-auto">
+          {step === 0 && <CreateRoomFormStepOne />}
+          {step === 1 && <CreateRoomFormStepTwo />}
+        </div>
       </div>
     </FormProvider>
   );
