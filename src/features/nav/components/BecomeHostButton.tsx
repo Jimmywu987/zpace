@@ -8,6 +8,7 @@ import { getSession } from "next-auth/react";
 import { useDispatch } from "react-redux";
 import { updateUser } from "@/redux/user";
 import { User } from "@prisma/client";
+
 export const BecomeHostBox = () => {
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);

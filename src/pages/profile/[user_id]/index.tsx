@@ -36,10 +36,9 @@ export default function ProfilePage(userDoc: ProfileUser) {
   // const reviewsData = reviewsJSON.reviews as ReviewsType;
   const blogsData = blogsJSON.posts.slice(0,10);
 
+  const [isEdit, setIsEdit] = useState(false);
 
-  // Demo review data
-  // const reviewsData = reviewsJSON.reviews as ReviewsType;
-  const blogsData = blogsJSON.posts.slice(0,10);
+
 
   return (
     <>
@@ -47,7 +46,7 @@ export default function ProfilePage(userDoc: ProfileUser) {
       <div className="m-auto flex mt-10">
         <ProfileCard currentUser={currentUser} profile={profile} />
         <div className="mx-10 mb-5 w-full">
-          <ProfileBio currentUser={currentUser} profile={profile} />
+          <ProfileBio currentUser={currentUser} profile={profile} isEdit={isEdit} setIsEdit={setIsEdit} />
 
           <hr className="border-violet-200 my-5" />
           <p className="my-5 text-md font-bold flex items-center gap-2">

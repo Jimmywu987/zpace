@@ -9,7 +9,7 @@ import { useState } from "react";
 import Loader from "@/features/common/components/Loader";
 import { getUserWithUserId } from "@/services/prisma";
 import toast from "react-hot-toast";
-import { updateProfileImg } from "@/apis/api";
+import { updateProfileImg, updateUserSession } from "@/apis/api";
 import MetaTags from "@/features/head/components/Metatags";
 
 
@@ -51,6 +51,9 @@ export default function EditUserPhoto(profile: ProfileUser) {
       const res = await updateProfileImg(user.id, {imageUrl: fileURL})
 
       if (res && res.status === 200) {
+        await updateUserSession({
+          profileImg: fileURL,
+        });
         setDownloadURL(fileURL);
         setUploading(false);
         toast.success("Uploaded profile image successfully")
@@ -101,7 +104,7 @@ export default function EditUserPhoto(profile: ProfileUser) {
                   </button>
                 </span>
 
-                <span className="absolute z-30 opacity-30 h-full w-full">
+                <span className="absolute z-30 opacity-30 h-full">
                   <img
                     className="h-full w-full"
                     src={downloadURL ? downloadURL : profile?.profileImg}
