@@ -17,10 +17,9 @@ export const FormTextInput: FC<FormTextInputProps> = ({
   onChange,
   ...inputProps
 }) => {
-  const {
-    formState: { errors },
-    setValue,
-  } = useFormContext();
+  const { formState, setValue, watch } = useFormContext();
+  const { errors } = formState;
+  const value = watch(name);
   const error = errors[name] as FormErrorType | undefined;
   return (
     <div className="flex flex-col space-y-1 w-full">
@@ -34,6 +33,7 @@ export const FormTextInput: FC<FormTextInputProps> = ({
         {...inputProps}
         name={name}
         type={type}
+        value={value}
         className={`outline-none border-2 rounded p-1 ${className}`}
         onChange={
           onChange

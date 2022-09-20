@@ -121,17 +121,19 @@ export const SearchMapForm = () => {
           ) : (
             <div className="flex flex-col items-center space-y-3">
               <button
-                className=" hover:bg-gray-50 w-full"
+                className=" hover:bg-gray-50 w-full bg-white"
                 disabled={loading}
                 onClick={onClickCurrentLocation}
               >
                 <div className=" h-full w-full border p-3 flex items-center justify-center space-x-3 border-gray-300 rounded">
                   <LocationOnSvgIcon className="w-6 h-6 text-theme-color2" />
-                  <span className="text-lg">Search by current location</span>
+                  <span className="text-lg text-gray-700">
+                    Search by current location
+                  </span>
                 </div>
               </button>
               <div>Or</div>
-              <DistrictListBox />
+              <DistrictListBox name="content" label="Search By District" />
               <hr className="w-full" />
               <button
                 className="bg-theme-color1 text-white py-2 rounded hover:bg-theme-color1/90 shadow-xl w-full"
