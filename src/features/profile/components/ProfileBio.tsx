@@ -1,21 +1,23 @@
 import PersonPinCircleRoundedIcon from "@mui/icons-material/PersonPinCircleRounded";
 import { ProfileUser } from "@/types/ProfileUser";
 import { User } from "@/types/User";
-import { useEffect } from "react";
+import { Dispatch, SetStateAction, useEffect } from "react";
 import { FormTextInput } from "@/features/common/components/input/FormTextInput";
 import ProfileEdit from "./ProfileEdit";
+
+type ProfileBioPropsType = {
+  currentUser: User;
+  profile: ProfileUser;
+  isEdit: boolean;
+  setIsEdit: Dispatch<SetStateAction<boolean>>;
+};
 
 export default function ProfileBio({
   currentUser,
   profile,
   isEdit,
   setIsEdit,
-}: {
-  currentUser: User;
-  profile: ProfileUser;
-  isEdit: boolean;
-  setIsEdit: any;
-}) {
+}: ProfileBioPropsType) {
   const editProfile = currentUser?.id === profile.id && isEdit;
   const isUser = currentUser?.id === profile.id;
 
@@ -33,16 +35,16 @@ export default function ProfileBio({
         <>
           <div className="flex">
             <p
-            className={`mt-5 text-sm underline flex-none  ${
-              isEdit
-                ? "text-gray-400 cursor-not-allowed"
-                : "hover:text-violet-400 cursor-pointer"
-            }`}
-            onClick={() => setIsEdit(!isEdit)}
-          >
-            Edit profile
-          </p>
-            </div>
+              className={`mt-5 text-sm underline flex-none  ${
+                isEdit
+                  ? "text-gray-400 cursor-not-allowed"
+                  : "hover:text-violet-400 cursor-pointer"
+              }`}
+              onClick={() => setIsEdit(!isEdit)}
+            >
+              Edit profile
+            </p>
+          </div>
         </>
       )}
       {editProfile && <ProfileEdit setIsEdit={setIsEdit} />}
