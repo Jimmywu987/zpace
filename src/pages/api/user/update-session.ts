@@ -1,8 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { getServerSession } from "next-auth/next";
+import { unstable_getServerSession } from "next-auth/next";
 import { createOptions } from "../auth/[...nextauth]";
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  const session = await getServerSession({ req, res }, createOptions(req));
+  const session = await unstable_getServerSession(req, res, createOptions(req));
   if (!session) {
     res.status(401);
     throw new Error("Not authorized");

@@ -24,7 +24,7 @@
     "axios": "^0.27.2",
     "bcryptjs": "^2.4.3",
     "next": "12.1.5",
-    "next-auth": "^4.3.4",
+    "next-auth": "^4.10.3",
     "next-redux-wrapper": "^7.0.5",
     "next-s3-upload": "^0.2.3",
     "react": "18.0.0",
