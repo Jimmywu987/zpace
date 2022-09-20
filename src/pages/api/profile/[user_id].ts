@@ -4,7 +4,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "POST") {
     const id = req.query.user_id as string;
-    const url = req.body.imageUrl;
+    const url = req.body.profileImg;
     if (id) {
       await prisma.user.update({
         where: {

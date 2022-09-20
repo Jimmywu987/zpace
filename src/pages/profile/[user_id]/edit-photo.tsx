@@ -48,7 +48,7 @@ export default function EditUserPhoto(profile: ProfileUser) {
       await uploadToS3(file).then((data) => {
         fileURL = data.url;
       });
-      const res = await updateProfileImg(user.id, {imageUrl: fileURL})
+      const res = await updateProfileImg(user.id, {profileImg: fileURL})
 
       if (res && res.status === 200) {
         await updateUserSession({
