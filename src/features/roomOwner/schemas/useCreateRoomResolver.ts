@@ -8,6 +8,7 @@ export const useCreateRoomResolver = () => {
       spaceName: yup.string().required("Space name is required"),
       address: yup.string().required("Address is required"),
       district: yup.string().required("District is required"),
+      description: yup.string().optional(),
       capacity: yup
         .number()
         .positive("Please input capacity")

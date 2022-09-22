@@ -45,8 +45,8 @@ model Room {
   hourlyPrice  Int
   longitude    String
   latitude     String
-  capacity     String
-  isActive     Boolean
+  capacity     Int
+  isActive     Boolean  @default(true)
   description  String
   address      String
   wifi         Boolean
@@ -81,7 +81,7 @@ model RoomImg {
 }
 
 model WeeklyOpenTimeslot {
-  id        String   @id @default(cuid())
+  id        String  @id @default(cuid())
   monday    Boolean
   tuesday   Boolean
   wednesday Boolean
@@ -89,19 +89,19 @@ model WeeklyOpenTimeslot {
   friday    Boolean
   saturday  Boolean
   sunday    Boolean
-  startTime DateTime
-  endTime   DateTime
+  startTime String
+  endTime   String
   roomId    String
-  room      Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  room      Room    @relation(fields: [roomId], references: [id], onDelete: Cascade)
 }
 
 model OneTimeOffOpenTimeslot {
-  id        String   @id @default(cuid())
-  date      DateTime
-  startTime DateTime
-  endTime   DateTime
+  id        String @id @default(cuid())
+  date      String
+  startTime String
+  endTime   String
   roomId    String
-  room      Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  room      Room   @relation(fields: [roomId], references: [id], onDelete: Cascade)
 }
 
 model CustomerBookingTimeslot {
