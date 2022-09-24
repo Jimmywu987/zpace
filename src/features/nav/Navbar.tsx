@@ -9,6 +9,8 @@ import { signOut, useSession, getSession } from "next-auth/react";
 import Link from "next/link";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Chatlog } from "../chatbox/Chatlog";
+import { ManageMessage } from "./components/ManageMessage";
 
 export const Navbar = () => {
   const dispatch = useDispatch();
@@ -77,7 +79,7 @@ export const Navbar = () => {
               <NavDivider />
               <NavButton onClick={() => signOut()}>Logout</NavButton>
             </div>
-            <div className="flex items-center">
+            <div className="flex items-center space-x-9">
               <ManageRooms />
             </div>
           </div>

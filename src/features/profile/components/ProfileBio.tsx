@@ -49,7 +49,7 @@ export default function ProfileBio({
           </div>
         </>
       )}
-      {editProfile && <ProfileEdit setIsEdit={setIsEdit} />}
+      {editProfile && <ProfileEdit setIsEdit={setIsEdit} description={profile.description}/>}
 
       {!editProfile && (
         <>

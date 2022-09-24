@@ -4,7 +4,8 @@ export default function Reviews(review: ReviewProps) {
 
   return (
     <>
-      <div className="mb-10 gap-2">
+      <div className="">
+      
         <p>{new Date((parseInt(review.createdAt))).toDateString()}</p>
         <p className="text-lg">{review.comment}</p>
         <div className="flex">

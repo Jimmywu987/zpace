@@ -12,9 +12,6 @@ import toast from "react-hot-toast";
 import { updateProfileImg, updateUserSession } from "@/apis/api";
 import MetaTags from "@/features/head/components/Metatags";
 
-
-
-
 export async function getServerSideProps({ query }: QueryProps) {
   const { user_id } = query;
 
@@ -48,7 +45,7 @@ export default function EditUserPhoto(profile: ProfileUser) {
       await uploadToS3(file).then((data) => {
         fileURL = data.url;
       });
-      const res = await updateProfileImg(user.id, {profileImg: fileURL})
+      const res = await updateProfileImg(user.id, { profileImg: fileURL });
 
       if (res && res.status === 200) {
         await updateUserSession({
@@ -56,10 +53,28 @@ export default function EditUserPhoto(profile: ProfileUser) {
         });
         setDownloadURL(fileURL);
         setUploading(false);
-        toast.success("Uploaded profile image successfully")
-      }     
+        toast.success("Uploaded profile image successfully");
+      }
     }
-  }
+  };
+
+  const removeFile = async (e: any) => {
+    // Get file
+    // const file: any = Array.from(e.target.files)[0];
+
+    setUploading(true);
+    let fileURL = "/default-profile-img.png";
+    const res = await updateProfileImg(user.id, { profileImg: fileURL });
+
+    if (res && res.status === 200) {
+      await updateUserSession({
+        profileImg: fileURL,
+      });
+      setDownloadURL(fileURL);
+      setUploading(false);
+      toast.success("Remove profile image successfully");
+    }
+  };
   return (
     <>
       <MetaTags title={`${profile.username} | ZPACE`} />
@@ -99,9 +114,14 @@ export default function EditUserPhoto(profile: ProfileUser) {
                 className="relative flex justify-center items-center max-w-[15rem] m-auto "
               >
                 <span className="absolute top-1 right-1 z-50 h-auto">
-                  <button className="transition-all ease-in-out text-white bg-gray-500 hover:bg-gray-300">
-                    <DeleteIcon className="text-md" />
-                  </button>
+                  {profile?.profileImg !== "/default-profile-img.png" && (
+                    <button
+                      className="transition-all ease-in-out text-white bg-gray-500 hover:bg-gray-300"
+                      onClick={removeFile}
+                    >
+                      <DeleteIcon className="text-md" />
+                    </button>
+                  )}
                 </span>
 
                 <span className="absolute z-30 opacity-30 h-full">
@@ -155,7 +175,6 @@ export default function EditUserPhoto(profile: ProfileUser) {
     </>
   );
 }
-
 
 type QueryProps = {
   query: {
