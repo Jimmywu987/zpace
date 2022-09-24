@@ -6,6 +6,7 @@ export type CreateRoomInputTypes = {
   spaceName: string;
   address: string;
   district: string;
+  description: string;
   capacity: number;
   hourlyPrice: number;
   wifi: boolean;

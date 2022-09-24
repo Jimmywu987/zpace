@@ -17,6 +17,7 @@ export const CreateRoomForm = () => {
       district: "",
       capacity: 0,
       hourlyPrice: 0,
+      description: "",
       wifi: false,
       desk: false,
       socketPlug: false,

@@ -16,3 +16,7 @@ export async function updateUserInfo(params: any) {
 export async function updateUserSession(params: any) {
   return await req("post", `/api/user/update-session`, params);
 }
+
+export async function createRoom(params: any) {
+  return await req("post", "/api/room/create", params);
+}

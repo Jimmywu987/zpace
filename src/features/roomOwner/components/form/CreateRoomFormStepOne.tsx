@@ -4,9 +4,11 @@ import * as React from "react";
 import { CheckBox } from "@/features/roomOwner/components/form/CheckBox";
 import { useFormContext } from "react-hook-form";
 import { SubmitButton } from "@/features/common/components/buttons/SubmitButton";
+import { CreateRoomInputTypes } from "@/features/roomOwner/types/createRoomInputTypes";
 
 export const CreateRoomFormStepOne = () => {
-  const { handleSubmit, reset, setValue } = useFormContext();
+  const { handleSubmit, reset, setValue } =
+    useFormContext<CreateRoomInputTypes>();
   const onSubmit = handleSubmit(() => {
     setValue("step", 1);
   });
