@@ -21,6 +21,20 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       oneTimeAvailability,
       ...storeData
     } = createRoom;
+    const { spaceName, address, capacity, district, hourlyPrice, description } =
+      storeData;
+    if (
+      !spaceName ||
+      !address ||
+      !capacity ||
+      !district ||
+      !hourlyPrice ||
+      !description ||
+      weeklyTimeAvailability.length === 0 ||
+      roomUrls.length === 0
+    ) {
+      return res.status(401).json({ errors: "Missing Input" });
+    }
     try {
       const room = await prisma.room.create({
         data: { ...storeData, userId: user.id },
@@ -117,24 +131,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
       return res.status(201).json({ message: "Success" });
     } catch (error) {
-      console.log("error", error);
       return res.status(401).json({ errors: "Fail to create" });
     }
   }
 };
 
 export default handler;
-
-// spaceName: string;
-// address: string;
-// district: string;
-// capacity: number;
-// hourlyPrice: number;
-// description:string;
-// wifi: boolean;
-// desk: boolean;
-// socketPlug: boolean;
-// airCondition: boolean;
-// selectedFile: File[];
-// weeklyTimeAvailability: WeeklyTimeTypes[];
-// oneTimeAvailability: OneTimeTypes[];

@@ -1,26 +1,15 @@
 import { LoadRoomInfo } from "@/features/roomOwner/components/LoadRoomInfo";
+import { getCreateRoomInfo } from "@/services/rooms";
+import { RoomType } from "@/types/Room";
+import { User } from "@prisma/client";
+import { GetServerSideProps } from "next";
 import { getSession } from "next-auth/react";
+import { AppProps } from "next/app";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { GetServerSideProps } from "next";
-import {
-  RoomImg,
-  User,
-  WeeklyOpenTimeslot,
-  OneTimeOffOpenTimeslot,
-  RatingAndCommentOnRoom,
-  Room,
-} from "@prisma/client";
-import { getCreateRoomInfo } from "@/services/rooms";
-import { AppProps } from "next/app";
 
 export type RoomOwnerPageProps = AppProps & {
-  roomsInfo: (Room & {
-    roomImgs: RoomImg[];
-    weeklyOpenTimeslots: WeeklyOpenTimeslot[];
-    oneTimeOffOpenTimeslots: OneTimeOffOpenTimeslot[];
-    ratingAndComments: RatingAndCommentOnRoom[];
-  })[];
+  roomsInfo: RoomType[];
 };
 const RoomOwnerPage = (props: RoomOwnerPageProps) => {
   const router = useRouter();
@@ -55,6 +44,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
   const { user_id } = context.query;
   const { id } = session.user as User;
+
   if (user_id !== id) {
     return {
       redirect: {
@@ -65,9 +55,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     };
   }
   const roomsInfo = await getCreateRoomInfo(user_id);
+
   return {
     props: {
-      roomsInfo,
+      roomsInfo: JSON.parse(JSON.stringify(roomsInfo)),
     },
   };
 };
