@@ -21,11 +21,6 @@ export default function ProfileBio({
 }: ProfileBioPropsType) {
   const editProfile = currentUser?.id === profile.id && isEdit;
   const isUser = currentUser?.id === profile.id;
-  const router = useRouter();
-  
-  useEffect(() => {
-    router.push(`/profile/${profile.id}`)
-  }, [profile]);
 
   return (
     <>

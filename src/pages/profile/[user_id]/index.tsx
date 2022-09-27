@@ -30,6 +30,7 @@ export default function ProfilePage(userDoc: ProfileUser) {
   const isAuthenticated = session.status === "authenticated";
   const currentUser = session.data?.user as User;
   const profile = userDoc as ProfileUser;
+  console.log(profile)
 
   // Demo review data
   // const reviewsData = reviewsJSON.reviews as ReviewsType;
@@ -41,6 +42,7 @@ export default function ProfilePage(userDoc: ProfileUser) {
       <Metatags title={`${profile.username} | ZPACE`} />
       <div className="m-auto flex mt-10">
         <ProfileCard currentUser={currentUser} profile={profile} />
+
         <div className="mx-10 mb-5 w-full">
           <ProfileBio
             currentUser={currentUser}
@@ -48,12 +50,13 @@ export default function ProfilePage(userDoc: ProfileUser) {
             isEdit={isEdit}
             setIsEdit={setIsEdit}
           />
+ 
           <hr className="border-violet-200 my-5" />
           <p className="my-5 text-md font-bold flex items-center gap-2">
             <GradeIcon />
             {blogsData.length} reviews
           </p>
-          <section className="min-h-[200px] space-y-10">
+          <section className="min-h-[200px] space-y-10 min-h-[40vh]">
             {blogsData.map((blog, key) => (
               <Reviews
                 key={key}
@@ -66,7 +69,6 @@ export default function ProfilePage(userDoc: ProfileUser) {
        
             ))}
           </section>
-       
         </div>
       </div>
     </>

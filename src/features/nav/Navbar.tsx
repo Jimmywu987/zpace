@@ -9,8 +9,8 @@ import { signOut, useSession, getSession } from "next-auth/react";
 import Link from "next/link";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Chatlog } from "../chatbox/Chatlog";
-import { ManageMessage } from "./components/ManageMessage";
+// import ChatBox from "../chatbox/ChatBox";
+import NavFunctions from "./NavFunctions";
 
 export const Navbar = () => {
   const dispatch = useDispatch();
@@ -47,17 +47,18 @@ export const Navbar = () => {
 
     storeUserToRedux();
   }, [isAuthenticated]);
+
   return (
-    <nav className="bg-white shadow-xl flex py-0 px-3 justify-between items-center">
+    <nav className="fixed w-full bg-white shadow-sm flex py-0 px-3 justify-between items-center">
       <div className="flex items-center flex-1 px-1">
         <Link href="/" passHref>
           <a className="">
             <img src="/logo.png" className="h-20" alt="logo" />
           </a>
         </Link>
-        <div className="hidden sm:block">
+        {/* <div className="hidden sm:block">
           <NavLink text="Home" url="/" />
-        </div>
+        </div> */}
         {isAuthenticated ? (
           <div className="flex items-center flex-1 justify-between ">
             <div className="flex items-center ">
@@ -79,9 +80,7 @@ export const Navbar = () => {
               <NavDivider />
               <NavButton onClick={() => signOut()}>Logout</NavButton>
             </div>
-            <div className="flex items-center space-x-9">
-              <ManageRooms />
-            </div>
+            <NavFunctions />
           </div>
         ) : (
           <>

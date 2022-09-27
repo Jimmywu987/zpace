@@ -5,7 +5,7 @@ import { useEffect } from "react";
 
 const HomePage: NextPage = () => {
   return (
-    <div className="flex justify-center items-center">
+    <div className="flex justify-center items-center flex-col">
       <SearchMapForm />
     </div>
   );

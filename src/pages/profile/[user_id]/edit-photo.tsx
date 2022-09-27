@@ -5,12 +5,13 @@ import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Link from "next/link";
 import { useS3Upload } from "next-s3-upload";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Loader from "@/features/common/components/Loader";
 import { getUserWithUserId } from "@/services/prisma";
 import toast from "react-hot-toast";
 import { updateProfileImg, updateUserSession } from "@/apis/api";
 import MetaTags from "@/features/head/components/Metatags";
+import { useRouter } from "next/router";
 
 export async function getServerSideProps({ query }: QueryProps) {
   const { user_id } = query;
@@ -34,6 +35,7 @@ export default function EditUserPhoto(profile: ProfileUser) {
   const { uploadToS3 } = useS3Upload();
   const [uploading, setUploading] = useState(false);
   const [downloadURL, setDownloadURL] = useState("");
+  const router = useRouter();
 
   const uploadFile = async (e: any) => {
     // Get file
@@ -54,6 +56,7 @@ export default function EditUserPhoto(profile: ProfileUser) {
         setDownloadURL(fileURL);
         setUploading(false);
         toast.success("Uploaded profile image successfully");
+        router.reload();
       }
     }
   };
@@ -61,7 +64,6 @@ export default function EditUserPhoto(profile: ProfileUser) {
   const removeFile = async (e: any) => {
     // Get file
     // const file: any = Array.from(e.target.files)[0];
-
     setUploading(true);
     let fileURL = "/default-profile-img.png";
     const res = await updateProfileImg(user.id, { profileImg: fileURL });
@@ -73,8 +75,11 @@ export default function EditUserPhoto(profile: ProfileUser) {
       setDownloadURL(fileURL);
       setUploading(false);
       toast.success("Remove profile image successfully");
+      router.reload();
     }
   };
+
+
   return (
     <>
       <MetaTags title={`${profile.username} | ZPACE`} />
@@ -123,7 +128,6 @@ export default function EditUserPhoto(profile: ProfileUser) {
                     </button>
                   )}
                 </span>
-
                 <span className="absolute z-30 opacity-30 h-full">
                   <img
                     className="h-full w-full"
@@ -167,7 +171,7 @@ export default function EditUserPhoto(profile: ProfileUser) {
               >
                 Upload a file from your device
               </label>
-              <pre>{downloadURL ? downloadURL : null}</pre>
+              {/* <pre>{downloadURL ? downloadURL : null}</pre> */}
             </div>
           </div>
         </div>

@@ -24,7 +24,6 @@ export async function getServerSideProps() {
 
 export default function Page({users} : {users : User[]}) {
 
-  console.log(users);
   return (
     <main>
       <pre>{users?.map(user => JSON.stringify(user, null, 2))}</pre>

@@ -10,8 +10,8 @@ const MyApp = ({ Component, session, pageProps, data }: AppProps & any) => {
   return (
     <SessionProvider session={session}>
       <Provider store={store}>
+        <Toaster />
         <Layout initData={data}>
-          <Toaster />
           <Component {...pageProps} initData={data} />
         </Layout>
       </Provider>
