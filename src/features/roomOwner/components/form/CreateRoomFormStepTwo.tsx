@@ -9,7 +9,7 @@ import { RenderWeeklyTime } from "@/features/roomOwner/components/form/RenderWee
 import { RenderOneTime } from "@/features/roomOwner/components/form/RenderOneTime";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { useFormContext } from "react-hook-form";
-import { FormButtons } from "@/features/roomOwner/components/form/FormButtons";
+import { CreateRoomFormButton } from "@/features/roomOwner/components/form/CreateRoomFormButton";
 
 export const CreateRoomFormStepTwo = () => {
   const { formState, setValue, watch } = useFormContext();
@@ -211,7 +211,7 @@ export const CreateRoomFormStepTwo = () => {
           </div>
         )}
       </div>
-      <FormButtons />
+      <CreateRoomFormButton />
     </div>
   );
 };

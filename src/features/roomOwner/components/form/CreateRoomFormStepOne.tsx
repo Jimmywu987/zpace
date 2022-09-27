@@ -59,7 +59,7 @@ export const CreateRoomFormStepOne = () => {
       <div className="flex items-center space-x-3 justify-end">
         <button
           className="font-medium rounded hover:bg-gray-50 px-2 py-1"
-          onClick={reset}
+          onClick={() => reset()}
         >
           RESET FORM
         </button>
