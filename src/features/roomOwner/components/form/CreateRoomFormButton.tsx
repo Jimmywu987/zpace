@@ -10,8 +10,9 @@ import { WeeklyTimeTypes } from "@/features/roomOwner/types/weeklyTimeTypes";
 import { createRoom } from "@/apis/api";
 import { useSession } from "next-auth/react";
 import { User } from "@prisma/client";
+import toast from "react-hot-toast";
 
-export const FormButtons = () => {
+export const CreateRoomFormButton = () => {
   const { uploadToS3 } = useS3Upload();
   const router = useRouter();
   const dispatch = useDispatch();
@@ -97,8 +98,11 @@ export const FormButtons = () => {
     });
     if (res && res.status === 201) {
       dispatch(isLoading({ isLoading: false }));
+      toast.success("Created room successfully");
       router.push(`/room-owner/${user.id}`);
+      return;
     }
+    toast.error("Something went wrong, please try again");
   });
   const goBack = () => {
     setValue("step", 0);
