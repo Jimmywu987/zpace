@@ -20,3 +20,7 @@ export async function updateUserSession(params: any) {
 export async function createRoom(params: any) {
   return await req("post", "/api/room/create", params);
 }
+
+export async function deleteRoom(params: any) {
+  return await req("delete", "/api/room/delete", params);
+}

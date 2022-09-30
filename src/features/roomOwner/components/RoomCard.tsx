@@ -18,6 +18,8 @@ import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import Link from "next/link";
 import { WeeklyTimeSlotDisplay } from "./WeeklyTimeSlotDisplay";
 import { ThemeTag } from "./ThemeTag";
+import { deleteRoom } from "@/apis/api";
+import { deleteFile } from "@/lib/s3Uploader";
 
 const PERSPECTIVES = [
   {
@@ -74,8 +76,16 @@ export const RoomCard = ({ room }: { room: RoomType }) => {
       router.push(`/room-detail/${room.id}`);
     }
   };
-  const onClickDelete = () => {
-    // delete room
+  const onClickDelete = async () => {
+    console.log(room.id);
+    const res = await deleteRoom({ roomId: room.id });
+    if (res && res.status === 201) {
+      room.roomImgs.map(async (img) => {
+        await deleteFile(img.url);
+      });
+      router.reload();
+      handleClose();
+    }
   };
   return (
     <>
@@ -215,14 +225,16 @@ export const RoomCard = ({ room }: { room: RoomType }) => {
                 <Grid item>
                   <div className="flex justify-end items-center space-x-2">
                     <Typography variant="body2" style={{ cursor: "pointer" }}>
-                      <Link href={`/room-owner/edit-room?id=${room.id}`}>
+                      <Link
+                        href={`/room-owner/manage-room/edit-room/${room.id}`}
+                      >
                         <a className="flex items-center space-x-2 text-theme-color1 px-2 py-1 rounded hover:bg-gray-50">
                           <span className="">View Details and Edit</span>
                           <ModeEditIcon className="" />
                         </a>
                       </Link>
                     </Typography>
-                    <Typography variant="subtitle1">
+                    <Typography variant="subtitle1" className="cursor-pointer">
                       <DeleteForeverIcon
                         className="text-gray-600"
                         onClick={handleDeleteRoom}
@@ -260,7 +272,7 @@ export const RoomCard = ({ room }: { room: RoomType }) => {
               Close
             </button>
             <button
-              className="hover:opacity-50 bg-red-500 text-white font-normal text-lg px-2 py-1"
+              className="hover:opacity-50 bg-red-500 text-white font-normal text-lg px-2 py-1 "
               onClick={onClickDelete}
             >
               Confirm
