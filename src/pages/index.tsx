@@ -1,12 +1,16 @@
 import { SearchMapForm } from "@/features/searchMap/components/SearchMapForm";
 import type { NextPage } from "next";
 import { getSession } from "next-auth/react";
-import { useEffect } from "react";
+import { useEffect, useContext } from "react";
+import { useRouter } from "next/router";
+import  axios from "axios";
+
 
 const HomePage: NextPage = () => {
   return (
     <div className="flex justify-center items-center flex-col">
       <SearchMapForm />
+
     </div>
   );
 };

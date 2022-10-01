@@ -9,12 +9,12 @@ import { Toaster } from "react-hot-toast";
 const MyApp = ({ Component, session, pageProps, data }: AppProps & any) => {
   return (
     <SessionProvider session={session}>
-      <Provider store={store}>
-        <Toaster />
-        <Layout initData={data}>
-          <Component {...pageProps} initData={data} />
-        </Layout>
-      </Provider>
+        <Provider store={store}>
+          <Toaster />
+          <Layout initData={data}>
+            <Component {...pageProps} initData={data} />
+          </Layout>
+        </Provider>
     </SessionProvider>
   );
 };

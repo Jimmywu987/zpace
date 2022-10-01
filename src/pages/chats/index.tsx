@@ -1,140 +1,126 @@
-import { PrismaClient } from "@prisma/client";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
-import ArrowCircleUpRoundedIcon from "@mui/icons-material/ArrowCircleUpRounded";
-import blogsJSON from "@/data/blogs.json";
-import ChatContactBox from "@/features/chatbox/ChatContactBox";
-import ImageIcon from "@mui/icons-material/Image";
+import io from "socket.io-client";
+import { useState, useEffect } from "react";
 
-export const prisma = new PrismaClient();
+let socket: any;
 
-export async function getServerSideProps() {
-  const users = await prisma.user.findMany({
-    select: {
-      username: true,
-      id: true,
-    },
-  });
-  if (!users) {
-    return {
-      notFound: true,
-    };
-  }
+type Message = {
+  author: string;
+  message: string;
+};
 
-  return {
-    props: {
-      users,
-    },
-  };
-}
-
-export default function Page({ users }: { users: User[] }) {
+export default function Home() {
+  const [username, setUsername] = useState("");
+  const [chosenUsername, setChosenUsername] = useState("");
   const [message, setMessage] = useState("");
-  const [showDetail, setShowDetail] = useState(false);
-  const router = useRouter();
-  // const [validMessage, setValidMessage] = useState(true)
+  const [messages, setMessages] = useState<Array<Message>>([]);
 
-  const validMessage = message.length > 0;
   useEffect(() => {
-    console.log(showDetail);
-  }, [showDetail]);
+    socketInitializer();
+  }, []);
 
-  const blogsData = blogsJSON.posts.slice(0, 9);
-  console.log(blogsData)
+  const socketInitializer = async () => {
+    // We just call it because we don't need anything else out of it
+    await fetch("/api/chat/socket");
+
+    socket = io();
+
+    socket.on("newIncomingMessage", (msg: Message) => {
+      setMessages((currentMsg) => [
+        ...currentMsg,
+        { author: msg.author, message: msg.message },
+      ]);
+      console.log(messages);
+    });
+  };
+
+  const sendMessage = async () => {
+    if (message) {
+      socket.emit("createdMessage", { author: chosenUsername, message });
+      setMessages((currentMsg) => [
+        ...currentMsg,
+        { author: chosenUsername, message },
+      ]);
+      setMessage("");
+    }
+  };
+
+  const handleKeypress = (e: any) => {
+    //it triggers by pressing the enter key
+    if (e.keyCode === 13) {
+      if (message) {
+        sendMessage();
+      }
+    }
+  };
 
   return (
-    <div className={`fixed w-full flex h-[90%] `}>
-      <section className="w-1/4 border border-gray-300 bg-gray-100">
-        <div className="p-3 border-y border-gray-300 bg-white font-bold h-20">
-          Message
-        </div>
-        <div id="contact-box-container" className="overflow-y-scroll h-full ">
-          {blogsData.map((blog, key) => (
-            <ChatContactBox
-
-              key={key}
-              id={key}
-              name={blog.author}
-              createdAt={blog.date}
-              lastMessage={blog.excerpt}
-              contactJoinDate={blog.date}
-              image={blog.author}
-            />
-          ))}
-        </div>
-      </section>
-      <section
-        className={`${
-          showDetail && "translation -translate-x-"
-        } duration-700 transform z-50 flex flex-col flex-1 border border-gray-300 z-40 bg-gray-100`}
-      >
-        <div className="relative p-3 border-y border-gray-300 bg-white font-bold h-20 ">
-          <span>[Host Name]</span>
-          <button
-            className="absolute right-1 inset-y-1 "
-            onClick={() => setShowDetail(!showDetail)}
-          >
-            {showDetail ? "Hide Detail" : "Show Detail"}
-          </button>
-        </div>
-        <div className="flex-1 overflow-y-scroll p-2">
-
-        </div>
-        <div className="h-[60px] inset-y-1">
-          <form className="my-2 relative flex items-center">
-            <label
-              className="text-blue-500 hover:bg-gray-200 ease-in-out transition  p-2 m-3 rounded-full cursor-pointer"
-              htmlFor="fileUpload"
-            >
-              <ImageIcon />
-            </label>
+    <div className="flex items-center p-4 mx-auto min-h-screen justify-center bg-purple-500">
+      <main className="gap-4 flex flex-col items-center justify-center w-full h-full">
+        {!chosenUsername ? (
+          <>
+            <h3 className="font-bold text-white text-xl">
+              How people should call you?
+            </h3>
             <input
-              className="hidden"
-              id="fileUpload"
-              type="file"
-              accept="image/x-png,image/jpeg"
-
-              // onChange={uploadFile}
+              type="text"
+              placeholder="Identity..."
+              value={username}
+              className="p-3 rounded-md outline-none"
+              onChange={(e) => setUsername(e.target.value)}
             />
-            <textarea
-              value={message}
-              className="my-1 mr-1 w-[90%] h-[2.5rem] pl-2 pr-10  py-1 border-gray-300 border-2 border-solid shadow-md h-1/3 rounded-full text-blue-500 resize-none"
-              onChange={(e) => setMessage(e.target.value)}
-            ></textarea>
             <button
-              type="button"
-              className={`${
-                !validMessage && "hidden"
-              } text-blue-500 hover:scale-110 transition ease-in-out absolute right-5 inset-y-5`}
+              onClick={() => {
+                setChosenUsername(username);
+              }}
+              className="bg-white rounded-md px-4 py-2 text-xl"
             >
-              <ArrowCircleUpRoundedIcon />
+              Go!
             </button>
-          </form>
-        </div>
-      </section>
-      <section
-        className={`w-1/4 translate-x-[200%] right-0 absolute lg:relative lg:right-0 lg:translate-x-0 duration-700 transform transition`}
-      >
-        <div className="p-3 border-y border-gray-300 bg-white font-bold h-20">
-          Detail
-        </div>
-
-        <div className="z-40 overflow-y-scroll h-full">
-          <div className="h-[200px] bg-white relative">
-            <span className="sticky top-0">Carousell</span>
-          </div>
-          <div className="h-[200px] bg-blue-500">Detail</div>
-          <div className="h-[200px]">Check in & Checkout</div>
-          <div className="h-[200px] bg-white">Direction</div>
-          <div className="h-[200px]">Call Host</div>
-          <div className="h-[200px]">Show Listing</div>
-        </div>
-      </section>
+          </>
+        ) : (
+          <>
+            <p className="font-bold text-white text-xl">
+              Your username: {username} - {socket.id}
+            </p>
+            <div className="flex flex-col justify-end bg-white h-[20rem] min-w-[33%] rounded-md shadow-md ">
+              <div className="h-full last:border-b-0 overflow-y-scroll">
+                {messages.map((msg, i) => {
+                  return (
+                    <div
+                      className="w-full py-1 px-2 border-b border-gray-200"
+                      key={i}
+                    >
+                      {msg.author} : {msg.message}
+                    </div>
+                  );
+                })}
+              </div>
+              <div className="border-t border-gray-300 w-full flex rounded-bl-md">
+                <input
+                  type="text"
+                  placeholder="New message..."
+                  value={message}
+                  className="outline-none py-2 px-2 rounded-bl-md flex-1"
+                  onChange={(e) => setMessage(e.target.value)}
+                  onKeyUp={handleKeypress}
+                />
+                <div className="border-l border-gray-300 flex justify-center items-center  rounded-br-md group hover:bg-purple-500 transition-all">
+                  <button
+                    className="group-hover:text-white px-3 h-full"
+                    onClick={() => {
+                      sendMessage();
+                    }}
+                    disabled={message ? false : true}
+                    // {message ?  disabled : null }
+                  >
+                    Send
+                  </button>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
+      </main>
     </div>
   );
 }
-
-type User = {
-  id: string;
-  username: string;
-};

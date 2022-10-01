@@ -25,6 +25,6 @@
     "**/*.tsx",
     "next.config.js",
     "**/*.css"
-  ],
+, "src/context/index.ts"  ],
   "exclude": ["node_modules"]
 }

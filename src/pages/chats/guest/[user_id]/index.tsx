@@ -1,13 +1,11 @@
-import { PrismaClient } from "@prisma/client";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
 import ArrowCircleUpRoundedIcon from "@mui/icons-material/ArrowCircleUpRounded";
 import blogsJSON from "@/data/blogs.json";
 import ChatContactBox from "@/features/chatbox/ChatContactBox";
 import ImageIcon from "@mui/icons-material/Image";
 import { QueryProps } from "@/types/QueryProps";
-import { getUserWithUserId } from "@/services/prisma";
-import { ProfileUser } from "@/types/ProfileUser";
+import toast from "react-hot-toast";
+
 
 
 export async function getServerSideProps({ query }: QueryProps) {
@@ -32,12 +30,6 @@ export default function Page({user_id}: {user_id:number}) {
     const blogsData = blogsJSON.posts.slice(0, 9);
   const contactPerson = blogsData[user_id];
   const [contactName, setContactName] = useState(contactPerson.author);
-  const router = useRouter();
-  // const host_id = user_id;
-
-  console.log(user_id);
-  // console.log(users);
-  // const [validMessage, setValidMessage] = useState(true)
 
   const validMessage = message.length > 0;
   useEffect(() => {
@@ -45,10 +37,29 @@ export default function Page({user_id}: {user_id:number}) {
     // console.log(showDetail);
   }, [user_id]);
 
-  console.log(blogsData[user_id].author)
+  // const sendMessage = async () => {
+  //   console.log("send", message);
+
+  //   // socket.emit("createdMessage", { author: chosenUsername, message });
+  //   // setMessages((currentMsg) => [
+  //   //   ...currentMsg,
+  //   //   { author: chosenUsername, message },
+  //   // ]);
+
+  //   setMessage("");
+  // };
+
+  const handleKeypress = (e:any) => {
+      if (e.keyCode === 13) {
+        if (message) {
+          // sendMessage();
+          toast.success('sent')
+        }
+      }
+  }
 
   return (
-    <div className={`fixed w-full flex h-[90%] `}>
+    <div className={`w-full flex h-[90%] fixed right-0`}>
       <section className="w-1/4 border border-gray-300 bg-gray-100">
         <div className="p-3 border-y border-gray-300 bg-white font-bold h-20">
           Message
@@ -83,7 +94,10 @@ export default function Page({user_id}: {user_id:number}) {
         </div>
         <div className="flex-1 overflow-y-scroll p-2"></div>
         <div className="max-h-[20%] inset-y-1">
-          <form className="my-2 relative flex items-center">
+          <form 
+            onSubmit={(e)=>{e.preventDefault
+            console.log(123)}}
+            className="my-2 relative flex items-center">
             <label
               className="text-blue-500 hover:bg-gray-200 ease-in-out transition  p-2 m-3 rounded-full cursor-pointer"
               htmlFor="fileUpload"
@@ -95,13 +109,19 @@ export default function Page({user_id}: {user_id:number}) {
               id="fileUpload"
               type="file"
               accept="image/x-png,image/jpeg"
+
               // onChange={uploadFile}
             />
-            <textarea
+            <input
+              type="text"
+              placeholder="New message..."
               value={message}
-              className="my-1 mr-1 w-[90%] h-full  pl-2 pr-10  py-1 border-gray-300 border-2 border-solid shadow-md h-1/3 rounded-full text-blue-500 resize-none"
+              className="outline-none py-2 px-2 rounded-md flex-1 text-blue-500 pr-10 mr-2"
               onChange={(e) => setMessage(e.target.value)}
-            ></textarea>
+
+              // onChange={(e) => setMessage(e.target.value)}
+              onKeyUp={handleKeypress}
+            />
             <button
               type="button"
               className={`${
