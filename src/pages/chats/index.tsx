@@ -19,7 +19,6 @@ export default function Home() {
   }, []);
 
   const socketInitializer = async () => {
-    // We just call it because we don't need anything else out of it
     await fetch("/api/chat/socket");
 
     socket = io();
@@ -44,7 +43,6 @@ export default function Home() {
   };
 
   const handleKeypress = (e: any) => {
-    //it triggers by pressing the enter key
     if (e.keyCode === 13) {
       if (message) {
         sendMessage();
@@ -110,7 +108,6 @@ export default function Home() {
                       sendMessage();
                     }}
                     disabled={message ? false : true}
-                    // {message ?  disabled : null }
                   >
                     Send
                   </button>

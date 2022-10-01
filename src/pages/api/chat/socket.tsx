@@ -2,7 +2,6 @@ import { Server } from "socket.io";
 import messageHandler from "@/helpers/messageHandler";
 
 export default function SocketHandler(req:any, res:any) {
-  // It means that socket server was already initialised
   if (res.socket.server.io) {
     console.log("Already set up");
     res.end();
@@ -16,7 +15,6 @@ export default function SocketHandler(req:any, res:any) {
     messageHandler(io, socket);
   };
 
-  // Define actions inside
   io.on("connection", onConnection);
 
   console.log("Setting up socket");
