@@ -29,7 +29,6 @@ export default function Home() {
         ...currentMsg,
         { author: msg.author, message: msg.message },
       ]);
-      console.log(messages);
     });
   };
 
