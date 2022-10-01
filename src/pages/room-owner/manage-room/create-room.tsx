@@ -1,4 +1,4 @@
-import { CreateRoomForm } from "@/features/roomOwner/components/form/CreateRoomForm";
+import { CreateRoomForm } from "@/features/roomOwner/components/createForm/CreateRoomForm";
 import { GetServerSideProps } from "next";
 import { getSession } from "next-auth/react";
 

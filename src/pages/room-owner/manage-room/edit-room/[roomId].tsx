@@ -1,127 +1,42 @@
-import { CreateRoomFormStepOne } from "@/features/roomOwner/components/form/CreateRoomFormStepOne";
-import { CreateRoomFormStepper } from "@/features/roomOwner/components/form/CreateRoomFormStepper";
-import { CreateRoomFormStepTwo } from "@/features/roomOwner/components/form/CreateRoomFormStepTwo";
+import { EditRoomFormStepOne } from "@/features/roomOwner/components/editForm/EditRoomFormStepOne";
+import { EditRoomFormStepTwo } from "@/features/roomOwner/components/editForm/EditRoomFormStepTwo";
+import { FormStepper } from "@/features/roomOwner/components/form/FormStepper";
+import { editRoomDefaultValue } from "@/features/roomOwner/helpers/getEditRoomDefaultValues";
 import { useCreateRoomResolver } from "@/features/roomOwner/schemas/useCreateRoomResolver";
-import { CreateRoomInputTypes } from "@/features/roomOwner/types/createRoomInputTypes";
+import { RoomFormInputTypes } from "@/features/roomOwner/types/roomFormInputTypes";
 import { prisma } from "@/services/prisma";
-import { getCreateRoomInfo } from "@/services/rooms";
 import { RoomType } from "@/types/Room";
 import { GetServerSideProps } from "next";
 import { User } from "next-auth";
 import { getSession } from "next-auth/react";
 import { AppProps } from "next/app";
-import { useForm, FormProvider } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 export type EditRoomPageProps = AppProps & {
   room: RoomType;
 };
 
-const splitTime = (time: string) => {
-  const part = time.split(":");
-  const hour = +part[0];
-  const minute = +part[1];
-  const halfDay = hour >= 12 ? "P.M." : "A.M.";
-  const hr = hour > 12 ? hour - 12 : hour;
-  const min = minute;
-  return { halfDay, hr: hr.toString(), min: min.toString() };
-};
-
+const STEPS = [
+  "Edit Available Time slots optional",
+  "Edit Other information (Basic Info and Photos) optional",
+];
 const EditRoomPage = (props: EditRoomPageProps) => {
   const { room } = props;
-  const {
-    spaceName,
-    address,
-    description,
-    district,
-    hourlyPrice,
-    capacity,
-    wifi,
-    desk,
-    socketPlug,
-    airCondition,
-    oneTimeOffOpenTimeslots,
-    weeklyOpenTimeslots,
-  } = room;
-  const editRoomFormMethods = useForm<CreateRoomInputTypes>({
+  const defaultValues = editRoomDefaultValue(room);
+  const editRoomFormMethods = useForm<RoomFormInputTypes>({
     resolver: useCreateRoomResolver(),
-    defaultValues: {
-      spaceName,
-      address,
-      district,
-      capacity,
-      hourlyPrice,
-      description,
-      wifi,
-      desk,
-      socketPlug,
-      airCondition,
-      selectedFile: [],
-      weeklyTimeAvailability: weeklyOpenTimeslots.map((slot) => {
-        const {
-          monday,
-          tuesday,
-          wednesday,
-          thursday,
-          friday,
-          saturday,
-          sunday,
-          startTime,
-          endTime,
-        } = slot;
-        const {
-          halfDay: weekHalfDayOne,
-          hr: weekStartHr,
-          min: weekStartMin,
-        } = splitTime(startTime);
-        const {
-          halfDay: weekHalfDayTwo,
-          hr: weekEndHr,
-          min: weekEndMin,
-        } = splitTime(endTime);
-        return {
-          monday,
-          tuesday,
-          wednesday,
-          thursday,
-          friday,
-          saturday,
-          sunday,
-          weekStartHr,
-          weekStartMin,
-          weekEndHr,
-          weekEndMin,
-          weekHalfDayOne,
-          weekHalfDayTwo,
-        };
-      }),
-      oneTimeAvailability: oneTimeOffOpenTimeslots.map((slot) => {
-        const { date, startTime, endTime } = slot;
-        const {
-          halfDay: halfOneDayOne,
-          hr: oneOffStartHr,
-          min: oneOffStartMin,
-        } = splitTime(startTime);
-        const {
-          halfDay: halfOneDayTwo,
-          hr: oneOffEndHr,
-          min: oneOffEndMin,
-        } = splitTime(endTime);
-        return {
-          halfOneDayOne,
-          halfOneDayTwo,
-          oneOffStartHr,
-          oneOffStartMin,
-          oneOffEndHr,
-          oneOffEndMin,
-          oneOffDate: date,
-        };
-      }),
-    },
+    defaultValues,
   });
 
   const step = editRoomFormMethods.watch("step");
   return (
     <FormProvider {...editRoomFormMethods}>
-      <></>
+      <div className="">
+        <FormStepper labels={STEPS} />
+        <div className="max-w-[860px] mx-auto">
+          {step === 0 && <EditRoomFormStepOne />}
+          {step === 1 && <EditRoomFormStepTwo />}
+        </div>
+      </div>
     </FormProvider>
   );
 };

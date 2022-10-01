@@ -2,14 +2,14 @@ import CameraAltIcon from "@mui/icons-material/CameraAlt";
 import CloseIcon from "@mui/icons-material/Close";
 import { ChangeEvent } from "react";
 import AddIcon from "@mui/icons-material/Add";
-import { RenderPreview } from "@/features/roomOwner/components/form/RenderPreview";
+import { RenderPreview } from "@/features/roomOwner/components/createForm/RenderPreview";
 import { OneTimeTypes } from "@/features/roomOwner/types/oneTimeTypes";
 import { WeeklyTimeTypes } from "@/features/roomOwner/types/weeklyTimeTypes";
-import { RenderWeeklyTime } from "@/features/roomOwner/components/form/RenderWeeklyTime";
-import { RenderOneTime } from "@/features/roomOwner/components/form/RenderOneTime";
+import { RenderWeeklyTime } from "@/features/roomOwner/components/createForm/RenderWeeklyTime";
+import { RenderOneTime } from "@/features/roomOwner/components/createForm/RenderOneTime";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { useFormContext } from "react-hook-form";
-import { CreateRoomFormButton } from "@/features/roomOwner/components/form/CreateRoomFormButton";
+import { CreateRoomFormButton } from "@/features/roomOwner/components/createForm/CreateRoomFormButton";
 
 export const CreateRoomFormStepTwo = () => {
   const { formState, setValue, watch } = useFormContext();

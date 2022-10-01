@@ -1,14 +1,19 @@
-import { CreateRoomInputTypes } from "@/features/roomOwner/types/createRoomInputTypes";
+import { RoomFormInputTypes } from "@/features/roomOwner/types/roomFormInputTypes";
 
 import { FormProvider, useForm } from "react-hook-form";
 
-import { CreateRoomFormStepOne } from "@/features/roomOwner/components/form/CreateRoomFormStepOne";
-import { CreateRoomFormStepper } from "@/features/roomOwner/components/form/CreateRoomFormStepper";
-import { CreateRoomFormStepTwo } from "@/features/roomOwner/components/form/CreateRoomFormStepTwo";
+import { CreateRoomFormStepOne } from "@/features/roomOwner/components/createForm/CreateRoomFormStepOne";
+import { FormStepper } from "@/features/roomOwner/components/form/FormStepper";
+import { CreateRoomFormStepTwo } from "@/features/roomOwner/components/createForm/CreateRoomFormStepTwo";
 import { useCreateRoomResolver } from "@/features/roomOwner/schemas/useCreateRoomResolver";
 
+const STEPS = [
+  "Basic Information of Your Space",
+  "Photos and Rental Services Availability",
+];
+
 export const CreateRoomForm = () => {
-  const createRoomFormMethods = useForm<CreateRoomInputTypes>({
+  const createRoomFormMethods = useForm<RoomFormInputTypes>({
     resolver: useCreateRoomResolver(),
     defaultValues: {
       step: 0,
@@ -32,7 +37,7 @@ export const CreateRoomForm = () => {
   return (
     <FormProvider {...createRoomFormMethods}>
       <div className="">
-        <CreateRoomFormStepper />
+        <FormStepper labels={STEPS} />
         <div className="max-w-[860px] mx-auto">
           {step === 0 && <CreateRoomFormStepOne />}
           {step === 1 && <CreateRoomFormStepTwo />}

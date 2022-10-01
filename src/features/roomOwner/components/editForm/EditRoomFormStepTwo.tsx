@@ -1,14 +1,14 @@
 import { DistrictListBox } from "@/features/common/components/DistrictListBox";
 import { FormTextInput } from "@/features/common/components/input/FormTextInput";
 import * as React from "react";
-import { CheckBox } from "@/features/roomOwner/components/form/CheckBox";
+import { CheckBox } from "@/features/roomOwner/components/createForm/CheckBox";
 import { useFormContext } from "react-hook-form";
 import { SubmitButton } from "@/features/common/components/buttons/SubmitButton";
-import { CreateRoomInputTypes } from "@/features/roomOwner/types/createRoomInputTypes";
+import { RoomFormInputTypes } from "@/features/roomOwner/types/roomFormInputTypes";
 
-export const CreateRoomFormStepOne = () => {
+export const EditRoomFormStepTwo = () => {
   const { handleSubmit, reset, setValue } =
-    useFormContext<CreateRoomInputTypes>();
+    useFormContext<RoomFormInputTypes>();
   const onSubmit = handleSubmit(() => {
     setValue("step", 1);
   });

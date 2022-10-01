@@ -1,6 +1,6 @@
 import { SubmitButton } from "@/features/common/components/buttons/SubmitButton";
 import { isLoading, loadingSelector } from "@/redux/loading";
-import { CreateRoomInputTypes } from "@/features/roomOwner/types/createRoomInputTypes";
+import { RoomFormInputTypes } from "@/features/roomOwner/types/roomFormInputTypes";
 import { useS3Upload } from "next-s3-upload";
 import { useRouter } from "next/router";
 import { useFormContext } from "react-hook-form";
@@ -20,7 +20,7 @@ export const CreateRoomFormButton = () => {
   const user = session.data?.user as User;
   const { loading } = useSelector(loadingSelector);
   const { handleSubmit, reset, formState, setValue, watch } =
-    useFormContext<CreateRoomInputTypes>();
+    useFormContext<RoomFormInputTypes>();
 
   const onSubmit = handleSubmit(async (data) => {
     dispatch(isLoading({ isLoading: true }));
