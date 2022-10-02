@@ -1,4 +1,4 @@
-import { RoomFormInputTypes } from "@/features/roomOwner/types/roomFormInputTypes";
+import { CreateRoomFormInputTypes } from "@/features/roomOwner/types/createRoomFormInputTypes";
 
 import { FormProvider, useForm } from "react-hook-form";
 
@@ -13,7 +13,7 @@ const STEPS = [
 ];
 
 export const CreateRoomForm = () => {
-  const createRoomFormMethods = useForm<RoomFormInputTypes>({
+  const createRoomFormMethods = useForm<CreateRoomFormInputTypes>({
     resolver: useCreateRoomResolver(),
     defaultValues: {
       step: 0,

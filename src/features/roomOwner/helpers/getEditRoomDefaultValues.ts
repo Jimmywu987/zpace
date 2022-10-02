@@ -5,6 +5,7 @@ const addZeroToTime = (time: string) => {
 };
 export const editRoomDefaultValue = (room: RoomType) => {
   const {
+    id,
     spaceName,
     address,
     description,
@@ -21,10 +22,9 @@ export const editRoomDefaultValue = (room: RoomType) => {
   } = room;
 
   return {
+    id,
     step: 0,
     spaceName,
-    address,
-    district,
     capacity,
     hourlyPrice,
     description,
@@ -32,7 +32,8 @@ export const editRoomDefaultValue = (room: RoomType) => {
     desk,
     socketPlug,
     airCondition,
-    selectedFile: roomImgs,
+    uploadedFile: roomImgs,
+    selectedFile: [],
     weeklyTimeAvailability: weeklyOpenTimeslots.map((slot) => {
       const {
         monday,

@@ -77,7 +77,6 @@ export const RoomCard = ({ room }: { room: RoomType }) => {
     }
   };
   const onClickDelete = async () => {
-    console.log(room.id);
     const res = await deleteRoom({ roomId: room.id });
     if (res && res.status === 201) {
       room.roomImgs.map(async (img) => {
@@ -175,14 +174,15 @@ export const RoomCard = ({ room }: { room: RoomType }) => {
                         Capacity: {room.capacity}{" "}
                         {room.capacity! > 1 ? "persons" : "person"}
                       </div>
-                      <div className="flex space-x-1">
-                        {room.wifi && <ThemeTag>Wifi</ThemeTag>}
-                        {room.socketPlug && <ThemeTag>Socket Plug</ThemeTag>}
-                        {room.airCondition && (
-                          <ThemeTag>Air Condition</ThemeTag>
-                        )}
-                        {room.desk && <ThemeTag>Desk</ThemeTag>}
-
+                      <div className="flex flex-col ">
+                        <div className="flex space-x-1 flex-wrap items-center">
+                          {room.wifi && <ThemeTag>Wifi</ThemeTag>}
+                          {room.socketPlug && <ThemeTag>Socket Plug</ThemeTag>}
+                          {room.airCondition && (
+                            <ThemeTag>Air Condition</ThemeTag>
+                          )}
+                          {room.desk && <ThemeTag>Desk</ThemeTag>}
+                        </div>
                         {!room.wifi &&
                           !room.socketPlug &&
                           !room.airCondition &&
@@ -202,7 +202,7 @@ export const RoomCard = ({ room }: { room: RoomType }) => {
                         Current one-off rental services available:{" "}
                         {room.oneTimeOffOpenTimeslots.length}
                       </div>
-                      <div className="space-y-2">
+                      <div className="space-y-2 flex flex-wrap">
                         {room.oneTimeOffOpenTimeslots.map((time) => {
                           return (
                             <div key={time.id}>

@@ -4,10 +4,9 @@ import * as yup from "yup";
 export const useEditRoomResolver = () => {
   return yupResolver(
     yup.object({
+      id: yup.string().required(),
       step: yup.number().required(),
       spaceName: yup.string().required("Space name is required"),
-      address: yup.string().required("Address is required"),
-      district: yup.string().required("District is required"),
       description: yup.string().optional(),
       capacity: yup
         .number()
@@ -21,11 +20,8 @@ export const useEditRoomResolver = () => {
       desk: yup.boolean(),
       socketPlug: yup.boolean(),
       airCondition: yup.boolean(),
-      selectedFile: yup.array().when("step", {
-        is: 0,
-        then: yup.array().optional(),
-        otherwise: yup.array().min(1).required(),
-      }),
+      selectedFile: yup.array().optional(),
+      uploadedFile: yup.array().optional(),
       weeklyTimeAvailability: yup.array().when("step", {
         is: 0,
         then: yup.array().optional(),

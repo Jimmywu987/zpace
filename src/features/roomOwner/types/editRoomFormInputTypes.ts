@@ -2,11 +2,10 @@ import { RoomImg } from "@prisma/client";
 import { OneTimeTypes } from "./oneTimeTypes";
 import { WeeklyTimeTypes } from "./weeklyTimeTypes";
 
-export type RoomFormInputTypes = {
+export type EditRoomFormInputTypes = {
+  id: string;
   step: number;
   spaceName: string;
-  address: string;
-  district: string;
   description: string;
   capacity: number;
   hourlyPrice: number;
@@ -14,7 +13,8 @@ export type RoomFormInputTypes = {
   desk: boolean;
   socketPlug: boolean;
   airCondition: boolean;
-  selectedFile: File | RoomImg[];
+  selectedFile: File[];
+  uploadedFile: RoomImg[];
   weeklyTimeAvailability: WeeklyTimeTypes[];
   oneTimeAvailability: OneTimeTypes[];
 };

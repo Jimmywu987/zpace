@@ -2,8 +2,8 @@ import { EditRoomFormStepOne } from "@/features/roomOwner/components/editForm/Ed
 import { EditRoomFormStepTwo } from "@/features/roomOwner/components/editForm/EditRoomFormStepTwo";
 import { FormStepper } from "@/features/roomOwner/components/form/FormStepper";
 import { editRoomDefaultValue } from "@/features/roomOwner/helpers/getEditRoomDefaultValues";
-import { useCreateRoomResolver } from "@/features/roomOwner/schemas/useCreateRoomResolver";
-import { RoomFormInputTypes } from "@/features/roomOwner/types/roomFormInputTypes";
+import { useEditRoomResolver } from "@/features/roomOwner/schemas/useEditRoomResolver";
+import { EditRoomFormInputTypes } from "@/features/roomOwner/types/editRoomFormInputTypes";
 import { prisma } from "@/services/prisma";
 import { RoomType } from "@/types/Room";
 import { GetServerSideProps } from "next";
@@ -22,15 +22,15 @@ const STEPS = [
 const EditRoomPage = (props: EditRoomPageProps) => {
   const { room } = props;
   const defaultValues = editRoomDefaultValue(room);
-  const editRoomFormMethods = useForm<RoomFormInputTypes>({
-    resolver: useCreateRoomResolver(),
+  const editRoomFormMethods = useForm<EditRoomFormInputTypes>({
+    resolver: useEditRoomResolver(),
     defaultValues,
   });
 
   const step = editRoomFormMethods.watch("step");
   return (
     <FormProvider {...editRoomFormMethods}>
-      <div className="">
+      <div className="my-6">
         <FormStepper labels={STEPS} />
         <div className="max-w-[860px] mx-auto">
           {step === 0 && <EditRoomFormStepOne />}
