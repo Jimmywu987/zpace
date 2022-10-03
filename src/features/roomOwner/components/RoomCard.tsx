@@ -61,7 +61,6 @@ const RenderAvgRating = ({
 };
 
 export const RoomCard = ({ room }: { room: RoomType }) => {
-  const session = useSession();
   const router = useRouter();
 
   const [open, setOpen] = useState(false);
@@ -149,7 +148,7 @@ export const RoomCard = ({ room }: { room: RoomType }) => {
             <Grid item xs={12} sm={12} container>
               <Grid item xs container direction="column" spacing={2}>
                 <Grid item xs>
-                  <div className="flex space-x-10 my-6">
+                  <div className="flex flex-col md:flex-row space-y-2 md:space-y-2 md:space-x-10 my-6">
                     <div className="space-y-1">
                       <div>
                         <strong className="text-theme-color1 text-2xl">

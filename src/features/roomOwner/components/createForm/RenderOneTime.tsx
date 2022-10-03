@@ -29,8 +29,8 @@ export const RenderOneTime = (props: {
   };
 
   return (
-    <div className="py-3 space-y-2">
-      <div className="text-lg">
+    <div className="py-3 space-y-3">
+      <div className="text-md md:text-lg">
         Decide available time slot(on a particular day):
       </div>
 
@@ -54,7 +54,7 @@ export const RenderOneTime = (props: {
       <div className="space-y-1">
         <div className="text-gray-700">Start at:</div>
 
-        <div className="flex space-x-4">
+        <div className="flex space-x-2 md:space-x-4">
           <TextField
             select
             label="Select"
@@ -100,7 +100,7 @@ export const RenderOneTime = (props: {
         <div className="space-y-1">
           <div className="text-gray-700">End at:</div>
 
-          <div className="flex space-x-4">
+          <div className="flex space-x-2 md:space-x-4">
             <TextField
               select
               label="Select"

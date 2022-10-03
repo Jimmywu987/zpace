@@ -44,139 +44,162 @@ export const RenderWeeklyTime = (props: {
 
   return (
     <div className=" py-3">
-      <div className="text-lg">
+      <div className="text-md md:text-lg">
         Decide available time slot(repeated weekly):
       </div>
       <span>For this timeslot, the room is available on each: </span>
-      <Checkbox checked={monday} color="primary" {...handleChecked("monday")} />
-      <label>Monday</label>
-
-      <Checkbox
-        checked={tuesday}
-        color="primary"
-        {...handleChecked("tuesday")}
-      />
-      <label>Tuesday</label>
-
-      <Checkbox
-        checked={wednesday}
-        color="primary"
-        {...handleChecked("wednesday")}
-      />
-      <label>Wednesday</label>
-
-      <Checkbox
-        checked={thursday}
-        color="primary"
-        {...handleChecked("thursday")}
-      />
-      <label>Thursday</label>
-
-      <Checkbox checked={friday} color="primary" {...handleChecked("friday")} />
-      <label>Friday</label>
-
-      <Checkbox
-        checked={saturday}
-        color="primary"
-        {...handleChecked("saturday")}
-      />
-      <label>Saturday</label>
-
-      <Checkbox checked={sunday} color="primary" {...handleChecked("sunday")} />
-      <label>Sunday</label>
-
-      <div className="space-y-1">
-        <div className="text-gray-700">Start at:</div>
-
-        <div className="flex space-x-4">
-          <TextField
-            select
-            label="Select"
-            {...handleValue("weekStartHr")}
-            helperText="Select start time of each time slot (hour)"
-            variant="outlined"
-          >
-            {START_HOUR.map((option) => (
-              <MenuItem key={option.value} value={option.value}>
-                {option.label}
-              </MenuItem>
-            ))}
-          </TextField>
-
-          <TextField
-            select
-            label="Select"
-            {...handleValue("weekStartMin")}
-            helperText="Select start time of each time slot (minutes)"
-            variant="outlined"
-          >
-            {START_MINUTE.map((option) => (
-              <MenuItem key={option.value} value={option.value}>
-                {option.label}
-              </MenuItem>
-            ))}
-          </TextField>
-
-          <TextField
-            id="select-weekend-id"
-            select
-            label="Select"
-            {...handleValue("weekHalfDayOne")}
-            helperText="Select A.M./P.M."
-            variant="outlined"
-          >
-            {HALF_DAY.map((option) => (
-              <MenuItem key={option.value} value={option.value}>
-                {option.label}
-              </MenuItem>
-            ))}
-          </TextField>
+      <div className="flex flex-wrap my-2">
+        <div>
+          <Checkbox
+            checked={monday}
+            color="primary"
+            {...handleChecked("monday")}
+          />
+          <label>Monday</label>
+        </div>
+        <div>
+          <Checkbox
+            checked={tuesday}
+            color="primary"
+            {...handleChecked("tuesday")}
+          />
+          <label>Tuesday</label>
+        </div>
+        <div>
+          <Checkbox
+            checked={wednesday}
+            color="primary"
+            {...handleChecked("wednesday")}
+          />
+          <label>Wednesday</label>
+        </div>
+        <div>
+          <Checkbox
+            checked={thursday}
+            color="primary"
+            {...handleChecked("thursday")}
+          />
+          <label>Thursday</label>
+        </div>
+        <div>
+          <Checkbox
+            checked={friday}
+            color="primary"
+            {...handleChecked("friday")}
+          />
+          <label>Friday</label>
+        </div>
+        <div>
+          <Checkbox
+            checked={saturday}
+            color="primary"
+            {...handleChecked("saturday")}
+          />
+          <label>Saturday</label>
+        </div>
+        <div>
+          <Checkbox
+            checked={sunday}
+            color="primary"
+            {...handleChecked("sunday")}
+          />
+          <label>Sunday</label>
         </div>
       </div>
-      <div className="space-y-1">
-        <div className="text-gray-700">End at:</div>
+      <div className="space-y-2">
+        <div className="space-y-1">
+          <div className="text-gray-700">Start at:</div>
 
-        <div className="flex space-x-4">
-          <TextField
-            select
-            label="Select"
-            {...handleValue("weekEndHr")}
-            helperText="Select end time of each time slot (hour)"
-            variant="outlined"
-          >
-            {START_HOUR.map((option) => (
-              <MenuItem key={option.value} value={option.value}>
-                {option.label}
-              </MenuItem>
-            ))}
-          </TextField>
+          <div className="flex space-x-2 md:space-x-4">
+            <TextField
+              select
+              label="Select"
+              {...handleValue("weekStartHr")}
+              helperText="Select start time of each time slot (hour)"
+              variant="outlined"
+            >
+              {START_HOUR.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </TextField>
 
-          <TextField
-            select
-            label="Select"
-            {...handleValue("weekEndMin")}
-            helperText="Select end time of each time slot (minutes)"
-            variant="outlined"
-          >
-            {START_MINUTE.map((option) => (
-              <MenuItem key={option.value} value={option.value}>
-                {option.label}
-              </MenuItem>
-            ))}
-          </TextField>
-          <TextField
-            select
-            label="Select"
-            {...handleValue("weekHalfDayTwo")}
-            helperText="Select A.M./P.M."
-            variant="outlined"
-          >
-            {HALF_DAY.map((option) => (
-              <MenuItem key={option.value} value={option.value}>
-                {option.label}
-              </MenuItem>
-            ))}
-          </TextField>
+            <TextField
+              select
+              label="Select"
+              {...handleValue("weekStartMin")}
+              helperText="Select start time of each time slot (minutes)"
+              variant="outlined"
+            >
+              {START_MINUTE.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </TextField>
+
+            <TextField
+              id="select-weekend-id"
+              select
+              label="Select"
+              {...handleValue("weekHalfDayOne")}
+              helperText="Select A.M./P.M."
+              variant="outlined"
+            >
+              {HALF_DAY.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </TextField>
+          </div>
+        </div>
+        <div className="space-y-1">
+          <div className="text-gray-700">End at:</div>
+
+          <div className="flex  space-x-2 md:space-x-4">
+            <TextField
+              select
+              label="Select"
+              {...handleValue("weekEndHr")}
+              helperText="Select end time of each time slot (hour)"
+              variant="outlined"
+            >
+              {START_HOUR.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </TextField>
+
+            <TextField
+              select
+              label="Select"
+              {...handleValue("weekEndMin")}
+              helperText="Select end time of each time slot (minutes)"
+              variant="outlined"
+            >
+              {START_MINUTE.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </TextField>
+            <TextField
+              select
+              label="Select"
+              {...handleValue("weekHalfDayTwo")}
+              helperText="Select A.M./P.M."
+              variant="outlined"
+            >
+              {HALF_DAY.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </TextField>
+          </div>
         </div>
       </div>
     </div>

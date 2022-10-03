@@ -40,7 +40,7 @@ export const EditRoomFormStepTwo = () => {
     );
   };
   return (
-    <div className="flex flex-col space-y-3 my-3">
+    <div className="flex flex-col space-y-3 my-3 mx-2 md:mx-0">
       <div className="text-2xl text-gray-700">Details about Your Space</div>
       <div>
         <div className="flex flex-col">

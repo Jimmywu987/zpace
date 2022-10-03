@@ -29,7 +29,7 @@ export const CreateRoomFormStepTwo = () => {
   };
 
   return (
-    <div className="flex flex-col space-y-3 my-3">
+    <div className="flex flex-col space-y-3 my-3 md:mx-0 mx-2">
       <div className="text-2xl text-gray-700">Details about Your Space</div>
       <div>
         <div className="flex flex-col">

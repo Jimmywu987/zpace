@@ -13,7 +13,7 @@ export const CheckBox = ({ label, name }: { label: string; name: string }) => {
         }}
         checked={checked}
       />
-      <label className="text-gray-700">{label}</label>
+      <label className="text-gray-700 whitespace-nowrap">{label}</label>
     </div>
   );
 };

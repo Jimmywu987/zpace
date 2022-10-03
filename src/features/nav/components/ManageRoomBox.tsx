@@ -42,15 +42,17 @@ export const ManageRoomBox = () => {
   return (
     <div>
       <Button
-        className="text-lg text-link-normal transition hover:bg-link-bgHover hover:scale-110 hover:text-red-500 py-2 px-2 rounded"
+        className="hover:bg-link-bgHover"
         onClick={handleToggle}
         aria-controls={open ? "composition-menu" : undefined}
         aria-expanded={open ? "true" : undefined}
         aria-haspopup="true"
         ref={anchorRef}
-        startIcon={<MenuBookIcon />}
       >
-        Manage Booking
+        <div className="text-lg text-link-normal transition  hover:scale-110 hover:text-red-500 py-2 px-2 rounded flex space-x-2 items-center">
+          <MenuBookIcon />
+          <span className="hidden md:block">Manage Booking</span>
+        </div>
       </Button>
       <Popper
         open={open}
@@ -59,6 +61,7 @@ export const ManageRoomBox = () => {
         placement="bottom-start"
         transition
         disablePortal
+        style={{ backgroundColor: "white", zIndex: "50" }}
       >
         {({ TransitionProps }) => (
           <Fade {...TransitionProps} timeout={350}>

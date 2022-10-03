@@ -42,7 +42,7 @@ export const WeeklyTimeAvailabilityInput = () => {
     <div className="flex flex-col space-y-4">
       <div className="flex flex-col space-y-2">
         <button
-          className="text-white bg-theme-color1 w-full rounded p-2 text-lg flex justify-start items-center"
+          className="text-white bg-theme-color1 w-full rounded p-2 text-md md:text-lg flex space-x-2 md:space-x-0 justify-start items-center"
           onClick={addWeeklyTime}
         >
           <AddIcon />

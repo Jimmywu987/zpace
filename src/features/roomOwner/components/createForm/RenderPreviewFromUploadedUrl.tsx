@@ -9,7 +9,7 @@ export const RenderPreviewFromUploadedUrl = ({
     <div>
       <img
         src={render.url}
-        className="object-contain w-60 h-60"
+        className="object-contain w-full md:w-60 md:h-60"
         alt="preview-pic"
       />
     </div>

@@ -13,7 +13,7 @@ export const EditRoomFormStepOne = () => {
   });
 
   return (
-    <div className="flex flex-col space-y-3">
+    <div className="flex flex-col space-y-3 mx-2 md:mx-0">
       <FormTextInput
         type="text"
         name="spaceName"
@@ -38,7 +38,7 @@ export const EditRoomFormStepOne = () => {
         label="Addition description of your space"
         className="py-3 px-3"
       />
-      <div className="flex items-center space-x-4">
+      <div className="flex flex-col md:flex-row md:items-center space-x-4 space-y-2 md:space-y-0">
         <div className="text-gray-700">Facilities Available:</div>
         <CheckBox name="airCondition" label="air-conditioner" />
         <CheckBox name="wifi" label="wifi" />

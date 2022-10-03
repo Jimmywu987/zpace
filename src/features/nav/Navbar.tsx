@@ -53,7 +53,7 @@ export const Navbar = () => {
             <img src="/logo.png" className="h-20" alt="logo" />
           </a>
         </Link>
-        <NavLink text="Home" url="/" />
+        <NavLink text="Home" url="/" className="hidden md:block" />
         {isAuthenticated ? (
           <div className="flex items-center flex-1 justify-between ">
             <div className="flex items-center ">
@@ -69,7 +69,7 @@ export const Navbar = () => {
                     alt={`${reduxUser.username} profile image`}
                     className="w-10 h-10 rounded-full object-cover"
                   />
-                  <span>{reduxUser.username}</span>
+                  <span className="hidden md:block">{reduxUser.username}</span>
                 </a>
               </Link>
               <NavDivider />

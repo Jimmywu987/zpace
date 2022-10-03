@@ -6,8 +6,9 @@ import { useEditRoomResolver } from "@/features/roomOwner/schemas/useEditRoomRes
 import { EditRoomFormInputTypes } from "@/features/roomOwner/types/editRoomFormInputTypes";
 import { prisma } from "@/services/prisma";
 import { RoomType } from "@/types/Room";
+import { User } from "@prisma/client";
 import { GetServerSideProps } from "next";
-import { User } from "next-auth";
+
 import { getSession } from "next-auth/react";
 import { AppProps } from "next/app";
 import { FormProvider, useForm } from "react-hook-form";
@@ -16,8 +17,8 @@ export type EditRoomPageProps = AppProps & {
 };
 
 const STEPS = [
-  "Edit Available Time slots optional",
   "Edit Other information (Basic Info and Photos) optional",
+  "Edit Available Time slots optional",
 ];
 const EditRoomPage = (props: EditRoomPageProps) => {
   const { room } = props;

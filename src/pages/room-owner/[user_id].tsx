@@ -16,7 +16,7 @@ const RoomOwnerPage = (props: RoomOwnerPageProps) => {
 
   return (
     <div className="flex flex-col space-y-4 mt-6">
-      <div className="flex flex-col space-y-4">
+      <div className="flex flex-col space-y-4 mx-2">
         <h3 className="text-xl">Room Management System</h3>
         <div>
           <Link href="/room-owner/manage-room/create-room">
