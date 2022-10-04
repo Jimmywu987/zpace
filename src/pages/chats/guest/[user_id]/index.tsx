@@ -1,15 +1,16 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ArrowCircleUpRoundedIcon from "@mui/icons-material/ArrowCircleUpRounded";
 import blogsJSON from "@/data/blogs.json";
 import ChatContactBox from "@/features/chatbox/ChatContactBox";
 import ImageIcon from "@mui/icons-material/Image";
 import { QueryProps } from "@/types/QueryProps";
-import toast from "react-hot-toast";
 
-
+type Message = {
+  message: string;
+};
 
 export async function getServerSideProps({ query }: QueryProps) {
-  const {user_id} = query  
+  const { user_id } = query;
   // const hostDoc = await getUserWithUserId(user_id, true);
   if (!user_id) {
     return {
@@ -24,39 +25,45 @@ export async function getServerSideProps({ query }: QueryProps) {
   };
 }
 
-export default function Page({user_id}: {user_id:number}) {
+export default function Page({ user_id }: { user_id: number }) {
   const [message, setMessage] = useState("");
+  const [messages, setMessages] = useState<Array<Message>>([]);
+
   const [showDetail, setShowDetail] = useState(false);
-    const blogsData = blogsJSON.posts.slice(0, 9);
+  const blogsData = blogsJSON.posts.slice(0, 9);
   const contactPerson = blogsData[user_id];
   const [contactName, setContactName] = useState(contactPerson.author);
-
+  const messageEndRef = useRef(null)
   const validMessage = message.length > 0;
   useEffect(() => {
-    setContactName(contactPerson.author)
+    setContactName(contactPerson.author);
     // console.log(showDetail);
   }, [user_id]);
 
-  // const sendMessage = async () => {
-  //   console.log("send", message);
+  useEffect(() => {
+    messageEndRef.current?.scrollIntoView();
+  }, [messages])
 
-  //   // socket.emit("createdMessage", { author: chosenUsername, message });
-  //   // setMessages((currentMsg) => [
-  //   //   ...currentMsg,
-  //   //   { author: chosenUsername, message },
-  //   // ]);
 
-  //   setMessage("");
-  // };
+  const sendMessage = async () => {
+    if (message) {
+      // socket.emit("createdMessage", { author: chosenUsername, message });
+      // setMessages((currentMsg) => [
+      //   ...currentMsg,
+      //   { author: chosenUsername, message },
+      // ]);
+      setMessages((currentMsg) => [...currentMsg, { message: message }]);
+      setMessage("");
+    }
+  };
 
-  const handleKeypress = (e:any) => {
-      if (e.keyCode === 13) {
-        if (message) {
-          // sendMessage();
-          toast.success('sent')
-        }
+  const handleKeypress = (e: any) => {
+    if (e.keyCode === 13) {
+      if (message) {
+        sendMessage();
       }
-  }
+    }
+  };
 
   return (
     <div className={`w-full flex h-[90%] fixed right-0`}>
@@ -92,12 +99,20 @@ export default function Page({user_id}: {user_id:number}) {
             {showDetail ? "Hide Detail" : "Show Detail"}
           </button>
         </div>
-        <div className="flex-1 overflow-y-scroll p-2"></div>
+        <div className="flex-1 overflow-y-scroll p-2">
+          {messages.map((msg, i) => {
+            return (
+              <div className="w-full flex justify-end py-1 px-2" key={i}>
+                <span className="bg-white rounded-md p-2 max-w-[45%] break-all">
+                  {msg.message}
+                </span>
+              </div>
+            );
+          })}
+          <div ref={messageEndRef}></div>
+        </div>
         <div className="max-h-[20%] inset-y-1">
-          <form 
-            onSubmit={(e)=>{e.preventDefault
-            console.log(123)}}
-            className="my-2 relative flex items-center">
+          <div className="my-2 relative flex items-center">
             <label
               className="text-blue-500 hover:bg-gray-200 ease-in-out transition  p-2 m-3 rounded-full cursor-pointer"
               htmlFor="fileUpload"
@@ -118,19 +133,21 @@ export default function Page({user_id}: {user_id:number}) {
               value={message}
               className="outline-none py-2 px-2 rounded-md flex-1 text-blue-500 pr-10 mr-2"
               onChange={(e) => setMessage(e.target.value)}
-
               // onChange={(e) => setMessage(e.target.value)}
               onKeyUp={handleKeypress}
             />
             <button
               type="button"
+              onClick={() => {
+                sendMessage();
+              }}
               className={`${
                 !validMessage && "hidden"
               } text-blue-500 hover:scale-110 transition ease-in-out absolute right-5 inset-y-5`}
             >
               <ArrowCircleUpRoundedIcon />
             </button>
-          </form>
+          </div>
         </div>
       </section>
       <section

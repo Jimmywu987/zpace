@@ -11,11 +11,10 @@ export default function SocketHandler(req:any, res:any) {
   const io = new Server(res.socket.server);
   res.socket.server.io = io;
 
-  const onConnection = (socket:any) => {
+  io.on("connection", (socket:any) => {
     messageHandler(io, socket);
-  };
 
-  io.on("connection", onConnection);
+  });
 
   console.log("Setting up socket");
   res.end();

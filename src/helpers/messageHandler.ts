@@ -1,9 +1,6 @@
-export default (io:any, socket:any) => {
-  const createdMessage = (msg:any) => {
-    socket.broadcast.emit("newIncomingMessage", msg);
-    console.log('newMessage')
-  };
-
-  socket.on("createdMessage", createdMessage);
+export default (io: any, socket: any) => {
+  socket.on("createdMessage", (msg: any) => {
+    io.broadcast.emit("newIncomingMessage", msg);
+    console.log('new message')
+  });
 };
-

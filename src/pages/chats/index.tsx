@@ -23,21 +23,31 @@ export default function Home() {
 
     socket = io();
 
-    socket.on("newIncomingMessage", (msg: Message) => {
+    socket.on("newIncomingMessage", async (msg: Message) => {
       setMessages((currentMsg) => [
         ...currentMsg,
         { author: msg.author, message: msg.message },
       ]);
+    //  await displayMessage(msg);
+      console.log('new message received')
+
     });
   };
+
+  // async function displayMessage(msg:Message) {
+  //   const div = document.createElement("div")
+  //   div.textContent = msg.author + ': ' + msg.message;
+
+  //   document.getElementById('message-container')?.append(div)
+  // }
 
   const sendMessage = async () => {
     if (message) {
       socket.emit("createdMessage", { author: chosenUsername, message });
-      setMessages((currentMsg) => [
-        ...currentMsg,
-        { author: chosenUsername, message },
-      ]);
+      // setMessages((currentMsg) => [
+      //   ...currentMsg,
+      //   { author: chosenUsername, message },
+      // ]);
       setMessage("");
     }
   };
@@ -80,7 +90,6 @@ export default function Home() {
               Your username: {username} - {socket.id}
             </p>
             <div className="flex flex-col justify-end bg-white h-[20rem] min-w-[33%] rounded-md shadow-md ">
-              <div className="h-full last:border-b-0 overflow-y-scroll">
                 {messages.map((msg, i) => {
                   return (
                     <div
@@ -91,7 +100,6 @@ export default function Home() {
                     </div>
                   );
                 })}
-              </div>
               <div className="border-t border-gray-300 w-full flex rounded-bl-md">
                 <input
                   type="text"

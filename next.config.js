@@ -2,7 +2,7 @@
 
 const isDevelopment = process.env.NODE_ENV === 'development'
 const nextConfig = {
-  reactStrictMode: true,
+  reactStrictMode: false,
   env: {
     BACKEND_URL: isDevelopment ? process.env.BACKEND_URL_DEVELOPMENT : process.env.BACKEND_URL_PRODUCTION,
     DATABASE_URL: process.env.DATABASE_URL,
