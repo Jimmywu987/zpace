@@ -74,7 +74,7 @@ export const Navbar = () => {
                     alt={`${reduxUser.username} profile image`}
                     className="w-10 h-10 rounded-full object-cover"
                   />
-                  <span>{reduxUser.username}</span>
+                  <span className="hidden md:block">{reduxUser.username}</span>
                 </a>
               </Link>
               <NavDivider />

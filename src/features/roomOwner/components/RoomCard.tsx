@@ -18,6 +18,8 @@ import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import Link from "next/link";
 import { WeeklyTimeSlotDisplay } from "./WeeklyTimeSlotDisplay";
 import { ThemeTag } from "./ThemeTag";
+import { deleteRoom } from "@/apis/api";
+import { deleteFile } from "@/lib/s3Uploader";
 
 const PERSPECTIVES = [
   {
@@ -59,7 +61,6 @@ const RenderAvgRating = ({
 };
 
 export const RoomCard = ({ room }: { room: RoomType }) => {
-  const session = useSession();
   const router = useRouter();
 
   const [open, setOpen] = useState(false);
@@ -74,8 +75,15 @@ export const RoomCard = ({ room }: { room: RoomType }) => {
       router.push(`/room-detail/${room.id}`);
     }
   };
-  const onClickDelete = () => {
-    // delete room
+  const onClickDelete = async () => {
+    const res = await deleteRoom({ roomId: room.id });
+    if (res && res.status === 201) {
+      room.roomImgs.map(async (img) => {
+        await deleteFile(img.url);
+      });
+      router.reload();
+      handleClose();
+    }
   };
   return (
     <>
@@ -140,7 +148,7 @@ export const RoomCard = ({ room }: { room: RoomType }) => {
             <Grid item xs={12} sm={12} container>
               <Grid item xs container direction="column" spacing={2}>
                 <Grid item xs>
-                  <div className="flex space-x-10 my-6">
+                  <div className="flex flex-col md:flex-row space-y-2 md:space-y-2 md:space-x-10 my-6">
                     <div className="space-y-1">
                       <div>
                         <strong className="text-theme-color1 text-2xl">
@@ -165,14 +173,15 @@ export const RoomCard = ({ room }: { room: RoomType }) => {
                         Capacity: {room.capacity}{" "}
                         {room.capacity! > 1 ? "persons" : "person"}
                       </div>
-                      <div className="flex space-x-1">
-                        {room.wifi && <ThemeTag>Wifi</ThemeTag>}
-                        {room.socketPlug && <ThemeTag>Socket Plug</ThemeTag>}
-                        {room.airCondition && (
-                          <ThemeTag>Air Condition</ThemeTag>
-                        )}
-                        {room.desk && <ThemeTag>Desk</ThemeTag>}
-
+                      <div className="flex flex-col ">
+                        <div className="flex space-x-1 flex-wrap items-center">
+                          {room.wifi && <ThemeTag>Wifi</ThemeTag>}
+                          {room.socketPlug && <ThemeTag>Socket Plug</ThemeTag>}
+                          {room.airCondition && (
+                            <ThemeTag>Air Condition</ThemeTag>
+                          )}
+                          {room.desk && <ThemeTag>Desk</ThemeTag>}
+                        </div>
                         {!room.wifi &&
                           !room.socketPlug &&
                           !room.airCondition &&
@@ -192,7 +201,7 @@ export const RoomCard = ({ room }: { room: RoomType }) => {
                         Current one-off rental services available:{" "}
                         {room.oneTimeOffOpenTimeslots.length}
                       </div>
-                      <div className="space-y-2">
+                      <div className="space-y-2 flex flex-wrap">
                         {room.oneTimeOffOpenTimeslots.map((time) => {
                           return (
                             <div key={time.id}>
@@ -215,14 +224,16 @@ export const RoomCard = ({ room }: { room: RoomType }) => {
                 <Grid item>
                   <div className="flex justify-end items-center space-x-2">
                     <Typography variant="body2" style={{ cursor: "pointer" }}>
-                      <Link href={`/room-owner/edit-room?id=${room.id}`}>
+                      <Link
+                        href={`/room-owner/manage-room/edit-room/${room.id}`}
+                      >
                         <a className="flex items-center space-x-2 text-theme-color1 px-2 py-1 rounded hover:bg-gray-50">
                           <span className="">View Details and Edit</span>
                           <ModeEditIcon className="" />
                         </a>
                       </Link>
                     </Typography>
-                    <Typography variant="subtitle1">
+                    <Typography variant="subtitle1" className="cursor-pointer">
                       <DeleteForeverIcon
                         className="text-gray-600"
                         onClick={handleDeleteRoom}
@@ -260,7 +271,7 @@ export const RoomCard = ({ room }: { room: RoomType }) => {
               Close
             </button>
             <button
-              className="hover:opacity-50 bg-red-500 text-white font-normal text-lg px-2 py-1"
+              className="hover:opacity-50 bg-red-500 text-white font-normal text-lg px-2 py-1 "
               onClick={onClickDelete}
             >
               Confirm

@@ -1,26 +1,31 @@
 import { SubmitButton } from "@/features/common/components/buttons/SubmitButton";
 import { isLoading, loadingSelector } from "@/redux/loading";
-import { CreateRoomInputTypes } from "@/features/roomOwner/types/createRoomInputTypes";
+
 import { useS3Upload } from "next-s3-upload";
 import { useRouter } from "next/router";
 import { useFormContext } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import { OneTimeTypes } from "@/features/roomOwner/types/oneTimeTypes";
-import { WeeklyTimeTypes } from "@/features/roomOwner/types/weeklyTimeTypes";
-import { createRoom } from "@/apis/api";
-import { useSession } from "next-auth/react";
-import { User } from "@prisma/client";
-import toast from "react-hot-toast";
+import { deleteFile } from "@/lib/s3Uploader";
 
-export const CreateRoomFormButton = () => {
+import { editRoom } from "@/apis/api";
+import { useSession } from "next-auth/react";
+import { RoomImg, User } from "@prisma/client";
+import toast from "react-hot-toast";
+import {
+  checkOneOffTime,
+  checkTimeWeek,
+} from "@/features/roomOwner/helpers/convertTimeHelper";
+import { EditRoomFormInputTypes } from "@/features/roomOwner/types/editRoomFormInputTypes";
+
+export const EditRoomFormButton = ({ deleteImg }: { deleteImg: RoomImg[] }) => {
   const { uploadToS3 } = useS3Upload();
   const router = useRouter();
   const dispatch = useDispatch();
   const session = useSession();
   const user = session.data?.user as User;
   const { loading } = useSelector(loadingSelector);
-  const { handleSubmit, reset, formState, setValue, watch } =
-    useFormContext<CreateRoomInputTypes>();
+  const { handleSubmit, formState, setValue } =
+    useFormContext<EditRoomFormInputTypes>();
 
   const onSubmit = handleSubmit(async (data) => {
     dispatch(isLoading({ isLoading: true }));
@@ -38,6 +43,8 @@ export const CreateRoomFormButton = () => {
         weeklyTimeAvailability.length > 0
       )
     ) {
+      dispatch(isLoading({ isLoading: false }));
+
       return;
     }
     const checkWhichIsLonger =
@@ -67,38 +74,32 @@ export const CreateRoomFormButton = () => {
       }
     }
     if (checkTimeIfCorrect.some((result) => !result)) {
+      dispatch(isLoading({ isLoading: false }));
+
       return;
     }
-    const { address, district } = data;
-    const latAndLngJSON = await fetch(
-      `https://maps.googleapis.com/maps/api/geocode/json?address=${address}+${district}+hong+kong&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`
-    );
-    const latAndLng = await latAndLngJSON.json();
 
-    let latitude;
-    let longitude;
-    if (latAndLng.results[0]) {
-      latitude = latAndLng.results[0].geometry.location.lat.toString() || null;
-      longitude = latAndLng.results[0].geometry.location.lng.toString() || null;
-    } else {
-      latitude = null;
-      longitude = null;
+    const { selectedFile, step, uploadedFile, ...storeData } = data;
+    if (selectedFile.length === 0 && uploadedFile.length === 0) {
+      dispatch(isLoading({ isLoading: false }));
+
+      return;
     }
-    const { selectedFile, step, ...storeData } = data;
     const roomUrls = [];
     for (let i = 0; i < selectedFile.length; i++) {
       const { url } = await uploadToS3(selectedFile[i]);
       roomUrls.push(url);
     }
-    const res = await createRoom({
+    const res = await editRoom({
       ...storeData,
-      latitude,
-      longitude,
+      deleteImg: deleteImg.map((file) => file.id),
       roomUrls,
     });
     if (res && res.status === 201) {
       dispatch(isLoading({ isLoading: false }));
-      toast.success("Created room successfully");
+
+      deleteImg.map(async (img) => await deleteFile(img.url));
+      toast.success("Edit room successfully");
       router.push(`/room-owner/${user.id}`);
       return;
     }
@@ -111,12 +112,6 @@ export const CreateRoomFormButton = () => {
     <div className="flex items-center space-x-3 justify-end">
       <button
         className="font-medium rounded hover:bg-gray-50 px-2 py-1"
-        onClick={() => reset()}
-      >
-        RESET FORM
-      </button>
-      <button
-        className="font-medium rounded hover:bg-gray-50 px-2 py-1"
         onClick={goBack}
       >
         BACK
@@ -126,56 +121,4 @@ export const CreateRoomFormButton = () => {
       </SubmitButton>
     </div>
   );
-};
-
-const checkTimeWeek = (weeklyTimeSlot: WeeklyTimeTypes) => {
-  const {
-    weekHalfDayOne,
-    weekHalfDayTwo,
-    weekStartHr,
-    weekEndHr,
-    weekEndMin,
-    weekStartMin,
-  } = weeklyTimeSlot;
-  if (weekHalfDayOne === "A.M." && weekHalfDayTwo === "P.M.") {
-    return true;
-  } else if (weekHalfDayOne === "P.M." && weekHalfDayTwo === "A.M.") {
-    return false;
-  } else if (Number(weekStartHr) < Number(weekEndHr)) {
-    return true;
-  } else if (Number(weekStartHr) === 12) {
-    return true;
-  } else if (
-    weekStartHr === weekEndHr &&
-    Number(weekEndMin) > Number(weekStartMin)
-  ) {
-    return true;
-  }
-  return false;
-};
-
-const checkOneOffTime = (oneTimeSlot: OneTimeTypes) => {
-  const {
-    halfOneDayOne,
-    halfOneDayTwo,
-    oneOffStartHr,
-    oneOffEndHr,
-    oneOffEndMin,
-    oneOffStartMin,
-  } = oneTimeSlot;
-  if (halfOneDayOne === "A.M." && halfOneDayTwo === "P.M.") {
-    return true;
-  } else if (halfOneDayOne === "P.M." && halfOneDayTwo === "A.M.") {
-    return false;
-  } else if (Number(oneOffStartHr) < Number(oneOffEndHr)) {
-    return true;
-  } else if (Number(oneOffStartHr) === 12) {
-    return true;
-  } else if (
-    oneOffStartHr === oneOffEndHr &&
-    Number(oneOffEndMin) > Number(oneOffStartMin)
-  ) {
-    return true;
-  }
-  return false;
 };

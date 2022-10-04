@@ -4,17 +4,13 @@ import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
 import { useFormContext } from "react-hook-form";
 
-const STEPS = [
-  "Basic Information of Your Space",
-  "Photos and Rental Services Availability",
-];
-export const CreateRoomFormStepper = () => {
+export const FormStepper = ({ labels }: { labels: string[] }) => {
   const { watch } = useFormContext();
   const step = watch("step");
   return (
     <Box>
       <Stepper activeStep={step} alternativeLabel>
-        {STEPS.map((label) => (
+        {labels.map((label) => (
           <Step
             key={label}
             sx={{
