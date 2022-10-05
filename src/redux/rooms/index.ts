@@ -1,3 +1,4 @@
+import { RoomType } from "@/types/Room";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { FeatureKey } from "../featureKey";
 import { RootState } from "../reducers";
@@ -6,7 +7,7 @@ import { RootState } from "../reducers";
  * Payload
  */
 export type RoomPayload = {
-  rooms: [];
+  rooms: RoomType[];
 };
 
 /**
