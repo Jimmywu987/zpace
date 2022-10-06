@@ -18,6 +18,8 @@ const HomePage: NextPage = () => {
 export default HomePage;
 
 export async function getServerSideProps(context: any) {
+
+
   // Get external data from the file system, API, DB, etc.
   const data = { name: "jimmy" };
 

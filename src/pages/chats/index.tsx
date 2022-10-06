@@ -1,5 +1,7 @@
 import io from "socket.io-client";
 import { useState, useEffect } from "react";
+import { PrismaClient } from "@prisma/client";
+import Link from "next/link";
 
 let socket: any;
 
@@ -8,11 +10,41 @@ type Message = {
   message: string;
 };
 
-export default function Home() {
+type User = {
+  id: string;
+  username: string;
+};
+
+
+export const prisma = new PrismaClient();
+
+export async function getServerSideProps() {
+  const users = await prisma.user.findMany({
+    select: {
+      username: true,
+      id: true,
+      profileImg: true,
+    },
+  });
+  if (!users) {
+    return {
+      notFound: true,
+    };
+  }
+
+  return {
+    props: {
+      users,
+    },
+  };
+}
+
+export default function Test({users} : {users:User[] }) {
   const [username, setUsername] = useState("");
   const [chosenUsername, setChosenUsername] = useState("");
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<Array<Message>>([]);
+  const [room, setRoom] = useState("");
 
   useEffect(() => {
     socketInitializer();
@@ -24,13 +56,13 @@ export default function Home() {
     socket = io();
 
     socket.on("newIncomingMessage", async (msg: Message) => {
+      console.log(messages)
       setMessages((currentMsg) => [
         ...currentMsg,
         { author: msg.author, message: msg.message },
       ]);
-    //  await displayMessage(msg);
-      console.log('new message received')
-
+      //  await displayMessage(msg);
+      console.log("new message received");
     });
   };
 
@@ -42,12 +74,13 @@ export default function Home() {
   // }
 
   const sendMessage = async () => {
+    
     if (message) {
-      socket.emit("createdMessage", { author: chosenUsername, message });
-      // setMessages((currentMsg) => [
-      //   ...currentMsg,
-      //   { author: chosenUsername, message },
-      // ]);
+      socket.emit("createdMessage", { author: chosenUsername, message }, room);
+      setMessages((currentMsg) => [
+        ...currentMsg,
+        { author: chosenUsername, message },
+      ]);
       setMessage("");
     }
   };
@@ -62,6 +95,16 @@ export default function Home() {
 
   return (
     <div className="flex items-center p-4 mx-auto min-h-screen justify-center bg-purple-500">
+      <>
+        {users.map((user, key) => (
+          <div key={key}>
+            <Link href={`/chats/guest/${user.id}`}>
+              {user.username}
+            </Link>
+          </div>
+        ))}
+      </>
+
       <main className="gap-4 flex flex-col items-center justify-center w-full h-full">
         {!chosenUsername ? (
           <>
@@ -90,16 +133,16 @@ export default function Home() {
               Your username: {username} - {socket.id}
             </p>
             <div className="flex flex-col justify-end bg-white h-[20rem] min-w-[33%] rounded-md shadow-md ">
-                {messages.map((msg, i) => {
-                  return (
-                    <div
-                      className="w-full py-1 px-2 border-b border-gray-200"
-                      key={i}
-                    >
-                      {msg.author} : {msg.message}
-                    </div>
-                  );
-                })}
+              {messages.map((msg, i) => {
+                return (
+                  <div
+                    className="w-full py-1 px-2 border-b border-gray-200"
+                    key={i}
+                  >
+                    {msg.author} : {msg.message}
+                  </div>
+                );
+              })}
               <div className="border-t border-gray-300 w-full flex rounded-bl-md">
                 <input
                   type="text"
@@ -119,6 +162,13 @@ export default function Home() {
                   >
                     Send
                   </button>
+                </div>
+                <div>
+                  <input
+                    type="text"
+                    placeholder="room"
+                    onChange={(e) => setRoom(e.target.value)}
+                  />
                 </div>
               </div>
             </div>

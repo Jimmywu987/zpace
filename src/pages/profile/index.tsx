@@ -6,6 +6,7 @@ export async function getServerSideProps() {
     select: {
       username: true,
       id: true,
+      profileImg: true
     },
   });
   if (!users) {

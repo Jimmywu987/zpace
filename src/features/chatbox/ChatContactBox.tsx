@@ -15,11 +15,11 @@ export default function ChatContactBox(contact: ContactProps) {
           selectedHost
             ? "bg-violet-500 text-white"
             : "text-gray-500 hover:bg-violet-200 "
-        } w-full h-[100py-2 flex rounded-2xl items-center cursor-pointer my-2 mx-1 translation ease-in-out transition`}
+        } w-full h-[8vh] py-2 flex rounded-2xl items-center cursor-pointer my-2 mx-1 translation ease-in-out transition`}
       >
         <img
           className="w-1/5 rounded-full object-cover"
-          src={`https://joeschmoe.io/api/v1/${contact.image}`}
+          src={`${contact.image}`}
           alt="image"
         />
         <div className="text-xs ">
@@ -31,9 +31,9 @@ export default function ChatContactBox(contact: ContactProps) {
             {contact.name}
           </p>
           <p className="text-ellipsis overflow-hidden h-1/3 ...">
-            {contact.lastMessage}
+            {/* {contact.lastMessage} */}
           </p>
-          <p>{moment(parseInt(contact.createdAt)).format("LLL")}</p>
+          {/* <p>{moment(parseInt(contact.createdAt)).format("LLL")}</p> */}
         </div>
       </div>
     </Link>
@@ -41,10 +41,7 @@ export default function ChatContactBox(contact: ContactProps) {
 }
 
 type ContactProps = {
-  id: number;
+  id: string;
   name: string;
-  createdAt: string;
-  lastMessage: string;
-  contactJoinDate: string;
   image: string;
 };

@@ -4,55 +4,94 @@ import blogsJSON from "@/data/blogs.json";
 import ChatContactBox from "@/features/chatbox/ChatContactBox";
 import ImageIcon from "@mui/icons-material/Image";
 import { QueryProps } from "@/types/QueryProps";
+import io from "socket.io-client";
+import { PrismaClient } from "@prisma/client";
+import Link from "next/link";
+export const prisma = new PrismaClient();
+
+let socket: any;
 
 type Message = {
   message: string;
 };
 
+type Users = {
+  username: string;
+  id: string;
+  profileImg: string;
+};
+
+type ServerSideProps = {
+  host_id: string;
+  users: Users[];
+};
+
 export async function getServerSideProps({ query }: QueryProps) {
+  const users = await prisma.user.findMany({
+    select: {
+      username: true,
+      id: true,
+      profileImg: true,
+    },
+  });
   const { user_id } = query;
-  // const hostDoc = await getUserWithUserId(user_id, true);
-  if (!user_id) {
-    return {
-      notFound: true,
-    };
+
+  let host_id = user_id;
+  // const hostDoc = await getUserWithUserId(host_id, true);
+  if (!host_id) {
+    host_id = users[0].id;
   }
 
   return {
     props: {
-      user_id,
+      host_id,
+      users,
     },
   };
 }
 
-export default function Page({ user_id }: { user_id: number }) {
+export default function Page({ host_id, users }: ServerSideProps) {
+
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<Array<Message>>([]);
 
   const [showDetail, setShowDetail] = useState(false);
-  const blogsData = blogsJSON.posts.slice(0, 9);
-  const contactPerson = blogsData[user_id];
-  const [contactName, setContactName] = useState(contactPerson.author);
-  const messageEndRef = useRef(null)
+  // const blogsData = blogsJSON.posts.slice(0, 9);
+
+  const contactPerson = users.find((user) => user.id === host_id);
+  const [contactName, setContactName] = useState(contactPerson?.username);
+  const messageEndRef = useRef<null | HTMLDivElement>(null);
   const validMessage = message.length > 0;
+
   useEffect(() => {
-    setContactName(contactPerson.author);
-    // console.log(showDetail);
-  }, [user_id]);
+    socketInitializer();
+  }, []);
+
+  const socketInitializer = async () => {
+    await fetch("/api/chat/socket");
+
+    socket = io();
+
+    socket.on("receive-message", async (msg: Message) => {
+      console.log(messages);
+      setMessages((currentMsg) => [...currentMsg, { message: msg.message + ' (receive)' }]);
+      console.log("new message received");
+    });
+  };
+
+  useEffect(() => {
+    setContactName(contactPerson?.username);
+    setMessages([]);
+  }, [host_id]);
 
   useEffect(() => {
     messageEndRef.current?.scrollIntoView();
-  }, [messages])
-
+  }, [messages]);
 
   const sendMessage = async () => {
     if (message) {
-      // socket.emit("createdMessage", { author: chosenUsername, message });
-      // setMessages((currentMsg) => [
-      //   ...currentMsg,
-      //   { author: chosenUsername, message },
-      // ]);
-      setMessages((currentMsg) => [...currentMsg, { message: message }]);
+      socket.emit("send-message", { sender_id: socket.id, message });
+      setMessages((currentMsg) => [...currentMsg, { message: message + ' (send)' }]);
       setMessage("");
     }
   };
@@ -72,15 +111,12 @@ export default function Page({ user_id }: { user_id: number }) {
           Message
         </div>
         <div id="contact-box-container" className="overflow-y-scroll h-full ">
-          {blogsData.map((blog, key) => (
+          {users?.map((user, key) => (
             <ChatContactBox
               key={key}
-              id={key}
-              name={blog.author}
-              createdAt={blog.date}
-              lastMessage={blog.excerpt}
-              contactJoinDate={blog.date}
-              image={blog.author}
+              id={user.id}
+              name={user.username}
+              image={user.profileImg}
             />
           ))}
         </div>
