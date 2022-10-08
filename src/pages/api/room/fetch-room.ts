@@ -37,6 +37,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           ],
         },
         include: {
+          likes: true,
           roomImgs: true,
           weeklyOpenTimeslots: true,
           oneTimeOffOpenTimeslots: true,
