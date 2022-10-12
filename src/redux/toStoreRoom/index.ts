@@ -1,3 +1,4 @@
+import { RoomType } from "@/types/Room";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { FeatureKey } from "../featureKey";
 import { RootState } from "../reducers";
@@ -6,7 +7,7 @@ import { RootState } from "../reducers";
  * Payload
  */
 export type ToStoreRoomPayload = {
-  chosenRoom: any;
+  chosenRoom: RoomType | undefined;
 };
 
 /**
@@ -14,11 +15,11 @@ export type ToStoreRoomPayload = {
  */
 
 export type ToStoreRoomState = {
-  chosenRoom: any;
+  chosenRoom: RoomType | undefined;
 };
 
 const initialState: ToStoreRoomState = {
-  chosenRoom: {},
+  chosenRoom: undefined,
 };
 
 /**
