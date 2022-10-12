@@ -3,7 +3,8 @@ import { useState, useEffect, useRef } from "react";
 import { PrismaClient } from "@prisma/client";
 import Link from "next/link";
 import Router, { useRouter } from "next/router";
-import { useSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
+import { GetServerSideProps } from "next";
 
 type User = {
   id: string;
@@ -12,12 +13,19 @@ type User = {
 
 export const prisma = new PrismaClient();
 
-export async function getServerSideProps() {
+export const getServerSideProps:GetServerSideProps = async(context) => {
+  const serverSession = await getSession(context);
+
   const users = await prisma.user.findMany({
     select: {
       username: true,
       id: true,
       profileImg: true,
+    },
+    where: {
+      NOT: {
+        id: serverSession?.user?.id,
+      },
     },
   });
   if (!users) {
@@ -34,9 +42,7 @@ export async function getServerSideProps() {
 }
 
 export default function ChatsPage({ users }: { users: User[] }) {
-  const session = useSession();
-  let user_id = session.data?.user?.id
   users.map(user => {
-    if (user.id !== user_id) return Router.push("/chats/" + user.id);
+    Router.push("/chats/" + user.id);
   }) 
 }

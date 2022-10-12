@@ -63,7 +63,6 @@ export default function Page({ host_id, users }: ServerSideProps) {
   const [messages, setMessages] = useState<Array<Message>>([]);
   const [showDetail, setShowDetail] = useState(false);
   const [room, setRoom] = useState("")
-  // const blogsData = blogsJSON.posts.slice(0, 9);
 
   const contactPerson = users.find((user) => user.id === host_id);
   const [contactName, setContactName] = useState(contactPerson?.username);
@@ -140,7 +139,7 @@ export default function Page({ host_id, users }: ServerSideProps) {
         <div className="relative p-3 border-y border-gray-300 bg-white font-bold h-20 ">
           <span className="font-bold">{contactName}</span>
           <button
-            className="absolute right-1 inset-y-1 "
+            className="absolute right-1 inset-y-1 lg:hidden"
             onClick={() => setShowDetail(!showDetail)}
           >
             {showDetail ? "Hide Detail" : "Show Detail"}
@@ -182,8 +181,6 @@ export default function Page({ host_id, users }: ServerSideProps) {
               id="fileUpload"
               type="file"
               accept="image/x-png,image/jpeg"
-
-              // onChange={uploadFile}
             />
             <input
               type="text"
@@ -191,7 +188,6 @@ export default function Page({ host_id, users }: ServerSideProps) {
               value={message}
               className="outline-none py-2 px-2 rounded-md flex-1 text-blue-500 pr-10 mr-2"
               onChange={(e) => setMessage(e.target.value)}
-              // onChange={(e) => setMessage(e.target.value)}
               onKeyUp={handleKeypress}
             />
             <button
