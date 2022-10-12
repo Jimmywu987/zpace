@@ -28,3 +28,15 @@ export async function editRoom(params: any) {
 export async function deleteRoom(params: any) {
   return await req("delete", "/api/room/delete", params);
 }
+
+export async function fetchRooms(params: any) {
+  return await req("post", "/api/room/fetch-room", params);
+}
+
+export async function likeRoom(params: any) {
+  return await req("get", "/api/room/like", params);
+}
+
+export async function unlikeRoom(params: any) {
+  return await req("delete", "/api/room/unlike", params);
+}

@@ -4,7 +4,8 @@ import { ManageRooms } from "@/features/nav/components/ManageRooms";
 import { NavDivider } from "@/features/nav/components/NavDivider";
 import { NavLink } from "@/features/nav/components/NavLink";
 import { clearUserInfo, updateUser, userSelector } from "@/redux/user";
-import { User } from "@/types/User";
+import { User } from "@prisma/client";
+
 import { signOut, useSession, getSession } from "next-auth/react";
 import Link from "next/link";
 import { useEffect } from "react";

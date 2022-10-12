@@ -2,8 +2,7 @@ import { RoomType } from "@/types/Room";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 import Modal from "@mui/material/Modal";
-import StarIcon from "@mui/icons-material/Star";
-import StarBorderIcon from "@mui/icons-material/StarBorder";
+
 import { RatingAndCommentOnRoom } from "@prisma/client";
 import TextField from "@mui/material/TextField";
 import VisibilityIcon from "@mui/icons-material/Visibility";
@@ -20,6 +19,7 @@ import { WeeklyTimeSlotDisplay } from "./WeeklyTimeSlotDisplay";
 import { ThemeTag } from "./ThemeTag";
 import { deleteRoom } from "@/apis/api";
 import { deleteFile } from "@/lib/s3Uploader";
+import { RenderAvgRating } from "@/features/common/components/RenderAvgRating";
 
 const PERSPECTIVES = [
   {
@@ -31,34 +31,6 @@ const PERSPECTIVES = [
     label: "View as Self",
   },
 ];
-
-const RenderAvgRating = ({
-  index,
-  rating,
-}: {
-  index: number;
-  rating: RatingAndCommentOnRoom[];
-}) => {
-  let sumRating = 0;
-  for (let i = 0; i < rating.length; i++) {
-    sumRating = sumRating + rating[i].rating;
-  }
-  let avgSum = Math.round(sumRating / rating.length);
-
-  let num = 1;
-  if (avgSum >= index) {
-    num = 0;
-  }
-  return (
-    <>
-      {num === 1 ? (
-        <StarBorderIcon className="text-theme-color2" />
-      ) : (
-        <StarIcon className="text-theme-color2" />
-      )}
-    </>
-  );
-};
 
 export const RoomCard = ({ room }: { room: RoomType }) => {
   const router = useRouter();
