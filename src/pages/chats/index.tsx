@@ -1,5 +1,5 @@
 import io from "socket.io-client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { PrismaClient } from "@prisma/client";
 import Link from "next/link";
 
@@ -14,7 +14,6 @@ type User = {
   id: string;
   username: string;
 };
-
 
 export const prisma = new PrismaClient();
 
@@ -39,8 +38,9 @@ export async function getServerSideProps() {
   };
 }
 
-export default function Test({users} : {users:User[] }) {
-  const [username, setUsername] = useState("");
+export default function Test({ users }: { users: User[] }) {
+  // const [username, setUsername] = useState("");
+  const usernameRef = useRef() as React.MutableRefObject<HTMLInputElement>; 
   const [chosenUsername, setChosenUsername] = useState("");
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<Array<Message>>([]);
@@ -56,16 +56,20 @@ export default function Test({users} : {users:User[] }) {
     socket = io();
 
     socket.on("newIncomingMessage", async (msg: Message) => {
-      console.log(messages)
+      console.log(messages);
       setMessages((currentMsg) => [
         ...currentMsg,
         { author: msg.author, message: msg.message },
       ]);
       //  await displayMessage(msg);
-      console.log("new message received");
     });
   };
 
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
+    setChosenUsername(usernameRef.current.value);
+    socket.emit("joinRoomMessage", usernameRef.current.value);
+  };
   // async function displayMessage(msg:Message) {
   //   const div = document.createElement("div")
   //   div.textContent = msg.author + ': ' + msg.message;
@@ -74,7 +78,6 @@ export default function Test({users} : {users:User[] }) {
   // }
 
   const sendMessage = async () => {
-    
     if (message) {
       socket.emit("createdMessage", { author: chosenUsername, message }, room);
       setMessages((currentMsg) => [
@@ -94,16 +97,14 @@ export default function Test({users} : {users:User[] }) {
   };
 
   return (
-    <div className="flex items-center p-4 mx-auto min-h-screen justify-center bg-purple-500">
-      <>
+    <div className="flex flex-col items-center p-4 mx-auto min-h-screen justify-center bg-purple-500 h-[100%]">
+      <div className="flex-none flex space-x-1">
         {users.map((user, key) => (
-          <div key={key}>
-            <Link href={`/chats/guest/${user.id}`}>
-              {user.username}
-            </Link>
-          </div>
+          <button key={key} className="bg-gray-200 rounded-all text-grey-700 p-2">
+            <Link href={`/chats/${user.id}`}>{user.username}</Link>
+          </button>
         ))}
-      </>
+      </div>
 
       <main className="gap-4 flex flex-col items-center justify-center w-full h-full">
         {!chosenUsername ? (
@@ -112,16 +113,16 @@ export default function Test({users} : {users:User[] }) {
               How people should call you?
             </h3>
             <input
+              id="username"
+              ref={usernameRef}
               type="text"
               placeholder="Identity..."
-              value={username}
               className="p-3 rounded-md outline-none"
-              onChange={(e) => setUsername(e.target.value)}
+              // value={username}
+              // onChange={(e) => setUsername(e.target.value)}
             />
             <button
-              onClick={() => {
-                setChosenUsername(username);
-              }}
+              onClick={handleSubmit}
               className="bg-white rounded-md px-4 py-2 text-xl"
             >
               Go!
@@ -130,7 +131,7 @@ export default function Test({users} : {users:User[] }) {
         ) : (
           <>
             <p className="font-bold text-white text-xl">
-              Your username: {username} - {socket.id}
+              Your username: {chosenUsername} - {socket.id}
             </p>
             <div className="flex flex-col justify-end bg-white h-[20rem] min-w-[33%] rounded-md shadow-md ">
               {messages.map((msg, i) => {

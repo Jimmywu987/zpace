@@ -12,10 +12,13 @@ export default function SocketHandler(req:any, res:any) {
   res.socket.server.io = io;
 
   io.on("connection", (socket:any) => {
-    messageHandler(io, socket);
+    messageHandler(socket);
 
   });
 
   console.log("Setting up socket");
   res.end();
+  
 }
+
+

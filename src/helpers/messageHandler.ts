@@ -1,19 +1,24 @@
-export default function messageHandler(io: any, socket: any) {
-  socket.on("send-message", (msg: any) => {
-    console.log(socket.id);
-    console.log(msg.sender_id);
-    // if (socket.id !== msg.sender_id) {
-    console.log("receive msg now");
-    io.emit("receive-message", msg);
-    // }
+export default function messageHandler(socket: any) {
+  socket.on("send-message", (msg: any, room: string) => {
+    socket.to(room).emit("receive-message", (msg));
   });
 
+  socket.on("join-room", (room: string) => {
+    socket.join(room);
+  });
+
+
+  socket.on("joinRoomMessage", (username: string) => {
+    socket.broadcast.emit("newIncomingMessage", {author: "admin", message: `${username} has joined room`})
+  });
+
+
   socket.on("createdMessage", (msg: any, room: any) => {
-    console.log(msg);
     if (room === "") {
-      io.emit("newIncomingMessage", msg);
+      socket.broadcast.emit("newIncomingMessage", msg);
     } else {
-      io.to(room).emit("newIncomingMessage", msg);
+      socket.to(room).emit("newIncomingMessage", msg);
     }
   });
-};
+}
+

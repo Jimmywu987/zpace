@@ -20,6 +20,7 @@
     "@react-google-maps/api": "^2.12.2",
     "@reduxjs/toolkit": "^1.8.5",
     "@sentry/nextjs": "^7.11.1",
+    "@socket.io/admin-ui": "^0.5.1",
     "aws-sdk": "^2.1199.0",
     "axios": "^0.27.2",
     "bcryptjs": "^2.4.3",

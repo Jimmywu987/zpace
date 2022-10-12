@@ -1,18 +1,19 @@
 import { useEffect, useRef, useState } from "react";
 import ArrowCircleUpRoundedIcon from "@mui/icons-material/ArrowCircleUpRounded";
-import blogsJSON from "@/data/blogs.json";
 import ChatContactBox from "@/features/chatbox/ChatContactBox";
 import ImageIcon from "@mui/icons-material/Image";
 import { QueryProps } from "@/types/QueryProps";
 import io from "socket.io-client";
 import { PrismaClient } from "@prisma/client";
-import Link from "next/link";
+import { useSession } from "next-auth/react";
+
 export const prisma = new PrismaClient();
 
 let socket: any;
-
+let user_id: string;
 type Message = {
   message: string;
+  sender_id:string;
 };
 
 type Users = {
@@ -27,6 +28,7 @@ type ServerSideProps = {
 };
 
 export async function getServerSideProps({ query }: QueryProps) {
+
   const users = await prisma.user.findMany({
     select: {
       username: true,
@@ -37,7 +39,7 @@ export async function getServerSideProps({ query }: QueryProps) {
   const { user_id } = query;
 
   let host_id = user_id;
-  // const hostDoc = await getUserWithUserId(host_id, true);
+
   if (!host_id) {
     host_id = users[0].id;
   }
@@ -51,11 +53,16 @@ export async function getServerSideProps({ query }: QueryProps) {
 }
 
 export default function Page({ host_id, users }: ServerSideProps) {
+  const joinRoom = async () => {
+   socket?.emit("join-room", user_id);
+ };
+
+  joinRoom();
 
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<Array<Message>>([]);
-
   const [showDetail, setShowDetail] = useState(false);
+  const [room, setRoom] = useState("")
   // const blogsData = blogsJSON.posts.slice(0, 9);
 
   const contactPerson = users.find((user) => user.id === host_id);
@@ -63,6 +70,8 @@ export default function Page({ host_id, users }: ServerSideProps) {
   const messageEndRef = useRef<null | HTMLDivElement>(null);
   const validMessage = message.length > 0;
 
+  const session = useSession();
+  user_id = session.data?.user?.id;
   useEffect(() => {
     socketInitializer();
   }, []);
@@ -73,14 +82,14 @@ export default function Page({ host_id, users }: ServerSideProps) {
     socket = io();
 
     socket.on("receive-message", async (msg: Message) => {
-      console.log(messages);
-      setMessages((currentMsg) => [...currentMsg, { message: msg.message + ' (receive)' }]);
-      console.log("new message received");
+      setMessages((currentMsg) => [...currentMsg, { sender_id: msg.sender_id, message: msg.message}]);
     });
   };
-
+ 
   useEffect(() => {
+    joinRoom();
     setContactName(contactPerson?.username);
+    setRoom(host_id)
     setMessages([]);
   }, [host_id]);
 
@@ -88,10 +97,12 @@ export default function Page({ host_id, users }: ServerSideProps) {
     messageEndRef.current?.scrollIntoView();
   }, [messages]);
 
+ 
+
   const sendMessage = async () => {
     if (message) {
-      socket.emit("send-message", { sender_id: socket.id, message });
-      setMessages((currentMsg) => [...currentMsg, { message: message + ' (send)' }]);
+      socket.emit("send-message", { sender_id: socket.id, message, sender_name: session.data?.user?.username }, room);
+      setMessages((currentMsg) => [...currentMsg, { sender_id: socket.id, message: message }]);
       setMessage("");
     }
   };
@@ -111,14 +122,14 @@ export default function Page({ host_id, users }: ServerSideProps) {
           Message
         </div>
         <div id="contact-box-container" className="overflow-y-scroll h-full ">
-          {users?.map((user, key) => (
+          {users?.map((user, key) => { if (user.id !== user_id ) return (
             <ChatContactBox
               key={key}
               id={user.id}
               name={user.username}
               image={user.profileImg}
             />
-          ))}
+          )})}
         </div>
       </section>
       <section
@@ -138,8 +149,19 @@ export default function Page({ host_id, users }: ServerSideProps) {
         <div className="flex-1 overflow-y-scroll p-2">
           {messages.map((msg, i) => {
             return (
-              <div className="w-full flex justify-end py-1 px-2" key={i}>
-                <span className="bg-white rounded-md p-2 max-w-[45%] break-all">
+              <div
+                className={`w-full flex ${
+                  msg.sender_id === socket.id ? "justify-end " : " justify-start "
+                }py-1 px-2`}
+                key={i}
+              >
+                <span
+                  className={`${
+                    msg.sender_id === socket.id
+                      ? "bg-white"
+                      : "bg-violet-500 text-white"
+                  }  rounded-md p-2 max-w-[45%] break-all`}
+                >
                   {msg.message}
                 </span>
               </div>

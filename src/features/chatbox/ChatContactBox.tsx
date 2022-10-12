@@ -1,15 +1,13 @@
 import Link from "next/link" 
 import React from "react";
-import moment from "moment";
 import { useRouter } from "next/router";
 export default function ChatContactBox(contact: ContactProps) {
   const router = useRouter();
   const {user_id} = router.query;
-  // console.log(typeof(user_id) );
   const selectedHost = user_id === contact.id.toString(); 
 
   return (
-    <Link href={`/chats/guest/${contact.id}`}>
+    <Link href={`/chats/${contact.id}`}>
       <div
         className={`${
           selectedHost
@@ -31,11 +29,10 @@ export default function ChatContactBox(contact: ContactProps) {
             {contact.name}
           </p>
           <p className="text-ellipsis overflow-hidden h-1/3 ...">
-            {/* {contact.lastMessage} */}
           </p>
-          {/* <p>{moment(parseInt(contact.createdAt)).format("LLL")}</p> */}
         </div>
-      </div>
+      </div>          
+
     </Link>
   );
 }
