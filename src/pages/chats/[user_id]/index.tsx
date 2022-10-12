@@ -116,7 +116,7 @@ export default function Page({ host_id, users }: ServerSideProps) {
   };
 
   return (
-    <div className={`w-full flex h-[90%] fixed right-0`}>
+    <div className={`w-full flex h-[90vh] fixed top-20 right-0`}>
       <section className="w-1/4 border border-gray-300 bg-gray-100">
         <div className="p-3 border-y border-gray-300 bg-white font-bold h-20">
           Message

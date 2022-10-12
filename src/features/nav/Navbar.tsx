@@ -50,7 +50,7 @@ export const Navbar = () => {
   }, [isAuthenticated]);
 
   return (
-    <nav className="fixed w-full bg-white shadow-sm flex py-0 px-3 justify-between items-center">
+    <nav className="fixed top-0 w-full bg-white shadow-sm flex py-0 px-3 justify-between items-center">
       <div className="flex items-center flex-1 px-1">
         <Link href="/" passHref>
           <a className="">

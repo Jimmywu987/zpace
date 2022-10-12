@@ -2,7 +2,7 @@ import { userSelector } from "@/redux/user";
 import { User } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { useSelector } from "react-redux";
-import  ChatBox from "@/features/chatbox/ChatBox";
+import  ChatBox from "@/features/nav/components/ChatBox";
 
 export const ManageMessage = () => {
   const reduxUser = useSelector(userSelector);

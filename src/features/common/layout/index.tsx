@@ -4,14 +4,14 @@ import { useRouter } from "next/router";
 import { LoadScriptMemo } from "@/features/searchMap/components/LoadScript";
 const Layout = ({ children, initData }: any) => {
   const { route } = useRouter();
-  const exclude_container_arr = ["/search","/chats"]
+  const exclude_container_arr = ["/search"]
   return (
-    <div className=" w-full">
+    <div className="w-full">
       <Navbar />
       <LoadScriptMemo>
         <main
-          className={`min-h-[80vh] ${
-            route !== "/search" && " container mx-auto "
+          className={`min-h-[80vh] p-[10vh] ${
+            exclude_container_arr.includes(route) && " container mx-auto "
           }`}
         >
           {children}

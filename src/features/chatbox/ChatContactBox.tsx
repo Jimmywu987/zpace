@@ -13,14 +13,14 @@ export default function ChatContactBox(contact: ContactProps) {
           selectedHost
             ? "bg-violet-500 text-white"
             : "text-gray-500 hover:bg-violet-200 "
-        } w-full h-[8vh] py-2 flex rounded-2xl items-center cursor-pointer my-2 mx-1 translation ease-in-out transition`}
+        } w-full h-20 p-2 flex rounded-2xl items-center cursor-pointer my-2 mx-1 translation ease-in-out transition space-x-3`}
       >
         <img
-          className="w-1/5 rounded-full object-cover"
+          className="h-10 w-10 rounded-full object-cover"
           src={`${contact.image}`}
           alt="image"
         />
-        <div className="text-xs ">
+        <div className="text-md ">
           <p
             className={`font-bold ${
               selectedHost ? "text-white" : "text-black"
