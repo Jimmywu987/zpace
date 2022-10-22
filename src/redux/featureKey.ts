@@ -10,4 +10,5 @@ export const FeatureKey = {
   TO_PLACE: "TO_PLACE",
   ROOMS: "ROOMS",
   USER: "USER",
+  TIME_SLOT: "TIME_SLOT",
 } as const;

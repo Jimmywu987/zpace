@@ -15,6 +15,8 @@ export const SearchPageRoomCard = ({ room }: { room: RoomType }) => {
   const user = session.data?.user as User;
   const [photoSequence, setPhotoSequence] = useState(0);
   const [isLiked, setIsLiked] = useState("");
+  const isAuthenticated = session.status === "authenticated";
+
   useEffect(() => {
     const hasLike = room.likes.find((like) => like.userId === user.id);
     if (hasLike) {
@@ -109,7 +111,7 @@ export const SearchPageRoomCard = ({ room }: { room: RoomType }) => {
             <PeopleIcon className="text-theme-color1 mr-1" />
             Capacity: {room.capacity}
           </div>
-          {user?.id !== room.userId && (
+          {isAuthenticated && user?.id !== room.userId && (
             <div className="">
               {!!isLiked ? (
                 <>
