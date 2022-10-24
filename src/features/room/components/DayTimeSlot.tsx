@@ -1,24 +1,17 @@
 import React, { useState, useEffect, Dispatch, SetStateAction } from "react";
 
-import { useDispatch, useSelector } from "react-redux";
-
-import Stack from "@mui/material/Stack";
-import TextField from "@mui/material/TextField";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-
-import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
+import { useDispatch } from "react-redux";
+import { Dayjs } from "dayjs";
 
 import { combinedTimeSlot } from "./DateBookingSection";
 
 import CheckIcon from "@mui/icons-material/Check";
-import { TimezoneDate } from "timezone-date.ts";
 
 import { d2 } from "@/helpers/d2";
 
-import { settingSelector } from "@/redux/setting";
 import { toStoreTimeSlot } from "@/redux/bookTimeSlot";
 import { timeSlotFun } from "@/features/room/helpers";
+import { capitalize } from "lodash";
 
 type ChosenTime = {
   date: Date;
@@ -32,19 +25,23 @@ type State = {
 };
 
 export const DayTimeSlot = ({
+  currentTime,
   combinedTimeSlots,
   bookedTimeSlot,
   weekDays,
   toSubmit,
   setToSubmit,
   pickDayFun,
+  selectedDate,
 }: {
+  currentTime: string;
   pickDayFun: (message: string) => void;
   toSubmit: boolean;
   setToSubmit: Dispatch<SetStateAction<boolean>>;
   bookedTimeSlot: combinedTimeSlot[];
   combinedTimeSlots: combinedTimeSlot[];
   weekDays: string[];
+  selectedDate: Dayjs;
 }) => {
   const months: number[] = [];
   for (let i = 1; i <= 12; i++) {
@@ -53,29 +50,12 @@ export const DayTimeSlot = ({
   const timeSlotArr = timeSlotFun();
   const dispatch = useDispatch();
 
-  const d = TimezoneDate.fromDate(new Date());
-  d.timezone = +8;
-  const { setting } = useSelector(settingSelector);
-
-  const [currentTime, setCurrentTime] = useState(setting.date);
   const [state, setState] = useState<State>({
     combinedTimeSlots: [],
     chosen: [],
   });
 
   // Material UI state
-  const [selectedDate, setSelectedDate] = React.useState<Date | null>(
-    new Date(setting.date)
-  );
-
-  const handleDateChange = (date: Date | null) => {
-    setSelectedDate(date);
-    setCurrentTime(
-      `${date?.getFullYear()}-${
-        date ? date.getMonth() + 1 : 1
-      }-${date?.getDate()}`
-    );
-  };
 
   useEffect(() => {
     setState((prev) => {
@@ -163,128 +143,75 @@ export const DayTimeSlot = ({
 
   return (
     <div>
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <Stack spacing={3}>
-          <DateTimePicker
-            label="Select a date"
-            value={selectedDate}
-            minDate={d}
-            onChange={handleDateChange}
-            renderInput={(params) => <TextField {...params} />}
-          />
-        </Stack>
-      </LocalizationProvider>
-      <div>
-        <div>
-          {/* Calender header */}
-          <div className="">
-            <div className="">Time</div>
-            <div className="">
-              <div>{weekDays[new Date(currentTime).getDay()]}</div>
-              <div>
-                ({new Date(currentTime).getDate()}/
-                {months[new Date(currentTime).getMonth()]})
-              </div>
-            </div>
-          </div>
-          {/* Calender content body */}
-          <div className="">
-            {new Array(48).fill(0).map((_, indx) => {
-              const h = Math.floor(indx / 2);
-              const m = (indx % 2) * 30;
-              const time = d2(h) + ":" + d2(m);
-              return (
-                <div className="" key={indx}>
-                  <div className="">{time}</div>
-                  <div className="">
-                    {new Array(1).fill(0).map((_, i) => {
-                      const available = state.combinedTimeSlots.some(
-                        (dayTimeSlot) => {
-                          const startTime = timeSlotArr.indexOf(
-                            dayTimeSlot.from
-                          );
-                          const endTime =
-                            timeSlotArr.indexOf(dayTimeSlot.to) - 1;
-
-                          if (dayTimeSlot.specificDate) {
-                            return (
-                              startTime <= indx &&
-                              indx <= endTime &&
-                              `${new Date(currentTime).getFullYear()}-${
-                                new Date(currentTime).getMonth() + 1
-                              }-${new Date(currentTime).getDate()}` ===
-                                `${new Date(
-                                  dayTimeSlot.specificDate
-                                ).getFullYear()}-${
-                                  new Date(
-                                    dayTimeSlot.specificDate
-                                  ).getMonth() + 1
-                                }-${new Date(
-                                  dayTimeSlot.specificDate
-                                ).getDate()}`
-                            );
-                          }
-                          return (
-                            startTime <= indx &&
-                            indx <= endTime &&
-                            new Date(currentTime).getDay() ===
-                              dayTimeSlot.weekDay
-                          );
-                        }
-                      );
-                      const bookedTime = bookedTimeSlot.some(
-                        (bookedTimeSlot: any) => {
-                          const startTime = timeSlotArr.indexOf(
-                            bookedTimeSlot.from
-                          );
-                          const endTime = timeSlotArr.indexOf(
-                            bookedTimeSlot.to
-                          );
-                          return (
-                            startTime <= indx &&
-                            indx <= endTime &&
-                            `${new Date(currentTime).getFullYear()}-${
-                              new Date(currentTime).getMonth() + 1
-                            }-${new Date(currentTime).getDate()}` ===
-                              bookedTimeSlot.bookedDate
-                          );
-                        }
-                      );
-                      let availableBlock;
-                      if (!available || bookedTime) {
-                        availableBlock = {
-                          backgroundColor: "grey",
-                        };
-                      } else {
-                        availableBlock = {
-                          backgroundColor: "white",
-                        };
-                      }
-                      return (
-                        <div
-                          style={availableBlock}
-                          key={`${Math.random()}_${i}`}
-                          className=""
-                          onClick={() =>
-                            clickCell(
-                              new Date(currentTime),
-                              h,
-                              m,
-                              available,
-                              bookedTime
-                            )
-                          }
-                        >
-                          {getCellState(new Date(currentTime), h, m)}
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              );
-            })}
+      {/* Calender header */}
+      <div className="flex">
+        <div className="flex flex-1 justify-center">Time</div>
+        <div className="flex items-center flex-1 justify-center">
+          <div>{capitalize(weekDays[selectedDate.day()])}</div>
+          <div>
+            ({selectedDate.date()}/{months[selectedDate.month()]})
           </div>
         </div>
+      </div>
+      {/* Calender content body */}
+      <div className="">
+        {new Array(48).fill(0).map((_, indx) => {
+          const h = Math.floor(indx / 2);
+          const m = (indx % 2) * 30;
+          const time = d2(h) + ":" + d2(m);
+          const available = state.combinedTimeSlots.some((dayTimeSlot) => {
+            const startTime = timeSlotArr.indexOf(dayTimeSlot.from);
+            const endTime = timeSlotArr.indexOf(dayTimeSlot.to) - 1;
+
+            if (dayTimeSlot.specificDate) {
+              return (
+                startTime <= indx &&
+                indx <= endTime &&
+                `${new Date(currentTime).getFullYear()}-${
+                  new Date(currentTime).getMonth() + 1
+                }-${new Date(currentTime).getDate()}` ===
+                  `${new Date(dayTimeSlot.specificDate).getFullYear()}-${
+                    new Date(dayTimeSlot.specificDate).getMonth() + 1
+                  }-${new Date(dayTimeSlot.specificDate).getDate()}`
+              );
+            }
+            return (
+              startTime <= indx &&
+              indx <= endTime &&
+              new Date(currentTime).getDay() === dayTimeSlot.weekDay
+            );
+          });
+          const bookedTime = bookedTimeSlot.some((bookedTimeSlot) => {
+            const startTime = timeSlotArr.indexOf(bookedTimeSlot.from);
+            const endTime = timeSlotArr.indexOf(bookedTimeSlot.to);
+            return (
+              startTime <= indx &&
+              indx <= endTime &&
+              `${new Date(currentTime).getFullYear()}-${
+                new Date(currentTime).getMonth() + 1
+              }-${new Date(currentTime).getDate()}` ===
+                bookedTimeSlot.bookedDate
+            );
+          });
+
+          return (
+            <div className="flex w-full" key={indx}>
+              <div className="w-full h-auto border-gray-400 border flex justify-center items-center">
+                {time}
+              </div>
+              <div
+                className={`flex w-full ${
+                  !available || bookedTime ? "bg-gray-400" : "bg-white"
+                }`}
+                onClick={() =>
+                  clickCell(new Date(currentTime), h, m, available, bookedTime)
+                }
+              >
+                {getCellState(new Date(currentTime), h, m)}
+              </div>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

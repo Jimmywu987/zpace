@@ -1,69 +1,27 @@
-import "date-fns";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Dispatch, SetStateAction } from "react";
 import { useDispatch } from "react-redux";
-import { push } from "connected-react-router";
-import { toStoreTimeSlot } from "../redux/bookTimeSlot/actions";
+import { toStoreTimeSlot } from "@/redux/bookTimeSlot";
 import { combinedTimeSlot } from "./DateBookingSection";
-import { Theme, createStyles, makeStyles } from "@material-ui/core/styles";
-import Grid from "@material-ui/core/Grid";
-import DateFnsUtils from "@date-io/date-fns";
-import {
-  MuiPickersUtilsProvider,
-  KeyboardDatePicker,
-} from "@material-ui/pickers";
-import CheckIcon from "@material-ui/icons/Check";
-import { TimezoneDate } from "timezone-date.ts";
-import styles from "../css/Calender.module.css";
-import { MuiPickersUtilsProvider, KeyboardDatePicker } from "@mui/material/";
+import CheckIcon from "@mui/icons-material/Check";
+import dayjs, { Dayjs } from "dayjs";
+import { d2 } from "@/helpers/d2";
+import { timeSlotFun } from "../helpers";
+import { capitalize } from "lodash";
 
-const d2 = (x: number) => {
-  return x < 10 ? "0" + x : "" + x;
-};
-const time_slotFun = () => {
-  const time_slot: any = [];
-  for (let i = 0; i < 24; i++) {
-    let hour;
-    if (i < 10) {
-      hour = `0${i}`;
-    } else {
-      hour = `${i}`;
-    }
+const SECOND = 1000;
+const MINUTE = SECOND * 60;
+const HOUR = MINUTE * 60;
+const DAY = HOUR * 24;
 
-    for (let k = 0; k < 2; k++) {
-      let minute;
-      if (k === 0) {
-        minute = `00`;
-        time_slot.push(`${hour}:${minute}`);
-      } else {
-        minute = `30`;
-        time_slot.push(`${hour}:${minute}`);
-      }
-    }
+const toLastSunday = (date: Dayjs) => {
+  while (date.day() !== 0) {
+    date = date.set("millisecond", date.millisecond() - DAY);
   }
-  return time_slot;
-};
-let timeSlotArr = time_slotFun();
-const months: number[] = [];
-for (let i = 1; i <= 12; i++) {
-  months.push(i);
-}
-let SECOND = 1000;
-let MINUTE = SECOND * 60;
-let HOUR = MINUTE * 60;
-let DAY = HOUR * 24;
-
-const toLastSunday = (date: Date) => {
-  date = new Date(date.getTime());
-  while (date.getDay() !== 0) {
-    date.setTime(date.getTime() - DAY);
-  }
-
   return date;
 };
 
-const toNextWeekDay = (sunday: Date, weekDay: number) => {
-  return new Date(sunday.getTime() + weekDay * DAY);
-};
+const toNextWeekDay = (sunday: Dayjs, weekDay: number) =>
+  new Date(sunday.add(weekDay, "days").unix() * 1000);
 
 type ChosenTime = {
   date: Date;
@@ -77,53 +35,50 @@ type State = {
 };
 
 export const WeekTimeSlot = ({
+  currentTime,
   bookedTimeSlot,
   combinedTimeSlots,
   weekDays,
-  roomInfo,
   toSubmit,
   setToSubmit,
-}: any) => {
-  let d = TimezoneDate.fromDate(new Date());
-  d.timezone = +8;
-
+}: {
+  currentTime: string;
+  pickDayFun: (message: string) => void;
+  toSubmit: boolean;
+  setToSubmit: Dispatch<SetStateAction<boolean>>;
+  bookedTimeSlot: combinedTimeSlot[];
+  combinedTimeSlots: combinedTimeSlot[];
+  weekDays: string[];
+}) => {
+  const timeSlotArr = timeSlotFun();
+  const months: number[] = [];
+  for (let i = 1; i <= 12; i++) {
+    months.push(i);
+  }
   const dispatch = useDispatch();
-  let initState: State = {
+  const initState: State = {
     combinedTimeSlots: combinedTimeSlots,
     chosen: [],
   };
-  let [currentTime, setCurrentTime] = useState<any>(d);
-  let [state, setState] = useState(initState);
-  let sunday = toLastSunday(currentTime);
 
-  // Material UI state
-  const [selectedDate, setSelectedDate] = React.useState<Date | null>(
-    new Date(d)
-  );
-
-  const handleDateChange = (date: Date | null) => {
-    setSelectedDate(date);
-    if (date) {
-      setCurrentTime(date);
-    }
-  };
+  const [state, setState] = useState(initState);
+  const sunday = toLastSunday(dayjs(currentTime));
 
   useEffect(() => {
-    const slotRequsetSend = async () => {
-      let timeSlotArray = state.chosen.map((e: any) => {
+    const slotRequestSend = () => {
+      const timeSlotArray = state.chosen.map((time) => {
         return {
-          ...e,
-          date: `${e.date.getFullYear()}-${
-            e.date.getMonth() + 1
-          }-${e.date.getDate()}`,
+          ...time,
+          date: `${time.date.getFullYear()}-${
+            time.date.getMonth() + 1
+          }-${time.date.getDate()}`,
         };
       });
-
-      dispatch(toStoreTimeSlot(timeSlotArray));
-      dispatch(push(`/booking-confirmation/${roomInfo[0].id}`));
+      dispatch(toStoreTimeSlot({ timeSlot: timeSlotArray }));
+      // dispatch(push(`/booking-confirmation/${roomInfo[0].id}`));
     };
     if (toSubmit && state.chosen.length !== 0) {
-      slotRequsetSend();
+      slotRequestSend();
     }
     return () => {
       setToSubmit(false);
@@ -157,13 +112,13 @@ export const WeekTimeSlot = ({
     bookedTime: boolean
   ) {
     if (available && !bookedTime) {
-      let chosenSlot = { date, hour, minute };
+      const chosenSlot = { date, hour, minute };
       if (
         state.chosen.some((e) => {
           return JSON.stringify(e) === JSON.stringify(chosenSlot);
         })
       ) {
-        let filteredSlot = state.chosen.filter((e) => {
+        const filteredSlot = state.chosen.filter((e) => {
           return JSON.stringify(e) !== JSON.stringify(chosenSlot);
         });
         setState({
@@ -188,45 +143,21 @@ export const WeekTimeSlot = ({
 
   return (
     <div>
-      <MuiPickersUtilsProvider utils={DateFnsUtils}>
-        <Grid>
-          <KeyboardDatePicker
-            disableToolbar
-            variant="inline"
-            minDate={`${d.getFullYear()}-${d2(d.getMonth() + 1)}-${d2(
-              d.getDate()
-            )}`}
-            // format="#weekNumber"
-            margin="normal"
-            id="date-picker-inline"
-            label="View week availability"
-            value={selectedDate}
-            onChange={handleDateChange}
-            KeyboardButtonProps={{
-              "aria-label": "change date",
-            }}
-            autoOk={true}
-          />
-        </Grid>
-      </MuiPickersUtilsProvider>
-
       {/* Calender header */}
-      <div className={styles.timeSlotHeaderBox}>
-        <div className={styles.timeSlotTimeHead}>
-          <span className={styles.timeSlotHeaderTime}>Time</span>
+      <div className="flex">
+        <div className="border border-gray-600 w-14 flex justify-center py-1">
+          Time
         </div>
-        <div className={styles.weekdaysHeader}>
+        <div className="flex flex-1">
           {new Array(7).fill(0).map((_, i) => {
-            let day = toNextWeekDay(sunday, i);
+            const day = toNextWeekDay(sunday, i);
             return (
               <div
-                className={styles.timeSlotHeader}
+                className="flex items-center flex-1 justify-center border border-gray-600"
                 key={`${Math.random()}_${i}`}
               >
-                <div className={styles.eachTimeSlot}>
-                  {weekDays[i].slice(0, 3)}
-                </div>
-                <div className={styles.eachTimeSlot}>
+                <div className="">{capitalize(weekDays[i].slice(0, 3))}</div>
+                <div className="">
                   ({day.getDate()}/{months[day.getMonth()]})
                 </div>
               </div>
@@ -235,24 +166,26 @@ export const WeekTimeSlot = ({
         </div>
       </div>
       {/* Calender Scroll body */}
-      <div className="">
+      <div className="flex flex-col">
         {new Array(48).fill(0).map((_, indx) => {
-          let h = Math.floor(indx / 2);
-          let m = (indx % 2) * 30;
-          let time = d2(h) + ":" + d2(m);
+          const h = Math.floor(indx / 2);
+          const m = (indx % 2) * 30;
+          const time = d2(h) + ":" + d2(m);
           return (
             <div
-              className={styles.timeSlotBox}
+              className="flex items-center "
               key={`${Math.random()}_${indx}`}
             >
-              <div className={styles.timeSlot}>{time}</div>
-              <div className={styles.timeSlotBox}>
+              <div className="border border-gray-600 w-14 flex justify-center  py-1">
+                {time}
+              </div>
+              <div className="flex justify-center items-center flex-1 h-9">
                 {new Array(7).fill(0).map((_, i) => {
-                  let date = toNextWeekDay(sunday, i);
-                  let available = state.combinedTimeSlots.some(
+                  const date = toNextWeekDay(sunday, i);
+                  const available = state.combinedTimeSlots.some(
                     (dayTimeSlot) => {
-                      let startTime = timeSlotArr.indexOf(dayTimeSlot.from);
-                      let endTime = timeSlotArr.indexOf(dayTimeSlot.to) - 1;
+                      const startTime = timeSlotArr.indexOf(dayTimeSlot.from);
+                      const endTime = timeSlotArr.indexOf(dayTimeSlot.to) - 1;
 
                       if (dayTimeSlot.specificDate) {
                         return (
@@ -275,35 +208,25 @@ export const WeekTimeSlot = ({
                       );
                     }
                   );
-                  let availableBlock;
-                  let bookedTime = bookedTimeSlot.some(
-                    (bookedTimeSlots: any) => {
-                      let startTime = timeSlotArr.indexOf(bookedTimeSlots.from);
-                      let endTime = timeSlotArr.indexOf(bookedTimeSlots.to);
-                      return (
-                        startTime <= indx &&
-                        indx <= endTime &&
-                        `${date.getFullYear()}-${
-                          date.getMonth() + 1
-                        }-${date.getDate()}` === bookedTimeSlots.bookedDate
-                      );
-                    }
-                  );
-                  if (!available || bookedTime) {
-                    availableBlock = {
-                      backgroundColor: "grey",
-                    };
-                  } else {
-                    availableBlock = {
-                      backgroundColor: "white",
-                    };
-                  }
+
+                  const bookedTime = bookedTimeSlot.some((bookedTimeSlots) => {
+                    const startTime = timeSlotArr.indexOf(bookedTimeSlots.from);
+                    const endTime = timeSlotArr.indexOf(bookedTimeSlots.to);
+                    return (
+                      startTime <= indx &&
+                      indx <= endTime &&
+                      `${date.getFullYear()}-${
+                        date.getMonth() + 1
+                      }-${date.getDate()}` === bookedTimeSlots.bookedDate
+                    );
+                  });
 
                   return (
                     <div
-                      style={availableBlock}
                       key={`${Math.random()}_${i}`}
-                      className={styles.timeSlot}
+                      className={`border-gray-800 border rounded-sm w-full h-full ${
+                        !available || bookedTime ? "bg-gray-400" : "bg-white"
+                      }`}
                       onClick={() =>
                         clickCell(date, h, m, available, bookedTime)
                       }

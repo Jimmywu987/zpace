@@ -8,7 +8,7 @@ import Alert from "@mui/material/Alert";
 import Container from "@mui/material/Container";
 import MapsHomeWorkIcon from "@mui/icons-material/MapsHomeWork";
 import { getSession, useSession } from "next-auth/react";
-import Carousel from "react-bootstrap/Carousel";
+import { Carousel } from "react-responsive-carousel";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import InfoIcon from "@mui/icons-material/Info";
@@ -16,7 +16,7 @@ import RateReviewIcon from "@mui/icons-material/RateReview";
 import { RenderAvgRating } from "@/features/common/components/RenderAvgRating";
 import StarIcon from "@mui/icons-material/Star";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
-
+import "react-responsive-carousel/lib/styles/carousel.min.css";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import Chip from "@mui/material/Chip";
@@ -30,6 +30,8 @@ import { prisma } from "@/services/prisma";
 import { TimeslotStatusEnum } from "@prisma/client";
 import { CommentGrid } from "@/features/room/components/CommentGrid";
 import { RatingAndComments, RoomDetailPageProps } from "@/features/room/types";
+import ExpandCircleDownIcon from "@mui/icons-material/ExpandCircleDown";
+import { createTheme, ThemeProvider, useTheme } from "@mui/material";
 
 const StarRender = ({
   ratingState,
@@ -60,7 +62,7 @@ const RoomDetailPage = (props: RoomDetailPageProps) => {
     roomInfo;
   const session = useSession();
   const dispatch = useDispatch();
-
+  let theme = useTheme();
   const bookingVisitorsRef = useRef<HTMLInputElement | null>(null);
   const chatRef = useRef<HTMLInputElement | null>(null);
   const commentRef = useRef<HTMLInputElement | null>(null);
@@ -74,7 +76,19 @@ const RoomDetailPage = (props: RoomDetailPageProps) => {
 
   const [pickDate, setPickDate] = useState("");
   const [isLiked, setIsLiked] = useState("");
-
+  theme = createTheme(theme, {
+    components: {
+      MuiTab: {
+        styleOverrides: {
+          root: {
+            "&.Mui-selected": {
+              color: "#5455a9",
+            },
+          },
+        },
+      },
+    },
+  });
   const currentUser = session.data?.user as User;
   console.log("roomInfo", roomInfo);
   const handleChange = (event: ChangeEvent<{}>, newValue: number) => {
@@ -118,17 +132,20 @@ const RoomDetailPage = (props: RoomDetailPageProps) => {
   };
   const onSubmitChat = async () => {};
   const onSubmitRating = async () => {};
+
   return (
     <>
       {ifUserIsHost && (
-        <Alert severity="warning">
-          <strong>
-            <div className="">
-              This read-only page is for the space's host to know how is the
-              space displayed to visitors.
-            </div>
-          </strong>
-        </Alert>
+        <div className="mt-4">
+          <Alert severity="warning">
+            <strong>
+              <div className="">
+                This read-only page is for the space's host to know how is the
+                space displayed to visitors.
+              </div>
+            </strong>
+          </Alert>
+        </div>
       )}
       <br />
       {roomImgs.length === 0 && (
@@ -136,109 +153,135 @@ const RoomDetailPage = (props: RoomDetailPageProps) => {
           <MapsHomeWorkIcon className="w-20 h-20 text-theme-color1" />
         </Container>
       )}
-      {roomImgs.length > 0 && (
+      <div className="relative w-5/6 mx-auto">
         <Carousel
-          indicators={false}
-          prevIcon={
-            <i className="fas direction-icon fa-chevron-circle-left"></i>
-          }
-          nextIcon={
-            <i className="fas direction-icon fa-chevron-circle-right"></i>
-          }
+          infiniteLoop={true}
+          showArrows={true}
+          showStatus={false}
+          showThumbs={false}
+          renderArrowPrev={(prev) => (
+            <ExpandCircleDownIcon
+              onClick={prev}
+              style={{ width: "40px", height: "40px" }}
+              className="text-gray-50 shadow absolute rotate-90 left-8 my-auto top-0 bottom-0 hover:text-gray-200 cursor-pointer z-10 bg-theme-color1 p-0.5 rounded-full"
+            />
+          )}
+          renderArrowNext={(next) => (
+            <ExpandCircleDownIcon
+              onClick={next}
+              style={{ width: "40px", height: "40px" }}
+              className="text-gray-50 shadow absolute -rotate-90 right-8 my-auto top-0 bottom-0 hover:text-gray-200 cursor-pointer z-10 bg-theme-color1 p-0.5 rounded-full"
+            />
+          )}
         >
-          {roomImgs.map((img, index: number) => {
+          {roomImgs.map((img, index) => {
             return (
-              <Carousel.Item className="" key={index}>
-                <img src={img.url} alt="First slide pict" />
-              </Carousel.Item>
+              <div key={index}>
+                <img
+                  src={img.url}
+                  alt="First slide pict"
+                  className="w-full object-contain "
+                />
+              </div>
             );
           })}
         </Carousel>
-      )}
-
-      <div className="">
-        <Tabs
-          value={viewBox}
-          onChange={handleChange}
-          variant="fullWidth"
-          indicatorColor="primary"
-          textColor="primary"
-        >
-          <Tab icon={<InfoIcon />} label="Overview" />
-          <Tab icon={<RateReviewIcon />} label="Contact Host"></Tab>
-        </Tabs>
       </div>
-
+      <div className="mb-4 mt-1">
+        <ThemeProvider theme={theme}>
+          <Tabs
+            value={viewBox}
+            onChange={handleChange}
+            variant="fullWidth"
+            TabIndicatorProps={{
+              style: { background: "#5455a9" },
+            }}
+          >
+            <Tab icon={<InfoIcon />} label="Overview" />
+            <Tab icon={<RateReviewIcon />} label="Contact Host"></Tab>
+          </Tabs>
+        </ThemeProvider>
+      </div>
+      <div className="space-y-2 pb-3">
+        <h2 className="font-bold text-3xl text-gray-700 tracking-wide">
+          {spaceName}
+        </h2>
+        <div className="space-y-1">
+          <div className="flex space-x-2">
+            {Array(5)
+              .fill("")
+              .map((_: number, index: number) => (
+                <div key={index}>
+                  <RenderAvgRating index={index} rating={ratingAndComments} />
+                </div>
+              ))}
+          </div>
+          <p className="text-gray-700">
+            {ratingAndComments.length}{" "}
+            {ratingAndComments.length > 1 ? "visitors rate" : "visitor rates"}{" "}
+            this space
+          </p>
+        </div>
+      </div>
       {viewBox === 0 && (
         <div>
-          <div>
-            <h2>{spaceName}</h2>
+          <div className="flex justify-between">
             <div>
-              {Array(5)
-                .fill("")
-                .map((_: number, index: number) => (
-                  <div key={index}>
-                    <RenderAvgRating index={index} rating={ratingAndComments} />
-                  </div>
-                ))}
-            </div>
-            <div>
-              {ratingAndComments.length}{" "}
-              {ratingAndComments.length > 1 ? "visitors rate" : "visitor rates"}{" "}
-              this space
-            </div>
-            <div>
-              <h6>{district}</h6>
-              <h6>{address}</h6>
-            </div>
-            <h6 style={{ width: "100%" }}>Facilities</h6>
-            <div className="">
-              {roomInfo.wifi && (
-                <Chip
-                  icon={<WifiIcon />}
-                  className=""
-                  label="Wifi"
-                  color="primary"
-                />
-              )}
+              <div className="border-b border-b-gray-400" />
 
-              {roomInfo.socketPlug && (
-                <Chip
-                  icon={<PowerIcon />}
-                  className=""
-                  label="Socket Plug"
-                  color="primary"
-                />
-              )}
+              <div className="space-y-1 my-2">
+                <h6 className="text-xl text-gray-700">{district}</h6>
+                <h6 className="text-xl text-gray-700">{address}</h6>
+              </div>
+              <div className="border-b border-b-gray-400" />
+              <div className="mt-2 mb-3 space-y-2">
+                <h6 className="text-xl text-gray-700">Facilities</h6>
+                <div className="flex space-x-2">
+                  {roomInfo.wifi && (
+                    <Chip
+                      icon={<WifiIcon style={{ color: "white" }} />}
+                      label="Wifi"
+                      style={{ backgroundColor: "#5455a9", color: "white" }}
+                    />
+                  )}
 
-              {roomInfo.airCondition && (
-                <Chip
-                  icon={<AirIcon />}
-                  className=""
-                  label="Air Condition"
-                  color="primary"
-                />
-              )}
+                  {roomInfo.socketPlug && (
+                    <Chip
+                      icon={<PowerIcon style={{ color: "white" }} />}
+                      label="Socket Plug"
+                      style={{ backgroundColor: "#5455a9", color: "white" }}
+                    />
+                  )}
 
-              {roomInfo.desk && (
-                <Chip
-                  icon={<TableRestaurantIcon />}
-                  className=""
-                  label="Desk"
-                  color="primary"
-                />
-              )}
+                  {roomInfo.airCondition && (
+                    <Chip
+                      icon={<AirIcon style={{ color: "white" }} />}
+                      label="Air Condition"
+                      style={{ backgroundColor: "#5455a9", color: "white" }}
+                    />
+                  )}
+
+                  {roomInfo.desk && (
+                    <Chip
+                      icon={<TableRestaurantIcon style={{ color: "white" }} />}
+                      label="Desk"
+                      style={{ backgroundColor: "#5455a9", color: "white" }}
+                    />
+                  )}
+                </div>
+              </div>
+              <div className="border-b border-b-gray-400" />
+
+              <div className="my-2 space-y-1">
+                <h6 className="text-xl text-gray-700">About the Zpace</h6>
+                <h4 className="text-gray-700">
+                  {!!roomInfo.description.trim()
+                    ? roomInfo.description
+                    : "No room description is available at the moment"}
+                </h4>
+              </div>
+              <div className="border-b border-b-gray-400" />
             </div>
-            <div>
-              <h6>About the Zpace</h6>
-              <h4>
-                {!!roomInfo.description.trim()
-                  ? roomInfo.description
-                  : "No room description is avaliable at the moment"}
-              </h4>
-            </div>
-          </div>
-          <div>
             <div>
               <div>
                 <div>
@@ -320,7 +363,7 @@ const RoomDetailPage = (props: RoomDetailPageProps) => {
       <div>
         <div>
           <div>
-            {viewBox === 0 ? (
+            {viewBox === 0 && (
               <div className="">
                 <div className="">
                   <div className="">
@@ -337,66 +380,40 @@ const RoomDetailPage = (props: RoomDetailPageProps) => {
                   </h5>
                 </div>
               </div>
-            ) : (
-              <>
-                <div>
-                  <h2>{roomInfo.spaceName}</h2>
-                  {Array(5)
-                    .fill("")
-                    .map((_, index) => (
-                      <div key={index}>
-                        <RenderAvgRating
-                          index={index}
-                          rating={ratingAndComments}
-                        />
-                      </div>
-                    ))}
-                  <div>
-                    {ratingAndComments.length}{" "}
-                    {ratingAndComments.length > 1
-                      ? "visitors rate"
-                      : "visitor rates"}{" "}
-                  </div>
-                </div>
-              </>
             )}
           </div>
           <div>
-            <div>
-              {viewBox === 1 && (
-                <>
+            {viewBox === 1 && (
+              <>
+                <div className="">
                   <div className="">
+                    {<h3>Enquire {roomInfo.user.username} now!</h3>}
+                  </div>
+                  <div className="">
+                    <span>Joined in {roomInfo.user.createdAt.toString()}</span>
+                  </div>
+                </div>
+                {isAuthenticated && (
+                  <div>
+                    <input
+                      className=""
+                      required
+                      type="textarea"
+                      ref={chatRef}
+                    />
                     <div className="">
-                      {<h3>Enquire {roomInfo.user.username} now!</h3>}
-                    </div>
-                    <div className="">
-                      <span>
-                        Joined in {roomInfo.user.createdAt.toString()}
-                      </span>
+                      <button
+                        className=""
+                        disabled={ifUserIsHost}
+                        onClick={onSubmitChat}
+                      >
+                        Send
+                      </button>
                     </div>
                   </div>
-                  {isAuthenticated && (
-                    <div>
-                      <input
-                        className=""
-                        required
-                        type="textarea"
-                        ref={chatRef}
-                      />
-                      <div className="">
-                        <button
-                          className=""
-                          disabled={ifUserIsHost}
-                          onClick={onSubmitChat}
-                        >
-                          Send
-                        </button>
-                      </div>
-                    </div>
-                  )}
-                </>
-              )}
-            </div>
+                )}
+              </>
+            )}
           </div>
           <div>
             {submitRatingAlert && (
@@ -444,23 +461,20 @@ const RoomDetailPage = (props: RoomDetailPageProps) => {
           </div>
         </div>
         <div>
-          <div>
-            {viewBox === 0 && ratingAndComments.length > 0 && (
-              <>
-                <h3>Visitors' Ratings and Reviews</h3>
-                <div>
-                  {ratingAndComments.map((comment, index) => (
-                    <CommentGrid
-                      element={comment as RatingAndComments}
-                      key={index}
-                    />
-                  ))}
-                </div>
-              </>
-            )}
-
-            <br />
-          </div>
+          {viewBox === 0 && ratingAndComments.length > 0 && (
+            <>
+              <h3>Visitors' Ratings and Reviews</h3>
+              <div>
+                {ratingAndComments.map((comment, index) => (
+                  <CommentGrid
+                    element={comment as RatingAndComments}
+                    key={index}
+                  />
+                ))}
+              </div>
+            </>
+          )}
+          <br />
         </div>
       </div>
     </>
@@ -499,7 +513,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   return {
     props: {
       roomInfo: JSON.parse(JSON.stringify(roomInfo)),
-      canRate,
+      canRate: JSON.parse(JSON.stringify(canRate)),
     },
   };
 };

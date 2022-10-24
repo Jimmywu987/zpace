@@ -1,6 +1,12 @@
-import React, { Dispatch, SetStateAction } from "react";
 import { WeekTimeSlot } from "@/features/room/components/WeekTimeSlot";
 import { DayTimeSlot } from "@/features/room/components/DayTimeSlot";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import dayjs, { Dayjs } from "dayjs";
+import { useSelector } from "react-redux";
+import React, { useState, Dispatch, SetStateAction } from "react";
+import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import TextField from "@mui/material/TextField";
 
 import {
   BookingTimeslot,
@@ -8,7 +14,8 @@ import {
   WeeklyOpenTimeslot,
 } from "@prisma/client";
 import { RoomInfoType } from "@/features/room/types";
-
+import Stack from "@mui/material/Stack";
+import { settingSelector } from "@/redux/setting";
 const weekDays = [
   "sunday",
   "monday",
@@ -88,42 +95,69 @@ export const DateBookingSection = ({
     customerBookingTimeslots,
     weeklyOpenTimeslots,
   } = roomInfo;
+  const { setting } = useSelector(settingSelector);
+
   const bookedTimeSlots: BookingTimeslot[] = [];
   customerBookingTimeslots.map((each) => {
     bookedTimeSlots.concat(each.bookingTimeslots);
   });
+  const [selectedDate, setSelectedDate] = useState<Dayjs>(dayjs(setting.date));
+  const [currentTime, setCurrentTime] = useState(setting.date);
+
+  const handleDateChange = (date: Dayjs | null) => {
+    if (!date) {
+      return;
+    }
+
+    const getDate = `${date.month()}-${
+      date.year() ? date.month() + 1 : 1
+    }-${date.date()}`;
+    setSelectedDate(date);
+    setCurrentTime(getDate);
+  };
 
   const weeklyAvailable = expandWeeklyTimeSlots(weeklyOpenTimeslots);
   const oneTimeOffAvailable = expandOneOffTimeSlots(oneTimeOffOpenTimeslots);
   const bookedTimeSlot = expandBookedTimeSlots(bookedTimeSlots);
   const combinedTimeSlots = weeklyAvailable.concat(oneTimeOffAvailable);
 
-  if (!pickedDate) {
-    return (
-      <div>
-        <DayTimeSlot
-          pickDayFun={pickDayFun}
-          toSubmit={toSubmit}
-          setToSubmit={setToSubmit}
-          bookedTimeSlot={bookedTimeSlot}
-          combinedTimeSlots={combinedTimeSlots}
-          weekDays={weekDays}
-        />
-      </div>
-    );
-  }
-
   return (
     <div>
-      {/* <WeekTimeSlot
-        pickDayFun={pickDayFun}
-        toSubmit={toSubmit}
-        setToSubmit={setToSubmit}
-        bookedTimeSlot={bookedTimeSlot}
-        combinedTimeSlots={combinedTimeSlots}
-        roomInfo={roomInfo}
-        weekDays={weekDays}
-      /> */}
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <Stack spacing={3}>
+          <DesktopDatePicker
+            label="Select a date"
+            value={selectedDate}
+            minDate={dayjs(new Date())}
+            onChange={handleDateChange}
+            renderInput={(params) => <TextField {...params} />}
+          />
+        </Stack>
+      </LocalizationProvider>
+      <div>
+        {!pickedDate ? (
+          <DayTimeSlot
+            selectedDate={selectedDate}
+            currentTime={currentTime}
+            pickDayFun={pickDayFun}
+            toSubmit={toSubmit}
+            setToSubmit={setToSubmit}
+            bookedTimeSlot={bookedTimeSlot}
+            combinedTimeSlots={combinedTimeSlots}
+            weekDays={weekDays}
+          />
+        ) : (
+          <WeekTimeSlot
+            currentTime={currentTime}
+            pickDayFun={pickDayFun}
+            toSubmit={toSubmit}
+            setToSubmit={setToSubmit}
+            bookedTimeSlot={bookedTimeSlot}
+            combinedTimeSlots={combinedTimeSlots}
+            weekDays={weekDays}
+          />
+        )}
+      </div>
     </div>
   );
 };
