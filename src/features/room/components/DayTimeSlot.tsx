@@ -1,45 +1,26 @@
-import React, { useState, useEffect, Dispatch, SetStateAction } from "react";
-
-import { useDispatch } from "react-redux";
 import { Dayjs } from "dayjs";
 
-import { combinedTimeSlot } from "./DateBookingSection";
+import { combinedTimeSlot, State } from "./DateBookingSection";
 
 import CheckIcon from "@mui/icons-material/Check";
 
 import { d2 } from "@/helpers/d2";
 
-import { toStoreTimeSlot } from "@/redux/bookTimeSlot";
 import { timeSlotFun } from "@/features/room/helpers";
 import { capitalize } from "lodash";
 
-type ChosenTime = {
-  date: Date;
-  hour: number;
-  minute: number;
-};
-
-type State = {
-  combinedTimeSlots: combinedTimeSlot[];
-  chosen: ChosenTime[];
-};
-
 export const DayTimeSlot = ({
   currentTime,
-  combinedTimeSlots,
   bookedTimeSlot,
   weekDays,
-  toSubmit,
-  setToSubmit,
-  pickDayFun,
+  clickCell,
+  state,
   selectedDate,
 }: {
   currentTime: string;
-  pickDayFun: (message: string) => void;
-  toSubmit: boolean;
-  setToSubmit: Dispatch<SetStateAction<boolean>>;
+  state: State;
+  clickCell: any;
   bookedTimeSlot: combinedTimeSlot[];
-  combinedTimeSlots: combinedTimeSlot[];
   weekDays: string[];
   selectedDate: Dayjs;
 }) => {
@@ -48,104 +29,12 @@ export const DayTimeSlot = ({
     months.push(i);
   }
   const timeSlotArr = timeSlotFun();
-  const dispatch = useDispatch();
-
-  const [state, setState] = useState<State>({
-    combinedTimeSlots: [],
-    chosen: [],
-  });
-
-  // Material UI state
-
-  useEffect(() => {
-    setState((prev) => {
-      return { ...prev, combinedTimeSlots: combinedTimeSlots };
-    });
-  }, [currentTime, combinedTimeSlots]);
-  function getCellState(date: Date, hour: number, minute: number) {
-    if (
-      state.chosen.some(
-        (chosen) =>
-          chosen.date.toDateString() === date.toDateString() &&
-          chosen.hour === hour &&
-          chosen.minute === minute
-      )
-    ) {
-      return (
-        <div className="">
-          <CheckIcon />
-        </div>
-      );
-    }
-    return " ";
-  }
-  function clickCell(
-    date: Date,
-    hour: number,
-    minute: number,
-    available: boolean,
-    bookedTime: boolean
-  ) {
-    if (available && !bookedTime) {
-      const chosenSlot = { date, hour, minute };
-      if (
-        state.chosen.some(
-          (time) => JSON.stringify(time) === JSON.stringify(chosenSlot)
-        )
-      ) {
-        const filteredSlot = state.chosen.filter(
-          (time) => JSON.stringify(time) !== JSON.stringify(chosenSlot)
-        );
-        setState({
-          ...state,
-          chosen: filteredSlot,
-        });
-        return;
-      }
-      setState({
-        ...state,
-        chosen: [
-          ...state.chosen,
-          {
-            date,
-            hour,
-            minute,
-          },
-        ],
-      });
-    }
-  }
-  useEffect(() => {
-    const slotRequestSend = () => {
-      const timeSlotArray = state.chosen.map((time) => {
-        return {
-          ...time,
-          date: `${time.date.getFullYear()}-${
-            time.date.getMonth() + 1
-          }-${time.date.getDate()}`,
-        };
-      });
-      dispatch(toStoreTimeSlot({ timeSlot: timeSlotArray }));
-      // dispatch(push(`/booking-confirmation/${roomInfo[0].id}`));
-    };
-    // eslint-disable-next-line eqeqeq
-    if (toSubmit && state.chosen.length === 0) {
-      pickDayFun("Please pick an available timeslot below");
-    } else if (toSubmit && state.chosen.length !== 0) {
-      pickDayFun("");
-      slotRequestSend();
-    }
-
-    return () => {
-      setToSubmit(false);
-    };
-  }, [toSubmit]);
 
   return (
-    <div>
+    <div className="my-2">
       {/* Calender header */}
       <div className="flex">
-        <div className="flex flex-1 justify-center">Time</div>
+        <div className="flex flex-1 justify-center py-1">Time</div>
         <div className="flex items-center flex-1 justify-center">
           <div>{capitalize(weekDays[selectedDate.day()])}</div>
           <div>
@@ -154,7 +43,7 @@ export const DayTimeSlot = ({
         </div>
       </div>
       {/* Calender content body */}
-      <div className="">
+      <div className="h-96 overflow-y-auto">
         {new Array(48).fill(0).map((_, indx) => {
           const h = Math.floor(indx / 2);
           const m = (indx % 2) * 30;
@@ -195,19 +84,37 @@ export const DayTimeSlot = ({
           });
 
           return (
-            <div className="flex w-full" key={indx}>
-              <div className="w-full h-auto border-gray-400 border flex justify-center items-center">
+            <div className="flex flex-1" key={indx}>
+              <div className=" flex-1 h-auto border border-gray-500 flex justify-center items-center">
                 {time}
               </div>
               <div
-                className={`flex w-full ${
+                className={`flex flex-1 border justify-center items-center border-gray-500 h-7 ${
                   !available || bookedTime ? "bg-gray-400" : "bg-white"
                 }`}
                 onClick={() =>
-                  clickCell(new Date(currentTime), h, m, available, bookedTime)
+                  clickCell({
+                    date: new Date(currentTime),
+                    hour: h,
+                    minute: m,
+                    available,
+                    bookedTime,
+                  })
                 }
               >
-                {getCellState(new Date(currentTime), h, m)}
+                {state.chosen.some(
+                  (chosen) =>
+                    chosen.date.toDateString() ===
+                      new Date(currentTime).toDateString() &&
+                    chosen.hour === h &&
+                    chosen.minute === m
+                ) ? (
+                  <div className="w-full h-full bg-green-400 flex justify-center items-center">
+                    <CheckIcon className="text-white " />
+                  </div>
+                ) : (
+                  " "
+                )}
               </div>
             </div>
           );

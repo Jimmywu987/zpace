@@ -6,15 +6,14 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import Link from "next/link";
 import { useS3Upload } from "next-s3-upload";
 import { useState } from "react";
-import Loader from "@/features/common/components/Loader";
+import { Loader } from "@/features/common/components/Loader";
 import { getUserWithUserId } from "@/services/prisma";
 import toast from "react-hot-toast";
 import { updateProfileImg } from "@/apis/api";
 
-
 interface queryProps {
   query: {
-   user_id:string
+    user_id: string;
   };
 }
 
@@ -50,17 +49,16 @@ export default function EditUserPhoto(profile: ProfileUser) {
     if (file) {
       await uploadToS3(file).then((data) => {
         fileURL = data.url;
-
       });
-      const res = await updateProfileImg(user.id, {imageUrl: fileURL})
+      const res = await updateProfileImg(user.id, { imageUrl: fileURL });
 
       if (res && res.status === 200) {
         setDownloadURL(fileURL);
         setUploading(false);
-        toast.success("Uploaded profile image successfully")
-      }     
+        toast.success("Uploaded profile image successfully");
+      }
     }
-  }
+  };
   return (
     <main className="container">
       <nav className="my-5">

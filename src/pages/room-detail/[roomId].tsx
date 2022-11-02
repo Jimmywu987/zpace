@@ -1,37 +1,38 @@
+import { likeRoom, unlikeRoom } from "@/apis/api";
+import { RenderAvgRating } from "@/features/common/components/RenderAvgRating";
+import { CommentGrid } from "@/features/room/components/CommentGrid";
+import { DateBookingSection } from "@/features/room/components/DateBookingSection";
+import { RatingAndComments, RoomDetailPageProps } from "@/features/room/types";
 import { settingSelector, toSet } from "@/redux/setting";
 import { getRoomInfoById } from "@/services/getRoom";
+import { prisma } from "@/services/prisma";
 import { User } from "@/types/User";
-import { GetServerSideProps } from "next";
-import React, { useState, ChangeEvent, useRef } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import Alert from "@mui/material/Alert";
-import Container from "@mui/material/Container";
-import MapsHomeWorkIcon from "@mui/icons-material/MapsHomeWork";
-import { getSession, useSession } from "next-auth/react";
-import { Carousel } from "react-responsive-carousel";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
+import AirIcon from "@mui/icons-material/Air";
+import ExpandCircleDownIcon from "@mui/icons-material/ExpandCircleDown";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import InfoIcon from "@mui/icons-material/Info";
+import MapsHomeWorkIcon from "@mui/icons-material/MapsHomeWork";
+import PowerIcon from "@mui/icons-material/Power";
 import RateReviewIcon from "@mui/icons-material/RateReview";
-import { RenderAvgRating } from "@/features/common/components/RenderAvgRating";
 import StarIcon from "@mui/icons-material/Star";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
-import "react-responsive-carousel/lib/styles/carousel.min.css";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import Chip from "@mui/material/Chip";
-import WifiIcon from "@mui/icons-material/Wifi";
-import PowerIcon from "@mui/icons-material/Power";
-import AirIcon from "@mui/icons-material/Air";
 import TableRestaurantIcon from "@mui/icons-material/TableRestaurant";
-import { likeRoom, unlikeRoom } from "@/apis/api";
-import { DateBookingSection } from "@/features/room/components/DateBookingSection";
-import { prisma } from "@/services/prisma";
-import { TimeslotStatusEnum } from "@prisma/client";
-import { CommentGrid } from "@/features/room/components/CommentGrid";
-import { RatingAndComments, RoomDetailPageProps } from "@/features/room/types";
-import ExpandCircleDownIcon from "@mui/icons-material/ExpandCircleDown";
+import WifiIcon from "@mui/icons-material/Wifi";
 import { createTheme, ThemeProvider, useTheme } from "@mui/material";
+import Alert from "@mui/material/Alert";
+import Chip from "@mui/material/Chip";
+import Container from "@mui/material/Container";
+import Tab from "@mui/material/Tab";
+import Tabs from "@mui/material/Tabs";
+import { TimeslotStatusEnum } from "@prisma/client";
+import dayjs from "dayjs";
+import { GetServerSideProps } from "next";
+import { getSession, useSession } from "next-auth/react";
+import { ChangeEvent, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Carousel } from "react-responsive-carousel";
+import "react-responsive-carousel/lib/styles/carousel.min.css";
 
 const StarRender = ({
   ratingState,
@@ -60,11 +61,12 @@ const RoomDetailPage = (props: RoomDetailPageProps) => {
   const { roomInfo, canRate } = props;
   const { roomImgs, userId, ratingAndComments, spaceName, district, address } =
     roomInfo;
+
   const session = useSession();
   const dispatch = useDispatch();
   let theme = useTheme();
   const bookingVisitorsRef = useRef<HTMLInputElement | null>(null);
-  const chatRef = useRef<HTMLInputElement | null>(null);
+  const chatRef = useRef<HTMLTextAreaElement>(null);
   const commentRef = useRef<HTMLInputElement | null>(null);
   const { setting } = useSelector(settingSelector);
   const [pickedDate, setPickedDate] = useState(false);
@@ -134,7 +136,7 @@ const RoomDetailPage = (props: RoomDetailPageProps) => {
   const onSubmitRating = async () => {};
 
   return (
-    <>
+    <div className=" w-5/6 mx-auto">
       {ifUserIsHost && (
         <div className="mt-4">
           <Alert severity="warning">
@@ -153,7 +155,7 @@ const RoomDetailPage = (props: RoomDetailPageProps) => {
           <MapsHomeWorkIcon className="w-20 h-20 text-theme-color1" />
         </Container>
       )}
-      <div className="relative w-5/6 mx-auto">
+      <div className="relative">
         <Carousel
           infiniteLoop={true}
           showArrows={true}
@@ -225,8 +227,8 @@ const RoomDetailPage = (props: RoomDetailPageProps) => {
       </div>
       {viewBox === 0 && (
         <div>
-          <div className="flex justify-between">
-            <div>
+          <div className="flex flex-col md:flex-row justify-between flex-1">
+            <div className="flex flex-col flex-1">
               <div className="border-b border-b-gray-400" />
 
               <div className="space-y-1 my-2">
@@ -271,7 +273,6 @@ const RoomDetailPage = (props: RoomDetailPageProps) => {
                 </div>
               </div>
               <div className="border-b border-b-gray-400" />
-
               <div className="my-2 space-y-1">
                 <h6 className="text-xl text-gray-700">About the Zpace</h6>
                 <h4 className="text-gray-700">
@@ -282,74 +283,85 @@ const RoomDetailPage = (props: RoomDetailPageProps) => {
               </div>
               <div className="border-b border-b-gray-400" />
             </div>
-            <div>
-              <div>
-                <div>
-                  <h3>
-                    <span>${roomInfo.hourlyPrice}</span>
-                    /hr
-                  </h3>
+
+            <div className="flex flex-1 justify-center">
+              <div className="border border-gray-20 shadow flex flex-col py-4 px-6 mx-8">
+                <div className="flex flex-col justify-center space-y-5">
+                  <div className="flex flex-col items-center space-y-5">
+                    <h3 className="text-gray-700 text-xl">
+                      <span className="text-theme-color2 text-2xl font-bold">
+                        ${roomInfo.hourlyPrice}
+                      </span>
+                      /hr
+                    </h3>
+                    <div className="">
+                      {isAuthenticated && (
+                        <div className="flex space-x-2">
+                          <button
+                            className="px-2 py-1 text-white bg-theme-color1 text-lg font-normal"
+                            onClick={() => setPickedDate(false)}
+                          >
+                            Today
+                          </button>
+                          <button
+                            className="px-2 py-1 text-white bg-theme-color1 text-lg font-normal"
+                            onClick={() => setPickedDate(true)}
+                          >
+                            This Week
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
                   <div>
-                    {isAuthenticated && (
-                      <div>
-                        <button
-                          className=""
-                          onClick={() => setPickedDate(false)}
-                        >
-                          Today
-                        </button>
-                        <button
-                          className=""
-                          onClick={() => setPickedDate(true)}
-                        >
-                          This Week
-                        </button>
-                      </div>
-                    )}
+                    <div className="flex space-x-2 my-3">
+                      <input
+                        type="number"
+                        className="outline-0 px-2 py-1"
+                        ref={bookingVisitorsRef}
+                      />
+                      <button
+                        className="px-2 py-1 text-white bg-theme-color1 text-lg font-normal"
+                        onClick={onClickSubmit}
+                      >
+                        Book Now
+                      </button>
+                    </div>
+                    {!!pickDate && <Alert severity="error">{pickDate}</Alert>}
                   </div>
                 </div>
-                <input type="number" className="" ref={bookingVisitorsRef} />
-                <button className="" onClick={onClickSubmit}>
-                  Book Now
-                </button>
-                {pickDate !== "" && <Alert severity="error">{pickDate}</Alert>}
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                }}
-              >
-                {!ifUserIsHost && isAuthenticated && (
-                  <div className="">
-                    {!!isLiked ? (
-                      <>
-                        <FavoriteIcon
-                          onClick={() => {
-                            onClickUnlike(isLiked);
-                          }}
-                          className="text-theme-color2 mr-1 cursor-pointer"
-                        />
-                        <span>Liked</span>
-                      </>
-                    ) : (
-                      <>
-                        <FavoriteBorderIcon
-                          onClick={() => onClickLike(roomInfo.id)}
-                          className="text-theme-color2 mr-1 cursor-pointer"
-                        />
-                        <span>Like</span>
-                      </>
-                    )}
-                  </div>
-                )}
-              </div>
-              <div className="likecount">
-                <span>{roomInfo.likes.length} people like this</span>
+                <div className="flex flex-col  space-y-2">
+                  {!ifUserIsHost && isAuthenticated && (
+                    <div className="">
+                      {!!isLiked ? (
+                        <>
+                          <FavoriteIcon
+                            onClick={() => {
+                              onClickUnlike(isLiked);
+                            }}
+                            className="text-theme-color2 mr-1 cursor-pointer"
+                          />
+                          <span>Liked</span>
+                        </>
+                      ) : (
+                        <>
+                          <FavoriteBorderIcon
+                            onClick={() => onClickLike(roomInfo.id)}
+                            className="text-theme-color2 mr-1 cursor-pointer"
+                          />
+                          <span>Like</span>
+                        </>
+                      )}
+                    </div>
+                  )}
+                </div>
+                <div className="">
+                  <span>{roomInfo.likes.length} people like this</span>
+                </div>
               </div>
             </div>
           </div>
-          <div>
+          <div className="my-6">
             <DateBookingSection
               pickDayFun={pickDayFun}
               setToSubmit={setToSubmit}
@@ -361,17 +373,22 @@ const RoomDetailPage = (props: RoomDetailPageProps) => {
         </div>
       )}
       <div>
-        <div>
+        <div className="space-y-2">
           <div>
             {viewBox === 0 && (
               <div className="">
-                <div className="">
-                  <div className="">
-                    <img src={roomInfo.user.profileImg} alt="profile-pic" />
-                  </div>
-                  <div className="">
-                    {<h2>Hosted by {roomInfo.user.username}</h2>}
-                    <span>Joined in {roomInfo.user.createdAt.toString()}</span>
+                <div className="flex space-x-2 items-center">
+                  <img
+                    src={roomInfo.user.profileImg}
+                    alt="profile-pic"
+                    className="h-10 w-10 rounded-full object-contain"
+                  />
+                  <div className="text-gray-700">
+                    <h2>Hosted by {roomInfo.user.username}</h2>
+                    <span className="text-sm ">
+                      Joined on{" "}
+                      {dayjs(roomInfo.user.createdAt).format("DD-MM-YYYY")}
+                    </span>
                   </div>
                 </div>
                 <div className="hostDetail-description-box">
@@ -384,35 +401,34 @@ const RoomDetailPage = (props: RoomDetailPageProps) => {
           </div>
           <div>
             {viewBox === 1 && (
-              <>
-                <div className="">
+              <div className="flex flex-col md:items-center justify-center flex-1 space-y-3">
+                <div className="text-gray-700">
+                  <h3 className="text-2xl">
+                    Enquire {roomInfo.user.username} now!
+                  </h3>
+
                   <div className="">
-                    {<h3>Enquire {roomInfo.user.username} now!</h3>}
-                  </div>
-                  <div className="">
-                    <span>Joined in {roomInfo.user.createdAt.toString()}</span>
+                    Joined on{" "}
+                    {dayjs(roomInfo.user.createdAt).format("DD-MM-YYYY")}
                   </div>
                 </div>
                 {isAuthenticated && (
-                  <div>
-                    <input
-                      className=""
+                  <div className="flex flex-1 md:w-3/6 w-full flex-col space-y-2">
+                    <textarea
+                      className="w-full outline-0 px-1 py-1 "
                       required
-                      type="textarea"
                       ref={chatRef}
                     />
-                    <div className="">
-                      <button
-                        className=""
-                        disabled={ifUserIsHost}
-                        onClick={onSubmitChat}
-                      >
-                        Send
-                      </button>
-                    </div>
+                    <button
+                      className="px-2 py-1 text-white bg-theme-color1 text-lg font-normal"
+                      disabled={ifUserIsHost}
+                      onClick={onSubmitChat}
+                    >
+                      Send
+                    </button>
                   </div>
                 )}
-              </>
+              </div>
             )}
           </div>
           <div>
@@ -423,12 +439,12 @@ const RoomDetailPage = (props: RoomDetailPageProps) => {
             )}
             {canRate && (
               <div>
-                <h2 className="">
+                <h2 className="text-gray-700 text-lg">
                   Rate your experience at {roomInfo.spaceName}!
                 </h2>
                 <>
-                  <div>
-                    <div>
+                  <div className="space-y-2">
+                    <div className="flex space-x-2">
                       {Array(5)
                         .fill("")
                         .map((_, index) => (
@@ -443,14 +459,17 @@ const RoomDetailPage = (props: RoomDetailPageProps) => {
                           </div>
                         ))}
                     </div>
-                    <div className="submit_div">
+                    <div className="flex items-center md:w-3/6 w-full">
                       <input
-                        className=""
+                        className="px-2 py-1.5 outline-none flex-1"
                         required
                         type="text"
                         ref={commentRef}
                       />
-                      <button className="" onClick={onSubmitRating}>
+                      <button
+                        className="px-2 py-1 text-white bg-theme-color1 text-lg font-normal "
+                        onClick={onSubmitRating}
+                      >
                         Send
                       </button>
                     </div>
@@ -477,7 +496,7 @@ const RoomDetailPage = (props: RoomDetailPageProps) => {
           <br />
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

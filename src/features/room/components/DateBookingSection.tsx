@@ -2,12 +2,12 @@ import { WeekTimeSlot } from "@/features/room/components/WeekTimeSlot";
 import { DayTimeSlot } from "@/features/room/components/DayTimeSlot";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import dayjs, { Dayjs } from "dayjs";
-import { useSelector } from "react-redux";
-import React, { useState, Dispatch, SetStateAction } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import React, { useState, Dispatch, SetStateAction, useEffect } from "react";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import TextField from "@mui/material/TextField";
-
+import { useRouter } from "next/router";
 import {
   BookingTimeslot,
   OneTimeOffOpenTimeslot,
@@ -16,6 +16,7 @@ import {
 import { RoomInfoType } from "@/features/room/types";
 import Stack from "@mui/material/Stack";
 import { settingSelector } from "@/redux/setting";
+import { toStoreTimeSlot } from "@/redux/bookTimeSlot";
 const weekDays = [
   "sunday",
   "monday",
@@ -35,7 +36,16 @@ export type combinedTimeSlot = {
 };
 
 // Functional features
+type ChosenTime = {
+  date: Date;
+  hour: number;
+  minute: number;
+};
 
+export type State = {
+  combinedTimeSlots: combinedTimeSlot[];
+  chosen: ChosenTime[];
+};
 const expandWeeklyTimeSlots = (
   ob: WeeklyOpenTimeslot[]
 ): combinedTimeSlot[] => {
@@ -95,7 +105,9 @@ export const DateBookingSection = ({
     customerBookingTimeslots,
     weeklyOpenTimeslots,
   } = roomInfo;
+  const router = useRouter();
   const { setting } = useSelector(settingSelector);
+  const dispatch = useDispatch();
 
   const bookedTimeSlots: BookingTimeslot[] = [];
   customerBookingTimeslots.map((each) => {
@@ -120,38 +132,116 @@ export const DateBookingSection = ({
   const oneTimeOffAvailable = expandOneOffTimeSlots(oneTimeOffOpenTimeslots);
   const bookedTimeSlot = expandBookedTimeSlots(bookedTimeSlots);
   const combinedTimeSlots = weeklyAvailable.concat(oneTimeOffAvailable);
+  const [state, setState] = useState<State>({
+    combinedTimeSlots: combinedTimeSlots,
+    chosen: [],
+  });
 
+  // Material UI state
+
+  function clickCell({
+    date,
+    hour,
+    minute,
+    available,
+    bookedTime,
+  }: {
+    date: Date;
+    hour: number;
+    minute: number;
+    available: boolean;
+    bookedTime: boolean;
+  }) {
+    if (available && !bookedTime) {
+      const chosenSlot = { date, hour, minute };
+      if (
+        state.chosen.some(
+          (time) => JSON.stringify(time) === JSON.stringify(chosenSlot)
+        )
+      ) {
+        const filteredSlot = state.chosen.filter(
+          (time) => JSON.stringify(time) !== JSON.stringify(chosenSlot)
+        );
+        setState({
+          ...state,
+          chosen: filteredSlot,
+        });
+        return;
+      }
+      setState({
+        ...state,
+        chosen: [
+          ...state.chosen,
+          {
+            date,
+            hour,
+            minute,
+          },
+        ],
+      });
+    }
+  }
+  useEffect(() => {
+    const slotRequestSend = () => {
+      const timeSlotArray = state.chosen.map((time) => {
+        return {
+          ...time,
+          date: `${time.date.getFullYear()}-${
+            time.date.getMonth() + 1
+          }-${time.date.getDate()}`,
+        };
+      });
+      dispatch(toStoreTimeSlot({ timeSlot: timeSlotArray }));
+      router.push(`/booking-confirmation/${roomInfo.id}`);
+    };
+
+    if (toSubmit && state.chosen.length === 0) {
+      pickDayFun("Please pick an available time-slot below");
+    } else if (toSubmit && state.chosen.length !== 0) {
+      pickDayFun("");
+      slotRequestSend();
+    }
+
+    return () => {
+      setToSubmit(false);
+    };
+  }, [toSubmit]);
+  useEffect(() => {
+    setState({
+      combinedTimeSlots: combinedTimeSlots,
+      chosen: [],
+    });
+  }, [pickedDate]);
   return (
     <div>
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <Stack spacing={3}>
-          <DesktopDatePicker
-            label="Select a date"
-            value={selectedDate}
-            minDate={dayjs(new Date())}
-            onChange={handleDateChange}
-            renderInput={(params) => <TextField {...params} />}
-          />
-        </Stack>
-      </LocalizationProvider>
-      <div>
+      <div className="flex justify-center">
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <Stack spacing={3}>
+            <DesktopDatePicker
+              label="Select a date"
+              value={selectedDate}
+              minDate={dayjs(new Date())}
+              onChange={handleDateChange}
+              renderInput={(params) => <TextField {...params} />}
+            />
+          </Stack>
+        </LocalizationProvider>
+      </div>
+      <div className="">
         {!pickedDate ? (
           <DayTimeSlot
+            state={state}
             selectedDate={selectedDate}
             currentTime={currentTime}
-            pickDayFun={pickDayFun}
-            toSubmit={toSubmit}
-            setToSubmit={setToSubmit}
+            clickCell={clickCell}
             bookedTimeSlot={bookedTimeSlot}
-            combinedTimeSlots={combinedTimeSlots}
             weekDays={weekDays}
           />
         ) : (
           <WeekTimeSlot
+            state={state}
             currentTime={currentTime}
-            pickDayFun={pickDayFun}
-            toSubmit={toSubmit}
-            setToSubmit={setToSubmit}
+            clickCell={clickCell}
             bookedTimeSlot={bookedTimeSlot}
             combinedTimeSlots={combinedTimeSlots}
             weekDays={weekDays}
