@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import dayjs from "dayjs";
 import { FeatureKey } from "../featureKey";
 import { RootState } from "../reducers";
 
@@ -24,14 +25,16 @@ export type SettingState = {
     date: string;
   };
 };
+const localTime = dayjs(new Date());
 
+const getDate = `${localTime.year()}-${
+  localTime.month() ? localTime.month() + 1 : 1
+}-${localTime.date()}`;
 const initialState: SettingState = {
   setting: {
     ppl: 1,
     priceRg: [50, 500],
-    date: `${new Date().getFullYear()}-${
-      new Date().getMonth() + 1
-    }-${new Date().getDate()}`,
+    date: getDate,
   },
 };
 

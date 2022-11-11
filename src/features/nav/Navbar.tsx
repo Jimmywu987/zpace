@@ -46,6 +46,7 @@ export const Navbar = () => {
 
     storeUserToRedux();
   }, [isAuthenticated]);
+
   return (
     <nav className="bg-white shadow-xl flex py-0 px-3 justify-between items-center">
       <div className="flex items-center flex-1 px-1">

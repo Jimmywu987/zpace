@@ -126,10 +126,10 @@ model CustomerBookingTimeslot {
 }
 
 model BookingTimeslot {
-  id        String   @id @default(cuid())
-  startTime DateTime
-  endTime   DateTime
-  date      DateTime
+  id        String @id @default(cuid())
+  startTime String
+  endTime   String
+  date      String
 
   customerBookingTimeslotId String
   customerBookingTimeslot   CustomerBookingTimeslot @relation(fields: [customerBookingTimeslotId], references: [id], onDelete: Cascade)

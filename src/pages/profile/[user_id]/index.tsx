@@ -11,7 +11,11 @@ import { ProfileUser } from "@/types/ProfileUser";
 import { ReviewsType } from "@/types/ReviewsType";
 import { GetServerSideProps } from "next";
 
-export async function getServerSideProps({ query }: { query: string }) {
+export async function getServerSideProps({
+  query,
+}: {
+  query: { user_id: string };
+}) {
   const { user_id } = query;
   const userDoc = await getUserWithUserId(user_id, true);
   if (!userDoc) {

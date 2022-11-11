@@ -65,7 +65,6 @@ export default function SearchResultPage() {
     fetchRoomDataThunk();
   }, []);
 
-  console.log("inView", inView);
   return (
     <div className="flex justify-between w-full h-[90vh] bg-white">
       <div className="flex flex-col w-[22%]">
