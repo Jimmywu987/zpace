@@ -3,7 +3,7 @@ import { User } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { unstable_getServerSession } from "next-auth/next";
 import { createOptions } from "../auth/[...nextauth]";
-
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await unstable_getServerSession(req, res, createOptions(req));
 
@@ -36,8 +36,22 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       return res.status(401).json({ errors: "Missing Input" });
     }
     try {
+      const product = await stripe.products.create({
+        name: spaceName,
+        description,
+      });
+      const price = await stripe.prices.create({
+        unit_amount: hourlyPrice * 100,
+        currency: "hkd",
+        product: product.id,
+      });
       const room = await prisma.room.create({
-        data: { ...storeData, userId: user.id },
+        data: {
+          ...storeData,
+          userId: user.id,
+          stripeProductId: product.id,
+          stripePriceId: price.id,
+        },
       });
 
       for (let k = 0; k < weeklyTimeAvailability.length; k++) {

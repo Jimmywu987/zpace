@@ -9,6 +9,7 @@ export const getRoomInfoById = async (roomId: string) => {
     include: {
       user: {
         select: {
+          id: true,
           username: true,
           profileImg: true,
           createdAt: true,

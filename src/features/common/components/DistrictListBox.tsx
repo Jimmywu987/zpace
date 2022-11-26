@@ -22,7 +22,7 @@ const DISTRICT = [
   { name: "Kowloon City", value: "Kowloon City District" },
   { name: "Kwun Tong", value: "Kwun Tong District" },
   { name: "Yau Tsim Mong", value: "Yau Tsim Mong" },
-  { name: "District Shui Po", value: "District Shui Po" },
+  { name: "Sham Shui Po", value: "Sham Shui Po District" },
   { name: "Wong Tai Sin", value: "Wong Tai Sin District" },
   { name: "Tseung Kwan O", value: "Tseung Kwan O" },
   { name: "Central and Western", value: "Central and Western" },

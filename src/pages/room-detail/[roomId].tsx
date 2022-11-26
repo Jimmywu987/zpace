@@ -285,54 +285,56 @@ const RoomDetailPage = (props: RoomDetailPageProps) => {
             </div>
 
             <div className="flex flex-1 justify-center">
-              <div className="border border-gray-20 shadow flex flex-col py-4 px-6 mx-8">
-                <div className="flex flex-col justify-center space-y-5">
-                  <div className="flex flex-col items-center space-y-5">
+              <div className="border border-gray-20 shadow flex flex-col py-4 px-6 mx-8 justify-center">
+                <div className="flex flex-col justify-center  space-y-5 ">
+                  <div className="flex flex-col items-center space-y-5 ">
                     <h3 className="text-gray-700 text-xl">
-                      <span className="text-theme-color2 text-2xl font-bold">
+                      <span className="text-theme-color2 text-3xl font-bold">
                         ${roomInfo.hourlyPrice}
                       </span>
                       /hr
                     </h3>
-                    <div className="">
-                      {isAuthenticated && (
-                        <div className="flex space-x-2">
-                          <button
-                            className="px-2 py-1 text-white bg-theme-color1 text-lg font-normal"
-                            onClick={() => setPickedDate(false)}
-                          >
-                            Today
-                          </button>
-                          <button
-                            className="px-2 py-1 text-white bg-theme-color1 text-lg font-normal"
-                            onClick={() => setPickedDate(true)}
-                          >
-                            This Week
-                          </button>
-                        </div>
-                      )}
-                    </div>
+
+                    {isAuthenticated && (
+                      <div className="flex space-x-2">
+                        <button
+                          className="px-2 py-1 text-white bg-theme-color1 text-lg font-normal"
+                          onClick={() => setPickedDate(false)}
+                        >
+                          Today
+                        </button>
+                        <button
+                          className="px-2 py-1 text-white bg-theme-color1 text-lg font-normal"
+                          onClick={() => setPickedDate(true)}
+                        >
+                          This Week
+                        </button>
+                      </div>
+                    )}
                   </div>
-                  <div>
-                    <div className="flex space-x-2 my-3">
-                      <input
-                        type="number"
-                        className="outline-0 px-2 py-1"
-                        ref={bookingVisitorsRef}
-                      />
-                      <button
-                        className="px-2 py-1 text-white bg-theme-color1 text-lg font-normal"
-                        onClick={onClickSubmit}
-                      >
-                        Book Now
-                      </button>
+                  {!ifUserIsHost && isAuthenticated && (
+                    <div>
+                      <div className="flex space-x-2 my-3">
+                        <input
+                          type="number"
+                          className="outline-0 px-2 py-1"
+                          placeholder="Number of Visitor(s)"
+                          ref={bookingVisitorsRef}
+                        />
+                        <button
+                          className="px-2 py-1 text-white bg-theme-color1 text-lg font-normal"
+                          onClick={onClickSubmit}
+                        >
+                          Book Now
+                        </button>
+                      </div>
+                      {!!pickDate && <Alert severity="error">{pickDate}</Alert>}
                     </div>
-                    {!!pickDate && <Alert severity="error">{pickDate}</Alert>}
-                  </div>
+                  )}
                 </div>
                 <div className="flex flex-col  space-y-2">
                   {!ifUserIsHost && isAuthenticated && (
-                    <div className="">
+                    <div className="mt-2">
                       {!!isLiked ? (
                         <>
                           <FavoriteIcon
@@ -355,7 +357,7 @@ const RoomDetailPage = (props: RoomDetailPageProps) => {
                     </div>
                   )}
                 </div>
-                <div className="">
+                <div className="mt-4">
                   <span>{roomInfo.likes.length} people like this</span>
                 </div>
               </div>

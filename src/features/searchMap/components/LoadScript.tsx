@@ -1,4 +1,4 @@
-import { memo, ReactNode, FC, useState, useEffect } from "react";
+import { memo, ReactNode, FC } from "react";
 const { REACT_APP_GOOGLE_MAPS_API_KEY } = process.env;
 import { LoadScript } from "@react-google-maps/api";
 const LoadScriptComponent: FC<{ children: ReactNode }> = ({ children }) => {

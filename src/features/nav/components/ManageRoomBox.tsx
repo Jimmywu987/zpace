@@ -73,30 +73,33 @@ export const ManageRoomBox = () => {
                   onKeyDown={handleListKeyDown}
                 >
                   <MenuItem onClick={handleClose}>
-                    <Link href={`/room-owner/${user.id}`} passHref>
-                      <a className="text-lg text-link-normal py-2 px-2.5 rounded space-x-2">
-                        <BallotIcon className="menu-bar-item-icon" />
-                        <span>View and Manage Your Space</span>
-                      </a>
+                    <Link
+                      href={`/room-owner/${user.id}`}
+                      passHref
+                      className="text-lg text-link-normal py-2 px-2.5 rounded space-x-2"
+                    >
+                      <BallotIcon className="menu-bar-item-icon" />
+                      <span>View and Manage Your Space</span>
                     </Link>
                   </MenuItem>
                   <MenuItem onClick={handleClose}>
                     <Link
                       href={`/room-owner/booking-history/${user.id}`}
                       passHref
+                      className="text-lg text-link-normal py-2 px-2.5 rounded space-x-2"
                     >
-                      <a className="text-lg text-link-normal py-2 px-2.5 rounded space-x-2">
-                        <HistoryIcon className="menu-bar-item-icon" />{" "}
-                        <span>Booking Record</span>
-                      </a>
+                      <HistoryIcon className="menu-bar-item-icon" />{" "}
+                      <span>Booking Record</span>
                     </Link>
                   </MenuItem>
                   <MenuItem onClick={handleClose}>
-                    <Link href="/chart-log" passHref>
-                      <a className="text-lg text-link-normal py-2 px-2.5 rounded space-x-2">
-                        <EqualizerIcon />
-                        <span>Statistics</span>
-                      </a>
+                    <Link
+                      href="/chart-log"
+                      passHref
+                      className="text-lg text-link-normal py-2 px-2.5 rounded space-x-2"
+                    >
+                      <EqualizerIcon />
+                      <span>Statistics</span>
                     </Link>
                   </MenuItem>
                 </MenuList>

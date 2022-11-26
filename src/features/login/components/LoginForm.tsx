@@ -9,9 +9,13 @@ import { GoogleButton } from "@/features/common/components/buttons/GoogleButton"
 import { useDispatch, useSelector } from "react-redux";
 import { loadingSelector, isLoading } from "@/redux/loading";
 import { SubmitButton } from "@/features/common/components/buttons/SubmitButton";
+import { useRouter } from "next/router";
+import toast from "react-hot-toast";
 
 export const LoginForm = () => {
   const dispatch = useDispatch();
+  const router = useRouter();
+
   const { loading } = useSelector(loadingSelector);
   const [showPassword, setShowPassword] = useState(false);
 
@@ -25,10 +29,15 @@ export const LoginForm = () => {
 
   const onSubmit = loginFormMethods.handleSubmit(async (data) => {
     dispatch(isLoading({ isLoading: true }));
-    await signIn("credentials", {
+    const res = await signIn("credentials", {
       ...data,
-      callbackUrl: "/",
+      redirect: false,
     });
+    if (res && res.ok) {
+      router.push("/");
+    } else {
+      toast.error("Incorrect email or password, please try again.");
+    }
     dispatch(isLoading({ isLoading: false }));
   });
 

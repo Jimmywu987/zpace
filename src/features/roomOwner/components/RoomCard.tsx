@@ -198,11 +198,11 @@ export const RoomCard = ({ room }: { room: RoomType }) => {
                     <Typography variant="body2" style={{ cursor: "pointer" }}>
                       <Link
                         href={`/room-owner/manage-room/edit-room/${room.id}`}
+                        className="flex items-center space-x-2 text-theme-color1 px-2 py-1 rounded hover:bg-gray-50"
+                        passHref
                       >
-                        <a className="flex items-center space-x-2 text-theme-color1 px-2 py-1 rounded hover:bg-gray-50">
-                          <span className="">View Details and Edit</span>
-                          <ModeEditIcon className="" />
-                        </a>
+                        <span className="">View Details and Edit</span>
+                        <ModeEditIcon className="" />
                       </Link>
                     </Typography>
                     <Typography variant="subtitle1" className="cursor-pointer">

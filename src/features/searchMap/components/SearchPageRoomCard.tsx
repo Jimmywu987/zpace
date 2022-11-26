@@ -10,10 +10,11 @@ import PeopleIcon from "@mui/icons-material/People";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import { unlikeRoom, likeRoom } from "@/apis/api";
 import { useSession } from "next-auth/react";
+import { RoomImagePreviewCard } from "@/features/common/components/RoomImagePreviewCard";
 export const SearchPageRoomCard = ({ room }: { room: RoomType }) => {
   const session = useSession();
   const user = session.data?.user as User;
-  const [photoSequence, setPhotoSequence] = useState(0);
+
   const [isLiked, setIsLiked] = useState("");
   const isAuthenticated = session.status === "authenticated";
 
@@ -23,20 +24,7 @@ export const SearchPageRoomCard = ({ room }: { room: RoomType }) => {
       setIsLiked(hasLike.id);
     }
   }, []);
-  const slidePhotoRight = () => {
-    if (room.roomImgs.length - 1 > photoSequence) {
-      setPhotoSequence((index: number) => index + 1);
-    } else {
-      setPhotoSequence(() => 0);
-    }
-  };
-  const slidePhotoLeft = () => {
-    if (0 < photoSequence) {
-      setPhotoSequence((index: number) => index - 1);
-    } else {
-      setPhotoSequence(() => room.roomImgs.length - 1);
-    }
-  };
+
   const onClickUnlike = async (likeId: string) => {
     const res = await unlikeRoom({ id: likeId });
     if (res && res.status === 200) {
@@ -52,32 +40,16 @@ export const SearchPageRoomCard = ({ room }: { room: RoomType }) => {
   };
   return (
     <div className="bg-white p-2 border-b border-b-gray-100">
-      <div className="relative p-2 shadow-lg">
-        {room.roomImgs.length > 1 && (
-          <ExpandCircleDownIcon
-            onClick={slidePhotoLeft}
-            style={{ width: "40px", height: "40px" }}
-            className="text-gray-50 shadow absolute rotate-90 left-0 my-auto top-0 bottom-0 hover:text-gray-200 cursor-pointer"
-          />
-        )}
-        <img
-          src={room.roomImgs[photoSequence].url}
-          alt="preview-room-pic"
-          className="object-contain w-full"
-        />
-        {room.roomImgs.length > 1 && (
-          <ExpandCircleDownIcon
-            onClick={slidePhotoRight}
-            style={{ width: "40px", height: "40px" }}
-            className="text-gray-50 shadow absolute -rotate-90 right-0 my-auto top-0 bottom-0 hover:text-gray-200 cursor-pointer"
-          />
-        )}
+      <div className="flex flex-col flex-1 h-[220px]">
+        <RoomImagePreviewCard roomImgs={room.roomImgs} />
       </div>
       <div className="px-2 space-y-1">
-        <Link href={`/room-detail/${room.id}`}>
-          <a className="text-xl text-theme-color1 font-bold">
-            {room.spaceName}
-          </a>
+        <Link
+          href={`/room-detail/${room.id}`}
+          className="text-xl text-theme-color1 font-bold"
+          passHref
+        >
+          {room.spaceName}
         </Link>
         <div className="flex space-x-1">
           {Array(5)

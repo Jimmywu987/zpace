@@ -42,12 +42,12 @@ export const createOptions: (req: NextApiRequest) => NextAuthOptions = (
           },
         });
         if (!user) {
-          throw new Error("No user found!");
+          return null;
         }
         const hashedPassword = user.password;
         const isValid = await checkPassword(password, hashedPassword);
         if (!isValid) {
-          throw new Error("Incorrect Password");
+          return null;
         }
         const { password: returnPassword, ...returnUserInfo } = user;
         return { ...returnUserInfo };

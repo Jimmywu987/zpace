@@ -16,24 +16,18 @@ export default function Custom404() {
           <p>Here are some helpful links instead: </p>
           <ul>
             <li>
-              <Link href="/">
-                <a>
-                  <p className="text-violet-500 underline">Home</p>
-                </a>
+              <Link href="/" passHref>
+                <p className="text-violet-500 underline">Home</p>
               </Link>
             </li>
             <li>
-              <Link href="/">
-                <a>
-                  <p className="text-violet-500 underline">Search</p>{" "}
-                </a>
+              <Link href="/" passHref>
+                <p className="text-violet-500 underline">Search</p>{" "}
               </Link>
             </li>
             <li>
-              <Link href="/">
-                <a>
-                  <p className="text-violet-500 underline">Profile</p>
-                </a>
+              <Link href="/" passHref>
+                <p className="text-violet-500 underline">Profile</p>
               </Link>
             </li>
           </ul>
@@ -42,12 +36,8 @@ export default function Custom404() {
         <img src={failGif.src} alt="oops" />
       </div>
       <div className="flex justify-center m-2">
-        <Link href="/">
-          <a>
-            <button className="btn-blue p-3 cusor-pointer ">
-              Back to home
-            </button>
-          </a>
+        <Link href="/" passHref>
+          <button className="btn-blue p-3 cusor-pointer ">Back to home</button>
         </Link>
       </div>
     </main>

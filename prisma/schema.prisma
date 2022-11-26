@@ -4,7 +4,8 @@ datasource db {
 }
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["interactiveTransactions"]
 }
 
 model User {
@@ -55,8 +56,9 @@ model Room {
   airCondition Boolean
   spaceName    String
   district     String
-  userId       String
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   ratingAndComments RatingAndCommentOnRoom[]
 
@@ -106,14 +108,13 @@ model OneTimeOffOpenTimeslot {
 
 model CustomerBookingTimeslot {
   id                  String             @id @default(cuid())
-  requestDate         DateTime
   price               Float
   headCount           Int
-  isRefund            Boolean
-  requestRefund       Boolean
-  isRatedFromCustomer Boolean
-  isRatedFromHost     Boolean
-  refundDescription   String
+  isRefund            Boolean            @default(false)
+  requestRefund       Boolean            @default(false)
+  isRatedFromCustomer Boolean            @default(false)
+  isRatedFromHost     Boolean            @default(false)
+  refundDescription   String             @default("")
   createdAt           DateTime           @default(now())
   updatedAt           DateTime           @updatedAt
   status              TimeslotStatusEnum
@@ -188,6 +189,8 @@ model ChatTable {
   host       User   @relation("host", fields: [hostId], references: [id], onDelete: Cascade)
 
   messages Message[]
+
+  @@unique([hostId, customerId])
 }
 
 enum TimeslotStatusEnum {

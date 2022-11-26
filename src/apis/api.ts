@@ -40,3 +40,7 @@ export async function likeRoom(params: any) {
 export async function unlikeRoom(params: any) {
   return await req("delete", "/api/room/unlike", params);
 }
+
+export async function paymentCheckout(params: any) {
+  return await req("post", "/api/checkout-session", params);
+}

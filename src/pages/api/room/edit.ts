@@ -3,6 +3,7 @@ import { User } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { unstable_getServerSession } from "next-auth/next";
 import { createOptions } from "../auth/[...nextauth]";
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await unstable_getServerSession(req, res, createOptions(req));
@@ -35,10 +36,28 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       return res.status(401).json({ errors: "Missing Input" });
     }
     try {
-      const room = await prisma.room.update({
+      const room = await prisma.room.findFirst({
+        where: { id },
+      });
+      if (!room) {
+        return res.status(500).json({ errors: "Fail to edit" });
+      }
+      await prisma.room.update({
         where: { id },
         data: { ...storeData },
       });
+      if (room.spaceName !== spaceName || room.description !== description) {
+        await stripe.products.update(room.stripeProductId, {
+          name: spaceName,
+          description,
+        });
+      }
+      if (room.hourlyPrice !== hourlyPrice) {
+        await stripe.prices.update(room.stripePriceId, {
+          unit_amount: hourlyPrice * 100,
+        });
+      }
+
       await prisma.weeklyOpenTimeslot.deleteMany({
         where: {
           roomId: id,

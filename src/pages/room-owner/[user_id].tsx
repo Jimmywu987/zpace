@@ -19,10 +19,12 @@ const RoomOwnerPage = (props: RoomOwnerPageProps) => {
       <div className="flex flex-col space-y-4 mx-2">
         <h3 className="text-xl">Room Management System</h3>
         <div>
-          <Link href="/room-owner/manage-room/create-room">
-            <a className="px-3 py-2 text-xl bg-theme-color1 text-white rounded">
-              Rent Out a Space
-            </a>
+          <Link
+            href="/room-owner/manage-room/create-room"
+            className="px-3 py-2 text-xl bg-theme-color1 text-white rounded"
+            passHref
+          >
+            Rent Out a Space
           </Link>
         </div>
       </div>

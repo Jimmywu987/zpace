@@ -51,9 +51,7 @@ export const Navbar = () => {
     <nav className="bg-white shadow-xl flex py-0 px-3 justify-between items-center">
       <div className="flex items-center flex-1 px-1">
         <Link href="/" passHref>
-          <a className="">
-            <img src="/logo.png" className="h-20" alt="logo" />
-          </a>
+          <img src="/logo.png" className="h-20" alt="logo" />
         </Link>
         <NavLink text="Home" url="/" className="hidden md:block" />
         {isAuthenticated ? (
@@ -64,15 +62,17 @@ export const Navbar = () => {
                 description="ZPACE - flexible space sharing platform"
               />
               <NavDivider />
-              <Link href={`/profile/${user.id}`} passHref>
-                <a className="flex items-center space-x-2 transition hover:bg-link-bgHover hover:scale-110 hover:text-red-500 rounded p-1 text-lg text-link-normal ">
-                  <img
-                    src={reduxUser.profileImg}
-                    alt={`${reduxUser.username} profile image`}
-                    className="w-10 h-10 rounded-full object-cover"
-                  />
-                  <span className="hidden md:block">{reduxUser.username}</span>
-                </a>
+              <Link
+                href={`/profile/${user.id}`}
+                passHref
+                className="flex items-center space-x-2 transition hover:bg-link-bgHover hover:scale-110 hover:text-red-500 rounded p-1 text-lg text-link-normal "
+              >
+                <img
+                  src={reduxUser.profileImg}
+                  alt={`${reduxUser.username} profile image`}
+                  className="w-10 h-10 rounded-full object-cover"
+                />
+                <span className="hidden md:block">{reduxUser.username}</span>
               </Link>
               <NavDivider />
               <NavButton onClick={() => signOut()}>Logout</NavButton>

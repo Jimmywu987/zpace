@@ -43,10 +43,12 @@ export const InfoWindowCard = ({ chosenRoom }: { chosenRoom: RoomType }) => {
           />
         )}
       </div>
-      <Link href={`/room-detail/${chosenRoom.id}`}>
-        <a className="text-xl text-theme-color1 font-bold">
-          {chosenRoom.spaceName}
-        </a>
+      <Link
+        href={`/room-detail/${chosenRoom.id}`}
+        className="text-xl text-theme-color1 font-bold"
+        passHref
+      >
+        {chosenRoom.spaceName}
       </Link>
       <p className="font-medium">Capacity: {chosenRoom.capacity}</p>
       <p className="font-medium">
