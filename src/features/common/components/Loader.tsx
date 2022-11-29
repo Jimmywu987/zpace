@@ -1,4 +1,4 @@
 // Loading Spinner
-export default function Loader({ show } : { show: any}) {
-  return show ? <div className="loader"></div> : null;
+export default function Loader({ show = true }: { show?: boolean }) {
+  return show ? <div className="loader" /> : null;
 }

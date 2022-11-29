@@ -13,7 +13,13 @@ import { updateProfileImg, updateUserSession } from "@/apis/api";
 import MetaTags from "@/features/head/components/Metatags";
 import { useRouter } from "next/router";
 
-export async function getServerSideProps({ query }: QueryProps) {
+interface queryProps {
+  query: {
+    user_id: string;
+  };
+}
+
+export async function getServerSideProps({ query }: queryProps) {
   const { user_id } = query;
 
   const userDoc = await getUserWithUserId(user_id, true);
@@ -47,7 +53,11 @@ export default function EditUserPhoto(profile: ProfileUser) {
       await uploadToS3(file).then((data) => {
         fileURL = data.url;
       });
+<<<<<<< HEAD
       const res = await updateProfileImg(user.id, { profileImg: fileURL });
+=======
+      const res = await updateProfileImg(user.id, { imageUrl: fileURL });
+>>>>>>> 75bc234bd299ca2aabb2e5337da138ef32377c2c
 
       if (res && res.status === 200) {
         await updateUserSession({
@@ -56,6 +66,7 @@ export default function EditUserPhoto(profile: ProfileUser) {
         setDownloadURL(fileURL);
         setUploading(false);
         toast.success("Uploaded profile image successfully");
+<<<<<<< HEAD
         router.reload();
       }
     }
@@ -80,6 +91,11 @@ export default function EditUserPhoto(profile: ProfileUser) {
   };
 
 
+=======
+      }
+    }
+  };
+>>>>>>> 75bc234bd299ca2aabb2e5337da138ef32377c2c
   return (
     <>
       <MetaTags title={`${profile.username} | ZPACE`} />

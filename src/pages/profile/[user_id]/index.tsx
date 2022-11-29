@@ -11,8 +11,11 @@ import { ProfileUser } from "@/types/ProfileUser";
 import { GetServerSideProps } from "next";
 import { useState } from "react";
 
-
-export async function getServerSideProps({ query }: QueryProps) {
+export async function getServerSideProps({
+  query,
+}: {
+  query: { user_id: string };
+}) {
   const { user_id } = query;
   const userDoc = await getUserWithUserId(user_id, true);
   if (!userDoc) {
